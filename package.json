@@ -1,0 +1,26 @@
+{
+  "name": "hobby-collection",
+  "version": "1.0.0",
+  "description": "Collection from wrappers and magazines",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryordanov/hobby-collection.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryordanov/hobby-collection/issues"
+  },
+  "homepage": "https://github.com/ryordanov/hobby-collection#readme",
+  "dependencies": {
+    "express": "4.14.0",
+    "mongoose": "4.6.5",
+    "os": "0.1.1",
+    "path": "0.12.7",
+    "pug": "2.0.0-beta6"
+  }
+}

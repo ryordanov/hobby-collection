@@ -21,3 +21,6 @@ h1 {
 .menu li:after {
     content: "\00a0";
 }
+.nl:before {
+    content: " \2713"
+}
