@@ -36,14 +36,32 @@ module.exports = {
         return collections[row].items
     },
     expand: (items) => {
-        return expand(items).numbers;
+        return convertStrToObj(items).numbers;
     }
 };
-
 function expand(items) {
-    let onlyNumbers = [],                                    // 1,2,2,3,3,3,3,3,3,7,7,9,10,11,12
-        additionalText = {},                                 // {7=>"texxt"}
-        NumbersAndInfo = {numbers: [], text: {}};          //[[numbers], {additional text} ]
+    let itemsCountText = convertStrToObj(items);
+    let resultExpanded = '';
+
+    let updatedCount = {},
+        result = {numbers: [], text: {}};
+
+
+    console.log('itemsCountText: ' + JSON.stringify(itemsCountText));
+
+    for (var key in itemsCountText.items) {
+        let count = itemsCountText.items[key];
+        if ((count > 1 ) && (itemsCountText.text[itemsCountText.items[key]]))
+            result.text[result.numbers[i]] = "(" + count + ";" + additionalText[result.numbers[i]] + ")"
+        else if (count > 1) result.text[result.numbers[i]] = "(" + count + ")"
+        else if (additionalText[result.numbers[i]]) result.text[result.numbers[i]] = "(" + additionalText[result.numbers[i]] + ")";
+    }
+
+
+}
+
+function convertStrToObj(items) {
+    let itemsCountText = {items: {}, text: {}};         //items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
 
     items = items.split(',');
 
@@ -56,25 +74,29 @@ function expand(items) {
                 iMax = parseInt(m[2]);
 
             for (let j = iMin; j <= iMax; j++)
-                onlyNumbers.push(j);
+                addItem(itemsCountText, j, 1, null);
         }
         else //ако има (text) след числото - се вади в нов асоциативен масив/обект
         if (item.length) {                   //ако няма тире между запетайките, но има все пак нещо
-            let itemComponents = splitItemToComponents(item);   // [number, counts=1, text=""]
-            for (let k = 1; k <= itemComponents.counts; k++)
-                onlyNumbers.push(itemComponents.number);
-            if (itemComponents.text != "")
-                additionalText[itemComponents.number] = itemComponents.text
+            let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+            addItem(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
         }
     }
+    ;
+    let numbers = sortObject(itemsCountText.items);
 
-    onlyNumbers.sort(function (a, b) {//сортиране на масива
-        return a - b;
-    });
+    return {items: numbers, text: itemsCountText.text}
+}
 
-    NumbersAndInfo = makeUniqueNumbersAndText(onlyNumbers, additionalText);
-    return NumbersAndInfo;// ({numbers:[1, 2, 3, 6, 7, 8, 9, 10, 11, 12], text:{1:"(probe)", 2:"(2)", 3:"(6)", 7:"(3;texxt)"}})
-
+function addItem(itemsCountText, item, count, text) {
+    if (item in itemsCountText.items) {
+        itemsCountText.items[item] += count;
+    } else {
+        itemsCountText.items[item] = count;
+    }
+    if (text !== null) {
+        itemsCountText.text[item] = text;
+    }
 }
 
 //returns [number=X, counts=Y, text="Z"]
@@ -84,7 +106,7 @@ function splitItemToComponents(item) {
         rightBracket = item.indexOf(")"),//трябва да търси отзад напред, ако има (2;текст(ощетекст))
         number = parseInt(item),
         counts = 1,
-        text = "";
+        text = null;
 
     if (leftBracket > -1) {//and rigthBracket > -1 to be sure...
         let additionalText = item.substring(leftBracket + 1, rightBracket);
@@ -161,3 +183,7 @@ function makeUniqueNumbersAndText(onlyNumbers, additionalText) {
  return result;
  }
  */
+//http://stackoverflow.com/questions/5467129/sort-javascript-object-by-key
+function sortObject(o) {
+    return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+}
