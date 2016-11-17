@@ -3,8 +3,8 @@ h1 {
 }
 
 .container {
-    padding-left: 20%;
-    padding-right: 20%
+    padding-left: 10%;
+    padding-right: 10%
 }
 
 .menu {
@@ -23,4 +23,13 @@ h1 {
 }
 .nl:before {
     content: " \2713"
+}
+
+input.editableItems {
+    width: 85%
+}
+
+span {
+    float: none;
+    clear: both;
 }
