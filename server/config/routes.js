@@ -7,6 +7,8 @@ module.exports = (app) => {
     });*/
 
     app.get('/', controllers.home.index);
+    app.get('/expand', controllers.home.expand);
+    app.get('/collapse', controllers.home.collapse);
     app.get('/about', controllers.home.about);
 
     app.all('*', (req, res) => {

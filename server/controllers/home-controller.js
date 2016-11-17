@@ -5,16 +5,22 @@
  {'Rock & Bubble', 'карти', '', '♣3,6,8,10,J,Q,K,A,♦3,4,6,6,6,7,9,10,10,J,Q,K,A,♥2,3,4,5,8,9,9,10,J,J,Q,K,A,♠3,4,4,9,10,J,Q,A,Joker червен с Еди Мърфи'}
  ]; */
 
-//var gum = require('../utilities/gum').seedGumInserts();
-var gum = require('../utilities/gum');
-var wholeCollection = gum.wholeCollection();
-var expandedGumInserts = gum.expand(gum.getItemList(0));
-console.log('Original: ' + wholeCollection[0].items);
-console.log('Expanded: ' + expandedGumInserts);
+//let gum = require('../utilities/gum').seedGumInserts();
+let gum = require('../utilities/gum');
+
+//console.log('Original: ' + gum.wholeCollection()[0].items);
+//console.log('Expanded: ' + gum.getRowOnlyIdentifiers(0) + ' | text: ' + gum.getItemsWithNotes(0));
+//console.log('Collapsed: ' + gum.getRowCollapsedItems(0));
 
 module.exports = {
     index : (req, res) => {
-        res.render('home/index', {title: 'Картинки от дъвки', collections: wholeCollection});
+        res.render('home/index', {title: 'Картинки от дъвки', collections: gum.wholeCollection()});
+    },
+    expand: (req, res) => {
+        res.render('home/listItems', {title: 'Разширен списък', collections: gum.getAllExpandIdentifiers()});
+    },
+    collapse: (req, res) => {
+        res.render('home/listItems', {title: 'Сбит списък', collections: gum.getAllCollapsedItems()});
     },
     about : (req, res) => {
         res.render('home/about');

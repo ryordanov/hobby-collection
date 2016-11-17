@@ -1,0 +1,10 @@
+extends ../common/layout
+block main-content
+	h1 List of guminserts
+	p #{title}
+		each collection, index in collections
+			div.nl
+				a(href="/collection/"+ index)= (collection.make + '[' + collection.margins + ']')
+				span
+					span  :
+					= collection.items

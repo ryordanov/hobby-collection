@@ -23,9 +23,10 @@
  }
  } */
 var collections = [
-    {id: 0, make: 'Turbo', serie: 'rare', margins: '1-50', items: '1-5,6(2;*),7(2),10(*),15-20'},
+    {id: 0, make: 'Turbo', serie: 'rare', margins: '1-50', items: '1-5,6(2;*),7(2),8,9,10(*),15-20'},
     {id: 1, make: 'Turbo', serie: 'rare', margins: '51-540', items: '51,56,99(*),102'},
-    {id: 2, make: 'Bi-bib', serie: 'коли', margins: '1-168', items: '21(*),22,45(3;скъсана),50,167,168'}
+    {id: 2, make: 'Bi-bib', serie: 'коли', margins: '1-168', items: '21(*),22,45(3;скъсана),50,167,168'},
+    {id: 3, make: 'Lazer', serie: 'center aligned', margins: '1-70', items: '1-9,11,12,13,14,20-69'}
 ];
 
 module.exports = {
@@ -33,32 +34,166 @@ module.exports = {
         return collections;
     },
     getItemList: (row) => {
-        return collections[row].items
+        return collections[row].items;
     },
-    expand: (items) => {
-        return convertStrToObj(items).numbers;
+    getAllExpandIdentifiers: () => {
+        var resultArr = [];
+
+        for (let i = 0; i < collections.length; i++) {
+            let tempObj = {};
+            let row = collections[i];
+            tempObj.id = row.id;
+            tempObj.make = row.make;
+            tempObj.serie = row.serie;
+            tempObj.margins = row.margins;
+
+            let itemsCountText = convertStrToObj(row.items);		//цикъл да вкарам и бройките в списъка
+            let result = '';
+
+            //to make call to getRowOnlyIdentifiers() instead of redefine code
+            for (var key in itemsCountText.items) {
+                let count = itemsCountText.items[key];
+                result += key + ',';
+                while (count > 1) {
+                    result += key + ',';
+                    count--;
+                }
+            }
+            tempObj.items = result.substr(0, result.length - 1);
+            //the upper code must be reduced by replacing it with function call
+            resultArr.push(tempObj);
+        }
+        return resultArr;
+    }, getRowOnlyIdentifiers: (row) => {
+        let itemsCountText = convertStrToObj(collections[row].items);		//цикъл да вкарам и бройките в списъка
+        let result = '';
+
+        for (var key in itemsCountText.items) {
+            let count = itemsCountText.items[key];
+            result += key + ',';
+            while (count > 1) {
+                result += key + ',';
+                count--;
+            }
+        }
+        return result.substr(0, result.length - 1);
+    },
+    getAllCollapsedItems: () => {
+        var resultArr = [];
+
+        for (let i = 0; i < collections.length; i++) {
+            let tempObj = {};
+            let row = collections[i];
+            tempObj.id = row.id;
+            tempObj.make = row.make;
+            tempObj.serie = row.serie;
+            tempObj.margins = row.margins;
+
+            let itemsCountText = convertStrToObj(row.items);
+            tempObj.items = _compactResult(itemsCountText);
+            resultArr.push(tempObj);
+        }
+        return resultArr;
+    },
+    getRowCollapsedItems: (row) => {
+        let itemsCountText = convertStrToObj(collections[row].items);
+
+        return _compactResult(itemsCountText);
+    },
+    getItemsWithNotes: (row) => {
+        let itemsCountText = convertStrToObj(collections[row].items);
+        return JSON.stringify(itemsCountText.text);
     }
 };
-function expand(items) {
-    let itemsCountText = convertStrToObj(items);
-    let resultExpanded = '';
 
-    let updatedCount = {},
-        result = {numbers: [], text: {}};
-
-
+function collapse(itemsCountText) {
+    let resultString = '';
     console.log('itemsCountText: ' + JSON.stringify(itemsCountText));
 
     for (var key in itemsCountText.items) {
+        resultString += key;
         let count = itemsCountText.items[key];
-        if ((count > 1 ) && (itemsCountText.text[itemsCountText.items[key]]))
-            result.text[result.numbers[i]] = "(" + count + ";" + additionalText[result.numbers[i]] + ")"
-        else if (count > 1) result.text[result.numbers[i]] = "(" + count + ")"
-        else if (additionalText[result.numbers[i]]) result.text[result.numbers[i]] = "(" + additionalText[result.numbers[i]] + ")";
+        if ((count > 1 ) && (itemsCountText.text[key]))
+            resultString += "(" + count + ";" + itemsCountText.text[key] + ")"
+        else if (count > 1) resultString = "(" + count + ")"
+        else if (itemsCountText.text[key]) resultString += "(" + itemsCountText.text[key] + ")"
+        else resultString += ',';
     }
-
-
+    return resultString.substr(0, -1);
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function _compactResult(itemsCountText) {
+
+    let onlyNumbers = Object.keys(itemsCountText.items);
+
+    if (isEmptyObject(itemsCountText.text)) {
+        return shortList(onlyNumbers)
+    }
+    else {
+        var i = 0,
+            res = "",
+            iMax = Object.keys(itemsCountText.items).length;
+
+        while (i < iMax) {
+            var j = 1;
+
+            while (/* (i+j < iMax) && */ (onlyNumbers[i + j - 1] == onlyNumbers[i + j] - 1)
+            && (itemsCountText.items[onlyNumbers[i + j - 1]] == 1)
+            && (!itemsCountText.text[onlyNumbers[i + j - 1]])) {
+                j++;
+            }
+
+            if (itemsCountText.text[onlyNumbers[i + j - 1]] && j > 1) j--;//номерът с коментар да не е в интервала х-у, а да е отделен със запетая
+
+            if (j > 2) res += onlyNumbers[i] + "-" + onlyNumbers[i + j - 1]
+            else if (j == 2) res += onlyNumbers[i] + "," + onlyNumbers[i + j - 1]
+            else res += onlyNumbers[i + j - 1];
+
+            if ((itemsCountText.text[onlyNumbers[i + j - 1]]) && (itemsCountText.items[onlyNumbers[i + j - 1]] > 1)) {	//бройка и коментар
+                res += '(' + itemsCountText.items[onlyNumbers[i + j - 1]] + ';' + itemsCountText.text[onlyNumbers[i + j - 1]] + ')'
+            } else if (itemsCountText.items[onlyNumbers[i + j - 1]] > 1) {	//само бройка
+                res += '(' + itemsCountText.items[onlyNumbers[i + j - 1]] + ')'
+            } else if (itemsCountText.text[onlyNumbers[i + j - 1]]) {	//само коментар
+                res += '(' + itemsCountText.text[onlyNumbers[i + j - 1]] + ')'
+            }
+            res += ',';
+            i += j;
+        }
+        return res.slice(0, -1)//премахва последната запетайка
+    }
+}
+
+function shortList(arrayInput) {
+    var i = 0,
+        res = "",
+        iMax = arrayInput.length;
+
+    //res += arrayInput[i];
+    while (i < iMax) {
+        var j = 1;
+
+        while (/* (i+j < iMax) && */ (arrayInput[i + j - 1] == arrayInput[i + j] - 1)) {
+            j++;
+        }
+        if (j > 2) res += arrayInput[i] + "-" + arrayInput[i + j - 1]
+        else if (j == 2) res += arrayInput[i] + "," + arrayInput[i + j - 1]
+        else res += arrayInput[i + j - 1];
+        res += ",";
+        //Logger.log(">i=%s, j=%s : res=%s",i, j, res);
+        i += j;
+    }
+    return res.slice(0, -1);
+}
+
+function isEmptyObject(obj) {
+    for (var k in obj)
+        if (obj.hasOwnProperty(k))
+            return false;
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 function convertStrToObj(items) {
     let itemsCountText = {items: {}, text: {}};         //items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
@@ -83,9 +218,10 @@ function convertStrToObj(items) {
         }
     }
     ;
-    let numbers = sortObject(itemsCountText.items);
+    let sortedNumbers = sortObject(itemsCountText.items);
+    let sortedText = sortObject(itemsCountText.text);
 
-    return {items: numbers, text: itemsCountText.text}
+    return {items: sortedNumbers, text: sortedText}
 }
 
 function addItem(itemsCountText, item, count, text) {
@@ -127,34 +263,6 @@ function splitItemToComponents(item) {
         }
     }
     return {"number": number, "counts": counts, "text": text};
-}
-
-//преброява наново номерата (може да са били разбъркани и бройката да не е актуална) и ъпдейтва [бройката; текста]
-function makeUniqueNumbersAndText(onlyNumbers, additionalText) {
-    let updatedCount = {},
-        result = {numbers: [], text: {}};
-
-    /*  onlyNumbers.sort(function (a, b) {//сортиране на масива
-     return a - b;
-     }); */
-
-    for (let i = 0; i < onlyNumbers.length; i++) {
-        if (onlyNumbers[i] in updatedCount) {
-            updatedCount[onlyNumbers[i]] += 1;
-        } else {
-            result.numbers.push(onlyNumbers[i]);
-            updatedCount[onlyNumbers[i]] = 1;
-        }
-    }
-    console.log('updatedCount: ' + JSON.stringify(updatedCount));
-    for (let i = 0; i < result.numbers.length; i++) {
-        let count = updatedCount[result.numbers[i]];
-        if ((count > 1 ) && (additionalText[result.numbers[i]]))
-            result.text[result.numbers[i]] = "(" + count + ";" + additionalText[result.numbers[i]] + ")"
-        else if (count > 1) result.text[result.numbers[i]] = "(" + count + ")"
-        else if (additionalText[result.numbers[i]]) result.text[result.numbers[i]] = "(" + additionalText[result.numbers[i]] + ")";
-    }
-    return result;
 }
 
 /* 
