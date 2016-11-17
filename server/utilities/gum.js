@@ -22,11 +22,25 @@
  }
  }
  } */
+//https://www.npmjs.com/package/google-spreadsheet
 var collections = [
-    {id: 0, make: 'Turbo', serie: 'rare', margins: '1-50', items: '1-5,6(2;*),7(2),8,9,10(*),15-20'},
-    {id: 1, make: 'Turbo', serie: 'rare', margins: '51-540', items: '51,56,99(*),102'},
+    {id: 0, make: 'Turbo', serie: 'rare', margins: '1-50', items: '21,22,45,50'},
+    {
+        id: 1,
+        make: 'Turbo',
+        serie: '51-540',
+        margins: '51-540',
+        items: '51(2),52-54,55(2;*),56(2;*),57(2;*),58,59,60(2;*),61-70,71(3),72,73(3),74-80,81(2),82-84,85(2),86(2),87,88(2;*),89,90(3),91-142,143(2),144,145,146(2),147-149,150(2),151-163,164(2),165-173,174(2),175-179,180(3),181(2;*),182-206,207(2),208-234,235(2;*),236-274,275(2),276,277(2),278-293,294(2),295-300,301(2),302-310,311(2),312-391,392(2),393-396,397(2),398(2),399,400(2),401-444,445(2;*),446-455,456(2),457-459,460(2;*),461-540'
+    },
     {id: 2, make: 'Bi-bib', serie: 'коли', margins: '1-168', items: '21(*),22,45(3;скъсана),50,167,168'},
-    {id: 3, make: 'Lazer', serie: 'center aligned', margins: '1-70', items: '1-9,11,12,13,14,20-69'}
+    {id: 3, make: 'Lazer', serie: 'center aligned', margins: '1-70', items: '1-9,11,12,13,14,20-69'},
+    {
+        id: 4,
+        make: 'Идеал',
+        serie: 'животни',
+        margins: 'няколко',
+        items: 'вълк,слон(2),елен(2),мечка,лъв(2;*),тигър,маймуна,жирафА,жираф,носорог,кенгуру'
+    }
 ];
 
 module.exports = {
@@ -200,24 +214,32 @@ function convertStrToObj(items) {
 
     items = items.split(',');
 
-    for (let i = 0; i < items.length; i++) {
-        let item = items[i],
-            m = item.match(/^(\d+)[-](\d+)$/);
+    if (isNumber(items[0].substr(0, 1))) {
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i],
+                m = item.match(/^(\d+)[-](\d+)$/);
 
-        if (m != null) {
-            let iMin = parseInt(m[1]),
-                iMax = parseInt(m[2]);
+            if (m != null) {
+                let iMin = parseInt(m[1]),
+                    iMax = parseInt(m[2]);
 
-            for (let j = iMin; j <= iMax; j++)
-                addItem(itemsCountText, j, 1, null);
+                for (let j = iMin; j <= iMax; j++)
+                    addItem(itemsCountText, j, 1, null);
+            }
+            else //ако има (text) след числото - се вади в нов асоциативен масив/обект
+            if (item.length) {                   //ако няма тире между запетайките, но има все пак нещо
+                let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+                addItem(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+            }
         }
-        else //ако има (text) след числото - се вади в нов асоциативен масив/обект
-        if (item.length) {                   //ако няма тире между запетайките, но има все пак нещо
+    } else {
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i];
             let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
             addItem(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
         }
     }
-    ;
+
     let sortedNumbers = sortObject(itemsCountText.items);
     let sortedText = sortObject(itemsCountText.text);
 
@@ -243,6 +265,14 @@ function splitItemToComponents(item) {
         number = parseInt(item),
         counts = 1,
         text = null;
+
+    if (isNaN(number)) {
+        if (leftBracket > -1) {
+            number = item.substring(0, leftBracket);
+        } else {
+            number = item;
+        }
+    }
 
     if (leftBracket > -1) {//and rigthBracket > -1 to be sure...
         let additionalText = item.substring(leftBracket + 1, rightBracket);
@@ -294,4 +324,8 @@ function splitItemToComponents(item) {
 //http://stackoverflow.com/questions/5467129/sort-javascript-object-by-key
 function sortObject(o) {
     return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+}
+
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
 }
