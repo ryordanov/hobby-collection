@@ -22,5 +22,6 @@
     "os": "0.1.1",
     "path": "0.12.7",
     "pug": "2.0.0-beta6"
-  }
+  },
+   "scripts": { "start" : "node ./index.js" } }
 }
