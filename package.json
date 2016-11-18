@@ -24,6 +24,6 @@
     "pug": "2.0.0-beta6"
   },
   "scripts": { 
-		"start": "node --use_strict ./bin/www"
+		"start": "node --use_strict"
 	} 
 }
