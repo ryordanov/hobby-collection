@@ -138,47 +138,42 @@ function collapse(itemsCountText) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function _compactResult(itemsCountText) {
-
     let onlyNumbers = Object.keys(itemsCountText.items);
 
-    if (isEmptyObject(itemsCountText.text)) {
-        return shortList(onlyNumbers)
-    }
-    else {
-        var i = 0,
-            res = "",
-            iMax = Object.keys(itemsCountText.items).length;
+	var i = 0,
+		res = "",
+		iMax = Object.keys(itemsCountText.items).length;
 
-        while (i < iMax) {
-            var j = 1;
+	while (i < iMax) {
+		var j = 1;
 
-            while (/* (i+j < iMax) && */ (onlyNumbers[i + j - 1] == onlyNumbers[i + j] - 1)
-            && (itemsCountText.items[onlyNumbers[i + j - 1]] == 1)
-            && (!itemsCountText.text[onlyNumbers[i + j - 1]])) {
-                j++;
-            }
+		while (/* (i+j < iMax) && */ (onlyNumbers[i + j - 1] == onlyNumbers[i + j] - 1)
+		&& (itemsCountText.items[onlyNumbers[i + j - 1]] == 1)
+		&& (!itemsCountText.text[onlyNumbers[i + j - 1]])) {
+			j++;
+		}
 
-            if (itemsCountText.text[onlyNumbers[i + j - 1]] && j > 1) j--;//номерът с коментар да не е в интервала х-у, а да е отделен със запетая
+		if (itemsCountText.text[onlyNumbers[i + j - 1]] && j > 1) j--;//номерът с коментар да не е в интервала х-у, а да е отделен със запетая
 
-            if (j > 2) res += onlyNumbers[i] + "-" + onlyNumbers[i + j - 1]
-            else if (j == 2) res += onlyNumbers[i] + "," + onlyNumbers[i + j - 1]
-            else res += onlyNumbers[i + j - 1];
+		if (j > 2) res += onlyNumbers[i] + "-" + onlyNumbers[i + j - 1]
+		else if (j == 2) res += onlyNumbers[i] + "," + onlyNumbers[i + j - 1]
+		else res += onlyNumbers[i + j - 1];
 
-            if ((itemsCountText.text[onlyNumbers[i + j - 1]]) && (itemsCountText.items[onlyNumbers[i + j - 1]] > 1)) {	//бройка и коментар
-                res += '(' + itemsCountText.items[onlyNumbers[i + j - 1]] + ';' + itemsCountText.text[onlyNumbers[i + j - 1]] + ')'
-            } else if (itemsCountText.items[onlyNumbers[i + j - 1]] > 1) {	//само бройка
-                res += '(' + itemsCountText.items[onlyNumbers[i + j - 1]] + ')'
-            } else if (itemsCountText.text[onlyNumbers[i + j - 1]]) {	//само коментар
-                res += '(' + itemsCountText.text[onlyNumbers[i + j - 1]] + ')'
-            }
-            res += ',';
-            i += j;
-        }
-        return res.slice(0, -1)//премахва последната запетайка
-    }
+		if ((itemsCountText.text[onlyNumbers[i + j - 1]]) && (itemsCountText.items[onlyNumbers[i + j - 1]] > 1)) {	//бройка и коментар
+			res += '(' + itemsCountText.items[onlyNumbers[i + j - 1]] + ';' + itemsCountText.text[onlyNumbers[i + j - 1]] + ')'
+		} else if (itemsCountText.items[onlyNumbers[i + j - 1]] > 1) {	//само бройка
+			res += '(' + itemsCountText.items[onlyNumbers[i + j - 1]] + ')'
+		} else if (itemsCountText.text[onlyNumbers[i + j - 1]]) {	//само коментар
+			res += '(' + itemsCountText.text[onlyNumbers[i + j - 1]] + ')'
+		}
+		res += ',';
+		i += j;
+	}
+	return res.slice(0, -1)//премахва последната запетайка
+
 }
 
-function shortList(arrayInput) {
+/* function shortList(arrayInput) {
     var i = 0,
         res = "",
         iMax = arrayInput.length;
@@ -187,7 +182,7 @@ function shortList(arrayInput) {
     while (i < iMax) {
         var j = 1;
 
-        while (/* (i+j < iMax) && */ (arrayInput[i + j - 1] == arrayInput[i + j] - 1)) {
+        while (/* (i+j < iMax) && * / (arrayInput[i + j - 1] == arrayInput[i + j] - 1)) {
             j++;
         }
         if (j > 2) res += arrayInput[i] + "-" + arrayInput[i + j - 1]
@@ -198,14 +193,14 @@ function shortList(arrayInput) {
         i += j;
     }
     return res.slice(0, -1);
-}
+} 
 
 function isEmptyObject(obj) {
     for (var k in obj)
         if (obj.hasOwnProperty(k))
             return false;
     return true;
-}
+}*/
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
