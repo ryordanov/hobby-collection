@@ -24,9 +24,9 @@
     "pug": "2.0.0-beta6"
   },  
   "engines": {
-    "node": "5.7.0"
+    "node": "6.1.0"
   },
   "scripts": { 
-		"start": "node --use_strict"
-	} 
+    "start" : "node --use_strict ./index.js" 
+  } 
 }
