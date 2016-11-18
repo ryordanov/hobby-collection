@@ -24,12 +24,22 @@ h1 {
 .nl:before {
     content: " \2713"
 }
+div.nl {
+	margin-left: 2%
+
+	
+}
 
 input.editableItems {
-    width: 85%
+    width: 95%
 }
 
 span {
     float: none;
     clear: both;
+}
+div.inputWrapper {
+	display: inline;
+	width: 90%;
+	float: right
 }
