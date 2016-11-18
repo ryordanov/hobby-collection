@@ -13,7 +13,7 @@ console.log('------------------------------');
 module.exports = {
     rootPath: rootPath,
     db: privateConfiguration.db || 'mongodb://localhost:27017/guminserts-db',
-    port: privateConfiguration.port || 10101
+    port: process.env.PORT || privateConfiguration.port || 10101
 };
 
 function doesExist(fileName) {
