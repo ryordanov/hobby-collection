@@ -24,6 +24,6 @@
     "pug": "2.0.0-beta6"
   },
   "scripts": { 
-		"start": "node 'node --use_strict --harmony_arrow_functions' --spinSleepTime 1 --minUptime 1000 ./bin/www"
+		"start": "node --use_strict ./bin/www"
 	} 
 }
