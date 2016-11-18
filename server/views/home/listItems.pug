@@ -5,5 +5,6 @@ block main-content
 		each collection, index in collections
 			div.nl
 				a(href="/collection/"+ index)= (collection.make + '[' + collection.margins + ']')
-				span :
+				span : 
+				div.inputWrapper
 					input.editableItems(type="text", value=collection.items)
