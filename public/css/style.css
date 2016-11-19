@@ -40,6 +40,6 @@ span {
 }
 div.inputWrapper {
 	display: inline;
-	width: 90%;
+    width: 80%;
 	float: right
 }
