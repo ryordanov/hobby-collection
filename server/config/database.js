@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-
+//
 //var requredValidationMessage = '{PATH} is required';
 //var gumSchema = mongoose.Schema({
 //    // _id: {type: {}},
@@ -11,8 +11,8 @@ mongoose.Promise = global.Promise;
 //    margins: {type: String},
 //    items: {type: String}
 //});
-
-//var Gum = mongoose.model('Gum', gumSchema);
+//
+//var Gum = mongoose.model('guminserts', gumSchema);
 //Gum.find({}, function (err, gums) {
 //    if (err) console.log(err);
 //
