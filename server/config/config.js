@@ -1,19 +1,21 @@
 //let env = process.env.NODE_ENV || 'development';
 const path = require('path');
+const fs = require('fs');
 let rootPath = path.normalize(path.join(__dirname, '../../'));
-var hostname = require("os").hostname() || 'localhost';
-/*
-if (doesExist('../../../private-configuration.js')) {
-    var privateConfiguration = require('../../../private-configuration.js')[hostname];
-}
-*/
+let preRootPath = path.normalize(path.join(__dirname, '../../../'));
+let hostname = require("os").hostname() || 'localhost';
 console.log('hostname: ' + hostname);
-console.log('------------------------------');
+
+if (doesExist(preRootPath + 'private-configuration.js')) {
+    var privateConfiguration = require(preRootPath + 'private-configuration.js')[hostname];
+    var privateConfiguration_db = privateConfiguration.db;
+    var privateConfiguration_port = privateConfiguration.port;
+}
 
 module.exports = {
     rootPath: rootPath,
-    db: process.env.DB || /*privateConfiguration.db ||*/ 'mongodb://localhost:27017/guminserts-db',
-    port: process.env.PORT ||/* privateConfiguration.port ||*/ 10101
+    db: process.env.DB || privateConfiguration_db || 'mongodb://localhost:27017/hobby-collection-db',
+    port: process.env.PORT || privateConfiguration_port || 10101
 };
 
 function doesExist(fileName) {
