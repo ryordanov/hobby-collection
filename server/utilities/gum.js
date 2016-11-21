@@ -38,8 +38,7 @@ Gum.find({}, function (err, gums) {
         //   console.log(gum);
         //});
     })
-    .sort('make')
-;
+    .sort('make');
 
 module.exports = {
     wholeCollection: () => {
