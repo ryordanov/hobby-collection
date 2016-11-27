@@ -19,15 +19,36 @@ module.exports = {
     },
     update: (req, res) => {
         //TODO: check where we come from and after save redirect to that page
+//promiseify(req, res, console.log) ;
 
         let itemIdToUpdate = req.body.itemIdToUpdate,
             itemValueToUpdate = req.body.itemValueToUpdate;
 
-        gum.setItemsById(itemIdToUpdate, itemValueToUpdate);
-
-        res.send(itemIdToUpdate);
+        let result = gum.setItemsById(itemIdToUpdate, itemValueToUpdate);
+        
+        res.send(result);
         res.end();
+        
+        
+        //res.send(result);
+        //res.end();
+  
+
         //res.redirect('/expand');
         //res.render('home/index', { title: 'Картинки от дъвки', collections: gum.wholeCollection() });
     }
 };
+
+// function promiseify(request, response, next) {
+//     response.promise = function(promise) {
+//         promise.then(function(result) {
+//             responseText = '...' // add standard stuff around result
+//             response.send(responseText);
+//         }).catch(function(error) {
+//             responseText = '...' // create a nice error message
+//             response.send(responseText);
+//         });
+//     }
+
+//     next();
+// }

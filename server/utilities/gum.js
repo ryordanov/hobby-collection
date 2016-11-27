@@ -8,7 +8,7 @@ let gumSchema = mongoose.Schema({
     margins: { type: String },
     items: { type: String },
 });
-let Gum = mongoose.model('Guminserts', gumSchema);
+var Gum = mongoose.model('Guminserts', gumSchema);
 
 /*
  module.exports.seedGumInserts = () => {
@@ -117,21 +117,23 @@ module.exports = {
     },
     /////////////// SET
     setItemsById: (row, updatedItems) => {
-        console.log(row);
-        console.log(updatedItems);
+        let intId = parseInt(row);
+        //console.log(Gum)
+        Gum.findOne({ "id": intId }, function (err, gumUpdating) {
+            if (err) console.log('Error on search: ' + err);
 
-        let itemsCountText = convertStrToObj(updatedItems);
-        let itemsForDB = _compactResult(itemsCountText);
+            console.log(typeof intId === 'number');
+            console.log(updatedItems);
 
-        Gum.findOne({ id: row }, function (err, gumUpdating) {
-            if (err) console.log(err);
+            let itemsCountText = convertStrToObj(updatedItems);
+            let itemsForDB = _compactResult(itemsCountText);
 
-            gumUpdating.items = updatedItems;
-            updatedItems.save(function(errSave) {
+            gumUpdating.items = itemsForDB;
+            gumUpdating.save(function (errSave) {
                 if (errSave) console.log('Error when save: ' + errSave);
+                else return row;
             })
         });
-
     }
 };
 

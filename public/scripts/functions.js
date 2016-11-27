@@ -21,7 +21,7 @@ function saveAjax(id) {
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function () {
         if (xhr.status === 200 && xhr.responseText !== id.toString()) {
-            alert('Something went wrong.  Name is now ' + xhr.responseText);
+            alert('Something went wrong. Database is not getting updated after submitting.' + xhr.responseText);
         }
         else if (xhr.status !== 200) {
             alert('Request failed.  Returned status of ' + xhr.status);
