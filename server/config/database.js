@@ -2,27 +2,27 @@ var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 //
-//var requredValidationMessage = '{PATH} is required';
-//var gumSchema = mongoose.Schema({
+// var requredValidationMessage = '{PATH} is required';
+// var gumSchema = mongoose.Schema({
 //    // _id: {type: {}},
 //    id: {type: String, required: requredValidationMessage, unique: true},
 //    make: {type: String, required: requredValidationMessage},
 //    serie: {type: String},
 //    margins: {type: String},
 //    items: {type: String}
-//});
-//
-//var Gum = mongoose.model('guminserts', gumSchema);
-//Gum.find({}, function (err, gums) {
+// });
+
+// var Gum = mongoose.model('guminserts', gumSchema);
+// Gum.find({}, function (err, gums) {
 //    if (err) console.log(err);
-//
+
 //    console.log(gums);
-//
+
 //    gums.forEach(function (gum) {
 //        console.log(gum);
 //    });
-//});
-//module.exports.seedGumInserts = () => {
+// });
+// module.exports.seedGumInserts = () => {
 //    Gum.find({}).then(gums=> {
 //        if (gums.length === 0) {
 //            Gum.create({
@@ -34,10 +34,11 @@ mongoose.Promise = global.Promise;
 //            })
 //        }
 //    })
-//};
+// };
 
+/*
 var collections = [
-    {id: 0, make: 'Turbo', serie: 'rare[1-50]', margins: '1-50', items: '21,22,45,50'}, {
+    { id: 0, make: 'Turbo', serie: 'rare[1-50]', margins: '1-50', items: '21,22,45,50' }, {
         id: 1,
         make: 'Turbo',
         serie: '[51-120]',
@@ -73,7 +74,7 @@ var collections = [
         serie: 'super[401-470]',
         margins: '401-470',
         items: '401-444,445(2;*),446-455,456(2),457-459,460(2;*),461-470'
-    }, {id: 7, make: 'Turbo', serie: 'super[471-540]', margins: '471-540', items: '471-540'}, {
+    }, { id: 7, make: 'Turbo', serie: 'super[471-540]', margins: '471-540', items: '471-540' }, {
         id: 8,
         make: 'Turbo sport',
         serie: 'blue&violet[1-70]',
@@ -151,13 +152,13 @@ var collections = [
         serie: 'black Love Is 2 serie 1993[1-101]',
         margins: '1-101',
         items: '1-4,7,10,14,17,20,24,25,27(легло с цветя),34,35,39(2),40(2),41,49(без номер),52,53,55(два броя от две серии),59,62,65,66,69,70,72,73(разл. серия?),75,82-87,89-91,93,96,98,99'
-    }, {id: 21, make: 'Love is…', serie: 'Love is...black hearts.[1-102]', margins: '1-102', items: '7'}, {
+    }, { id: 21, make: 'Love is…', serie: 'Love is...black hearts.[1-102]', margins: '1-102', items: '7' }, {
         id: 22,
         make: 'Love is…',
         serie: 'some red heart[]',
         margins: '',
         items: ''
-    }, {id: 23, make: 'Ask melegi', serie: 'turkish Love is...[1-54]', margins: '1-54', items: '30'}, {
+    }, { id: 23, make: 'Ask melegi', serie: 'turkish Love is...[1-54]', margins: '1-54', items: '30' }, {
         id: 24,
         make: 'Bombibom',
         serie: '1 square[1-60]',
@@ -175,7 +176,7 @@ var collections = [
         serie: '3 yellow with b[1-90]',
         margins: '1-90',
         items: '33(oldsmobile),36(porsche),37(jaguarXJSv12),38(Chrysler),80(nissan200SX)'
-    }, {id: 27, make: 'Bombibom', serie: 'big yellow[1-70]', margins: '1-70', items: ''}, {
+    }, { id: 27, make: 'Bombibom', serie: 'big yellow[1-70]', margins: '1-70', items: '' }, {
         id: 28,
         make: 'Bombibom',
         serie: 'big white[1-70]',
@@ -187,7 +188,7 @@ var collections = [
         serie: 'sport[1-99]',
         margins: '1-99',
         items: '5(Иосиф Ротарю /Румыния ФК Галатасарай)'
-    }, {id: 30, make: 'Donald', serie: 'no numbers[103]', margins: '103', items: ''}, {
+    }, { id: 30, make: 'Donald', serie: 'no numbers[103]', margins: '103', items: '' }, {
         id: 31,
         make: 'Guiness records',
         serie: '1990[1-40]',
@@ -223,7 +224,7 @@ var collections = [
         serie: 'Animals/Зверове[1-70]',
         margins: '1-70',
         items: '10(JohnstoneTimsahi),17(Tukan),22(Hippopotamus Amphibius),43(Bugdaycil kusu),98(Kirmizi Gagali Hornbill)'
-    }, {id: 37, make: 'Cin Cin', serie: '3 friends red[1-96]', margins: '1-96', items: '89'}, {
+    }, { id: 37, make: 'Cin Cin', serie: '3 friends red[1-96]', margins: '1-96', items: '89' }, {
         id: 38,
         make: 'Cin Cin',
         serie: '3-friends[1-100]',
@@ -235,19 +236,19 @@ var collections = [
         serie: 'not known[unknown]',
         margins: 'unknown',
         items: '110,116,118,120,121,123,141(2),145(2;*),159,170,174,186'
-    }, {id: 40, make: 'Cin Cin', serie: 'Science Fiction[1-96]', margins: '1-96', items: '60,88,89'}, {
+    }, { id: 40, make: 'Cin Cin', serie: 'Science Fiction[1-96]', margins: '1-96', items: '60,88,89' }, {
         id: 41,
         make: 'Minti',
         serie: 'actors[1-70]',
         margins: '1-70',
         items: '18,53,60,68'
-    }, {id: 42, make: 'Minti', serie: '[71-140]', margins: '71-140', items: '117'}, {
+    }, { id: 42, make: 'Minti', serie: '[71-140]', margins: '71-140', items: '117' }, {
         id: 43,
         make: 'Minti',
         serie: '[141-220]',
         margins: '141-220',
         items: '142-148,150-152,154-157,158(3),159,160(2),162-166,167(2),168-171,173,175-178,179(2),181,182,188,189,191,192(2),193-195,198,199,202,203,205,206,209,210,213,216'
-    }, {id: 44, make: 'Minti', serie: 'actors[1-100]', margins: '1-100', items: '54,77'}, {
+    }, { id: 44, make: 'Minti', serie: 'actors[1-100]', margins: '1-100', items: '54,77' }, {
         id: 45,
         make: 'Minti',
         serie: 'blue minti[1-99]',
@@ -259,31 +260,31 @@ var collections = [
         serie: 'black italic[1-100]',
         margins: '1-100',
         items: '6(*),14,39(2),50,71,72,74,86'
-    }, {id: 47, make: 'TIPI TIP', serie: '[1-70]', margins: '1-70', items: ''}, {
+    }, { id: 47, make: 'TIPI TIP', serie: '[1-70]', margins: '1-70', items: '' }, {
         id: 48,
         make: 'TIPI TIP',
         serie: '[71-140]',
         margins: '71-140',
         items: ''
-    }, {id: 49, make: 'TIPI TIP', serie: '[141-210]', margins: '141-210', items: ''}, {
+    }, { id: 49, make: 'TIPI TIP', serie: '[141-210]', margins: '141-210', items: '' }, {
         id: 50,
         make: 'TIPI TIP',
         serie: '[211-280]',
         margins: '211-280',
         items: ''
-    }, {id: 51, make: 'TIPI TIP', serie: '[281-350]', margins: '281-350', items: ''}, {
+    }, { id: 51, make: 'TIPI TIP', serie: '[281-350]', margins: '281-350', items: '' }, {
         id: 52,
         make: 'TIPI TIP',
         serie: '[351-420]',
         margins: '351-420',
         items: '371'
-    }, {id: 53, make: 'TIPI TIP', serie: '[421-490]', margins: '421-490', items: '438'}, {
+    }, { id: 53, make: 'TIPI TIP', serie: '[421-490]', margins: '421-490', items: '438' }, {
         id: 54,
         make: 'TIPI TIP',
         serie: '[561-630]',
         margins: '561-630',
         items: '590,609'
-    }, {id: 55, make: 'TIPI TIP', serie: '[631-700]', margins: '631-700', items: '692'}, {
+    }, { id: 55, make: 'TIPI TIP', serie: '[631-700]', margins: '631-700', items: '692' }, {
         id: 56,
         make: 'TIPI TIP',
         serie: '[701-770]',
@@ -295,13 +296,13 @@ var collections = [
         serie: '[771-870]',
         margins: '771-870',
         items: '774,779,789,812,825,839,867'
-    }, {id: 58, make: 'TIPI TIP', serie: '[871-940]', margins: '871-940', items: ''}, {
+    }, { id: 58, make: 'TIPI TIP', serie: '[871-940]', margins: '871-940', items: '' }, {
         id: 59,
         make: 'TIPI TIP',
         serie: '[941-986]',
         margins: '941-986',
         items: ''
-    }, {id: 60, make: 'TIPI TIP', serie: '[987-1051]', margins: '987-1051', items: ''}, {
+    }, { id: 60, make: 'TIPI TIP', serie: '[987-1051]', margins: '987-1051', items: '' }, {
         id: 61,
         make: 'unknown',
         serie: '[unknown]',
@@ -313,13 +314,13 @@ var collections = [
         serie: '[1-54]',
         margins: '1-54',
         items: '12,42,44(грешен номер при изрязването),49(грешен номер при изрязването)'
-    }, {id: 63, make: 'Final 86', serie: 'red[1-60]', margins: '1-60', items: ''}, {
+    }, { id: 63, make: 'Final 86', serie: 'red[1-60]', margins: '1-60', items: '' }, {
         id: 64,
         make: 'Flintstone',
         serie: '[unknown]',
         margins: 'unknown',
         items: '23,50'
-    }, {id: 65, make: 'Kent super star', serie: '[unknown]', margins: 'unknown', items: '30(Zerrin Ozer)'}, {
+    }, { id: 65, make: 'Kent super star', serie: '[unknown]', margins: 'unknown', items: '30(Zerrin Ozer)' }, {
         id: 66,
         make: 'Patbom',
         serie: '[1-80]',
@@ -331,7 +332,7 @@ var collections = [
         serie: '[81-160]',
         margins: '81-160',
         items: '125(скъсана),142,143,145,159(изрязана грешно с номер 158)'
-    }, {id: 68, make: 'Pembo', serie: '[]', margins: '', items: '55,65,68,72'}, {
+    }, { id: 68, make: 'Pembo', serie: '[]', margins: '', items: '55,65,68,72' }, {
         id: 69,
         make: 'Rock & Bubble',
         serie: '[]',
@@ -361,9 +362,9 @@ var collections = [
         serie: '[1-100]',
         margins: '1-100',
         items: '1,5(2;a),6,21,22,24(2;a),25-28,48,49,50(2;a),52,54,57,58(2;a),77,82'
-    }, {id: 74, make: 'Списание "Дъга"', serie: '[1-42]', margins: '1-42', items: '1-40,42'}
+    }, { id: 74, make: 'Списание "Дъга"', serie: '[1-42]', margins: '1-42', items: '1-40,42' }
 ];
-
+*/
 module.exports = (config) => {
     mongoose.connect(config.db);
 

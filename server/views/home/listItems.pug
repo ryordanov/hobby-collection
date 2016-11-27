@@ -2,9 +2,12 @@ extends ../common/layout
 block main-content
 	h1 List of guminserts
 	p #{title}
+	form(name="modify-items", method="post", action="/save")
 		each collection, index in collections
 			div.nl
 				a(href="/collection/"+ index)= (collection.make + '[' + collection.margins + ']')
 				span : 
 				div.inputWrapper
-					input.editableItems(type="text", value=collection.items)
+					input.editableItems(type="text", value=collection.items, name="listNo"+ index, onchange='colorify(' + index + ')')
+					button.btnPendingSaveGreen(type='button', value="Save!", onclick='saveAjax(' + index + ')') Save me
+

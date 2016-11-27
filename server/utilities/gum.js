@@ -2,11 +2,11 @@ var mongoose = require('mongoose');
 
 let requredValidationMessage = '{PATH} is required';
 let gumSchema = mongoose.Schema({
-    id: {type: String, required: requredValidationMessage, unique: true},
-    make: {type: String, required: requredValidationMessage},
-    serie: {type: String},
-    margins: {type: String},
-    items: {type: String},
+    id: { type: String, required: requredValidationMessage, unique: true },
+    make: { type: String, required: requredValidationMessage },
+    serie: { type: String },
+    margins: { type: String },
+    items: { type: String },
 });
 let Gum = mongoose.model('Guminserts', gumSchema);
 
@@ -29,16 +29,16 @@ let Gum = mongoose.model('Guminserts', gumSchema);
 
 var collections = [];
 Gum.find({}, function (err, gums) {
-        if (err) console.log(err);
+    if (err) console.log(err);
 
-        collections = gums;
-        console.log('count of items: ' + gums.length);
+    collections = gums;
+    console.log('count of items: ' + gums.length);
 
-        //gums.forEach(function (gum) {
-        //   console.log(gum);
-        //});
-    })
-    .sort('make');
+    //gums.forEach(function (gum) {
+    //   console.log(gum);
+    //});
+})
+    .sort('id');
 
 module.exports = {
     wholeCollection: () => {
@@ -114,6 +114,24 @@ module.exports = {
     getItemsWithNotes: (row) => {
         let itemsCountText = convertStrToObj(collections[row].items);
         return JSON.stringify(itemsCountText.text);
+    },
+    /////////////// SET
+    setItemsById: (row, updatedItems) => {
+        console.log(row);
+        console.log(updatedItems);
+
+        let itemsCountText = convertStrToObj(updatedItems);
+        let itemsForDB = _compactResult(itemsCountText);
+
+        Gum.findOne({ id: row }, function (err, gumUpdating) {
+            if (err) console.log(err);
+
+            gumUpdating.items = updatedItems;
+            updatedItems.save(function(errSave) {
+                if (errSave) console.log('Error when save: ' + errSave);
+            })
+        });
+
     }
 };
 
@@ -124,7 +142,7 @@ function collapse(itemsCountText) {
     for (var key in itemsCountText.items) {
         resultString += key;
         let count = itemsCountText.items[key];
-        if ((count > 1 ) && (itemsCountText.text[key]))
+        if ((count > 1) && (itemsCountText.text[key]))
             resultString += "(" + count + ";" + itemsCountText.text[key] + ")"
         else if (count > 1) resultString = "(" + count + ")"
         else if (itemsCountText.text[key]) resultString += "(" + itemsCountText.text[key] + ")"
@@ -142,15 +160,19 @@ function _compactResult(itemsCountText) {
         iMax = Object.keys(itemsCountText.items).length;
 
     while (i < iMax) {
-        var j = 1;
+        let j = 1;
 
         while (/* (i+j < iMax) && */ (onlyNumbers[i + j - 1] == onlyNumbers[i + j] - 1)
-        && (itemsCountText.items[onlyNumbers[i + j - 1]] == 1)
-        && (!itemsCountText.text[onlyNumbers[i + j - 1]])) {
+            && (itemsCountText.items[onlyNumbers[i + j - 1]] == 1)
+            && (!itemsCountText.text[onlyNumbers[i + j - 1]])) {
             j++;
         }
 
-        if (itemsCountText.text[onlyNumbers[i + j - 1]] && j > 1) j--;//номерът с коментар да не е в интервала х-у, а да е отделен със запетая
+        if ((itemsCountText.text[onlyNumbers[i + j - 1]] || onlyNumbers[i + j - 1] > 1) &&
+            j > 1) {
+            j--;//номерът с коментар да не е в интервала х-у, а да е отделен със запетая
+        }
+
 
         if (j > 2) res += onlyNumbers[i] + "-" + onlyNumbers[i + j - 1]
         else if (j == 2) res += onlyNumbers[i] + "," + onlyNumbers[i + j - 1]
@@ -199,7 +221,7 @@ function _compactResult(itemsCountText) {
 
 
 function convertStrToObj(items) {
-    let itemsCountText = {items: {}, text: {}};         //items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
+    let itemsCountText = { items: {}, text: {} };         //items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
 
     items = items.split(',');
 
@@ -216,10 +238,10 @@ function convertStrToObj(items) {
                     addItem(itemsCountText, j, 1, null);
             }
             else //ако има (text) след числото - се вади в нов асоциативен масив/обект
-            if (item.length) {                   //ако няма тире между запетайките, но има все пак нещо
-                let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
-                addItem(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
-            }
+                if (item.length) {                   //ако няма тире между запетайките, но има все пак нещо
+                    let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+                    addItem(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+                }
         }
     } else {
         for (let i = 0; i < items.length; i++) {
@@ -232,7 +254,7 @@ function convertStrToObj(items) {
     let sortedNumbers = sortObject(itemsCountText.items);
     let sortedText = sortObject(itemsCountText.text);
 
-    return {items: sortedNumbers, text: sortedText}
+    return { items: sortedNumbers, text: sortedText }
 }
 
 function addItem(itemsCountText, item, count, text) {
@@ -281,7 +303,7 @@ function splitItemToComponents(item) {
             }
         }
     }
-    return {"number": number, "counts": counts, "text": text};
+    return { "number": number, "counts": counts, "text": text };
 }
 
 /*

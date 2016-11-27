@@ -31,7 +31,15 @@ div.nl {
 }
 
 input.editableItems {
-    width: 95%
+    width: 85%
+}
+
+button.btnPendingSaveGreen {
+    color: green
+}
+
+button.btnPendingSaveYellow {
+    color: darkorange
 }
 
 span {
