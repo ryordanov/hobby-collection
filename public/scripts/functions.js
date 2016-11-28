@@ -20,13 +20,17 @@ function saveAjax(id) {
     xhr.open('POST', '/save/id');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function () {
-        if (xhr.status === 200 && xhr.responseText !== id.toString()) {
-            alert('Something went wrong. Database is not getting updated after submitting.' + xhr.responseText);
+        var jsonResponse = JSON.parse(xhr.responseText);
+        if (xhr.status === 200 && jsonResponse.id !== id && jsonResponse.items !== undefined) {
+            alert('Something went wrong when modifying id [' + id +']. Database is not getting updated after submitting. ' + jsonResponse.items);
         }
         else if (xhr.status !== 200) {
             alert('Request failed.  Returned status of ' + xhr.status);
         }
-        deColorify(id)
+        else {
+            deColorify(id);
+            document.getElementsByClassName("editableItems")[id].value = jsonResponse.items;
+        }
     };
     xhr.send(encodeURI('itemIdToUpdate=' + id + '&itemValueToUpdate=' + newStrItems));
 }

@@ -24,16 +24,13 @@ module.exports = {
         let itemIdToUpdate = req.body.itemIdToUpdate,
             itemValueToUpdate = req.body.itemValueToUpdate;
 
-        let result = gum.setItemsById(itemIdToUpdate, itemValueToUpdate);
-        
-        res.send(result);
-        res.end();
-        
-        
-        //res.send(result);
-        //res.end();
-  
+        gum.setItemsById(itemIdToUpdate, itemValueToUpdate, function(err, data) {
+            if (err) console.log(err);
 
+            res.send(data); //toString or stringify?!
+            res.end();
+        });
+        
         //res.redirect('/expand');
         //res.render('home/index', { title: 'Картинки от дъвки', collections: gum.wholeCollection() });
     }

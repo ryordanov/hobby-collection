@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 
 let requredValidationMessage = '{PATH} is required';
-let gumSchema = mongoose.Schema({
-    id: { type: String, required: requredValidationMessage, unique: true },
+let gumSchema = new mongoose.Schema({
+    id: { type: Number, required: requredValidationMessage, unique: true },
     make: { type: String, required: requredValidationMessage },
     serie: { type: String },
     margins: { type: String },
@@ -116,24 +116,47 @@ module.exports = {
         return JSON.stringify(itemsCountText.text);
     },
     /////////////// SET
-    setItemsById: (row, updatedItems) => {
+    setItemsById: (row, updatedItems, callback) => {
         let intId = parseInt(row);
-        //console.log(Gum)
-        Gum.findOne({ "id": intId }, function (err, gumUpdating) {
-            if (err) console.log('Error on search: ' + err);
 
-            console.log(typeof intId === 'number');
-            console.log(updatedItems);
 
-            let itemsCountText = convertStrToObj(updatedItems);
-            let itemsForDB = _compactResult(itemsCountText);
+        let itemsCountText = convertStrToObj(updatedItems);
+        let itemsForDB = _compactResult(itemsCountText);
+        // Gum.findOneAndUpdate({id: intId}, { items: itemsForDB },  function (errSave) {
+        //         callback(errSave, row)
+        // })
 
-            gumUpdating.items = itemsForDB;
-            gumUpdating.save(function (errSave) {
-                if (errSave) console.log('Error when save: ' + errSave);
-                else return row;
-            })
+        Gum.findOneAndUpdate({"id": intId}, {$set:{"items": itemsForDB}}, {new: true,runValidators: true}, function(err, data){
+            if(err){
+                console.log("Something wrong when updating data!");
+            }
+            callback(err, {"id":data.id, "items":data.items});
         });
+    
+
+        // Gum.findOne({}, function (err, gumUpdating) {
+        //     if (err) callback('Error on search: ' + err);
+
+        //     //console.log(typeof intId === 'number');
+        //     //console.log(updatedItems);
+
+        //     let itemsCountText = convertStrToObj(updatedItems);
+        //     let itemsForDB = _compactResult(itemsCountText);
+
+        //     gumUpdating.items = itemsForDB;
+
+        //     //gumUpdating.update({ "serie": "rare[1-50]" }, { $set: { items: "1,3,3,1" }}).exec();
+        //     gumUpdating.update({id: intId}, { items: itemsForDB },  { multi: false }, function (errSave) {
+        //         callback(errSave, row);
+        //     })
+        // );
+
+        // gumUpdating.save(function (errSave) {
+        //     //if (errSave) console.log('Error when save: ' + errSave);
+        //     //else return row;
+        //     callback(errSave, row);
+        // });
+    //});
     }
 };
 
@@ -170,7 +193,8 @@ function _compactResult(itemsCountText) {
             j++;
         }
 
-        if ((itemsCountText.text[onlyNumbers[i + j - 1]] || onlyNumbers[i + j - 1] > 1) &&
+        if ((itemsCountText.text[onlyNumbers[i + j - 1]] || 
+            itemsCountText.items[onlyNumbers[i + j - 1]] > 1) &&
             j > 1) {
             j--;//номерът с коментар да не е в интервала х-у, а да е отделен със запетая
         }
