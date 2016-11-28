@@ -7,4 +7,5 @@ block main-content
 				a(href="/collection/"+ index)= (collection.make + '[' + collection.margins + ']')
 				span : 
 				div.inputWrapper
-					input.editableItems(type="text", value=collection.items)
+					//-input.editableItems(type="text", value=collection.items)
+					div.displayInCell #{collection.items}

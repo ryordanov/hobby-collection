@@ -6,46 +6,25 @@ module.exports = {
         res.render('home/index', { title: 'Картинки от дъвки', collections: gum.wholeCollection() });
     },
     expand: (req, res) => {
-        res.render('home/listItems', { title: 'Разширен списък', collections: gum.getAllExpandIdentifiers() });
+        res.render('home/index', { title: 'Разширен списък без допълнителен текст', collections: gum.getAllExpandIdentifiers() });
+    },
+    expandAll: (req, res) => {
+        res.render('home/index', { title: 'Разширен списък с допълнителен текст', collections: gum.getAllExpandIdentifiersAndText() });
     },
     collapse: (req, res) => {
-        //console.log(req.session.secr);
-        //req.session.secr = null;
-
-        res.render('home/listItems', { title: 'Сбит списък', collections: gum.getAllCollapsedItems() });
+        res.render('home/editItems', { title: 'Сбит списък', collections: gum.getAllCollapsedItems() });
     },
     about: (req, res) => {
         res.render('home/about');
     },
     update: (req, res) => {
-        //TODO: check where we come from and after save redirect to that page
-//promiseify(req, res, console.log) ;
-
-        let itemIdToUpdate = req.body.itemIdToUpdate,
-            itemValueToUpdate = req.body.itemValueToUpdate;
-
-        gum.setItemsById(itemIdToUpdate, itemValueToUpdate, function(err, data) {
+        //console.log( req.params.id); - doesn't work
+         gum.setItemsById(req.body.itemIdToUpdate, req.body.itemValueToUpdate, function(err, data) {
             if (err) console.log(err);
 
-            res.send(data); //toString or stringify?!
+            res.send(data);
             res.end();
         });
-        
         //res.redirect('/expand');
-        //res.render('home/index', { title: 'Картинки от дъвки', collections: gum.wholeCollection() });
     }
 };
-
-// function promiseify(request, response, next) {
-//     response.promise = function(promise) {
-//         promise.then(function(result) {
-//             responseText = '...' // add standard stuff around result
-//             response.send(responseText);
-//         }).catch(function(error) {
-//             responseText = '...' // create a nice error message
-//             response.send(responseText);
-//         });
-//     }
-
-//     next();
-// }

@@ -373,7 +373,7 @@ module.exports = (config) => {
     db.once('open', (err) => {
         if (err) console.log(err);
 
-        //console.log('Connected to "%s" database!', config.db);
+        console.log('Connected to "%s" database!', config.db.substr(config.db.indexOf('@')+1, config.db.length));
 
         //var collection = db.collection("guminserts");
         //collection.find({id:3}).toArray(function (err, docs) {

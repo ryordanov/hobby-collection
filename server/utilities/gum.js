@@ -48,35 +48,15 @@ module.exports = {
         return collections[row].items;
     },
     getAllExpandIdentifiers: () => {
-        var resultArr = [];
-
-        for (let i = 0; i < collections.length; i++) {
-            let tempObj = {};
-            let row = collections[i];
-            tempObj.id = row.id;
-            tempObj.make = row.make;
-            tempObj.serie = row.serie;
-            tempObj.margins = row.margins;
-
-            let itemsCountText = convertStrToObj(row.items);		//цикъл да вкарам и бройките в списъка
-            let result = '';
-
-            //to make call to getRowOnlyIdentifiers() instead of redefine code
-            for (var key in itemsCountText.items) {
-                let count = itemsCountText.items[key];
-                result += key + ',';
-                while (count > 1) {
-                    result += key + ',';
-                    count--;
-                }
-            }
-            tempObj.items = result.substr(0, result.length - 1);
-            //the upper code must be reduced by replacing it with function call
-            resultArr.push(tempObj);
-        }
-        return resultArr;
-    }, getRowOnlyIdentifiers: (row) => {
-        let itemsCountText = convertStrToObj(collections[row].items);		//цикъл да вкарам и бройките в списъка
+        let arrOfObjects = createViewAsArray(collections, false);   //false to display only identifiers
+        return arrOfObjects;
+    }, 
+    getAllExpandIdentifiersAndText: () => {
+         let arrOfObjects = createViewAsArray(collections, true);   //true to display also text
+         return arrOfObjects;
+    },
+    getRowOnlyIdentifiers: (row) => {
+        let itemsCountText = convertStrToObj(collections[row].items);
         let result = '';
 
         for (var key in itemsCountText.items) {
@@ -119,12 +99,8 @@ module.exports = {
     setItemsById: (row, updatedItems, callback) => {
         let intId = parseInt(row);
 
-
         let itemsCountText = convertStrToObj(updatedItems);
         let itemsForDB = _compactResult(itemsCountText);
-        // Gum.findOneAndUpdate({id: intId}, { items: itemsForDB },  function (errSave) {
-        //         callback(errSave, row)
-        // })
 
         Gum.findOneAndUpdate({"id": intId}, {$set:{"items": itemsForDB}}, {new: true,runValidators: true}, function(err, data){
             if(err){
@@ -132,33 +108,50 @@ module.exports = {
             }
             callback(err, {"id":data.id, "items":data.items});
         });
-    
-
-        // Gum.findOne({}, function (err, gumUpdating) {
-        //     if (err) callback('Error on search: ' + err);
-
-        //     //console.log(typeof intId === 'number');
-        //     //console.log(updatedItems);
-
-        //     let itemsCountText = convertStrToObj(updatedItems);
-        //     let itemsForDB = _compactResult(itemsCountText);
-
-        //     gumUpdating.items = itemsForDB;
-
-        //     //gumUpdating.update({ "serie": "rare[1-50]" }, { $set: { items: "1,3,3,1" }}).exec();
-        //     gumUpdating.update({id: intId}, { items: itemsForDB },  { multi: false }, function (errSave) {
-        //         callback(errSave, row);
-        //     })
-        // );
-
-        // gumUpdating.save(function (errSave) {
-        //     //if (errSave) console.log('Error when save: ' + errSave);
-        //     //else return row;
-        //     callback(errSave, row);
-        // });
-    //});
     }
 };
+
+function createViewAsArray(collections, appendText)  {
+    var resultArr = [];
+
+        for (let i = 0; i < collections.length; i++) {
+            let tempObj = {};
+            let row = collections[i];
+            tempObj.id = row.id;
+            tempObj.make = row.make;
+            tempObj.serie = row.serie;
+            tempObj.margins = row.margins;
+
+            let itemsCountText = convertStrToObj(row.items);
+            let result = '';
+
+            for (var key in itemsCountText.items) {
+                let firstAppend = true;
+                let count = itemsCountText.items[key];
+                
+                if (appendText){
+                    result += (itemsCountText.text[key]? key + '('+itemsCountText.text[key]+')' : key ) + ',';
+                } else {
+                    result += key + ',';
+                }
+                
+                firstAppend = false;
+               
+                while (count > 1) {
+                    if (appendText && firstAppend) {
+                        result += (itemsCountText.text[key]? key + '('+itemsCountText.text[key]+')' : key ) + ',';
+                    } else {
+                        result += key + ',';
+                    }
+                    
+                    count--;
+                }
+            }
+            tempObj.items = result.substr(0, result.length - 1);
+            resultArr.push(tempObj);
+        }
+        return resultArr;
+}
 
 function collapse(itemsCountText) {
     let resultString = '';
@@ -198,7 +191,6 @@ function _compactResult(itemsCountText) {
             j > 1) {
             j--;//номерът с коментар да не е в интервала х-у, а да е отделен със запетая
         }
-
 
         if (j > 2) res += onlyNumbers[i] + "-" + onlyNumbers[i + j - 1]
         else if (j == 2) res += onlyNumbers[i] + "," + onlyNumbers[i + j - 1]
@@ -245,13 +237,12 @@ function _compactResult(itemsCountText) {
  }*/
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 function convertStrToObj(items) {
     let itemsCountText = { items: {}, text: {} };         //items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
 
     items = items.split(',');
 
-    if (isNumber(items[0].substr(0, 1))) {
+    if (isNumber(items[0].substr(0, 1))) {      // to be replaced with REGEX one day!!! "1,3(7),4(txt),5-10,12(2;ttt)"
         for (let i = 0; i < items.length; i++) {
             let item = items[i],
                 m = item.match(/^(\d+)[-](\d+)$/);
@@ -332,31 +323,6 @@ function splitItemToComponents(item) {
     return { "number": number, "counts": counts, "text": text };
 }
 
-/*
- //преброява наново номерата (може да са били разбъркани и бройката да не е актуална) и ъпдейтва [бройката; текста]
- function makeUniqueNumbersAndText(onlyNumbers, additionalText)  {
- let updatedCount = {},
- result = {numbers : [], text : {}};
- for (let i = 0; i < onlyNumbers.length; i++) {
- if (onlyNumbers[i] in updatedCount) {
- updatedCount[onlyNumbers[i]] += 1;
- } else {
- result.numbers.push(onlyNumbers[i]);
- updatedCount[onlyNumbers[i]] = 1;
- }
- }
- for (let i = 0; i < result.numbers.length; i++) {
- let count = updatedCount[result.numbers[i]];
- if ( (count > 1 ) && (additionalText[result.numbers[i]]) )
- result.text[result.numbers[i]] = "(" + count + ";" + additionalText[result.numbers[i]] + ")"
- else
- if (count > 1 ) result.text[result.numbers[i]] = "(" + count + ")"
- else if (additionalText[result.numbers[i]]) result.text[result.numbers[i]] = "(" + additionalText[result.numbers[i]] + ")";
- }
- return result;
- }
- */
-//http://stackoverflow.com/questions/5467129/sort-javascript-object-by-key
 function sortObject(o) {
     return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
 }
