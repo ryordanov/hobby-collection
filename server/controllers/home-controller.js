@@ -10,6 +10,11 @@ module.exports = {
     },
     expandAll: (req, res) => {
         res.render('home/index', { title: 'Разширен списък с допълнителен текст', collections: gum.getAllExpandIdentifiersAndText() });
+        //bottom lines will use async functions and callback to read the whole DB collection on page display
+        // gum.getAllExpandIdentifiersAndText(function (err, arrOfObjects){
+        // 	if (err) console.log(err);
+        // 	res.render('home/index', { title: 'Разширен списък с допълнителен текст', collections: arrOfObjects });
+        // })
     },
     collapse: (req, res) => {
         res.render('home/editItems', { title: 'Сбит списък', collections: gum.getAllCollapsedItems() });
@@ -19,7 +24,7 @@ module.exports = {
     },
     update: (req, res) => {
         //console.log( req.params.id); - doesn't work
-         gum.setItemsById(req.body.itemIdToUpdate, req.body.itemValueToUpdate, function(err, data) {
+        gum.setItemsById(req.body.itemIdToUpdate, req.body.itemValueToUpdate, function (err, data) {
             if (err) console.log(err);
 
             res.send(data);

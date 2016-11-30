@@ -1,3 +1,7 @@
+//v100 - there are two options - 1) data from DB mongo to be taken only on server start and then local collection
+//       to be updated; or 2) via callbacks on each page refresh the whole DB collection to be taken - this may
+//       cause problem if the data is modified separately (with some DB manager for example) 
+
 var mongoose = require('mongoose');
 
 let requredValidationMessage = '{PATH} is required';
@@ -32,13 +36,18 @@ Gum.find({}, function (err, gums) {
     if (err) console.log(err);
 
     collections = gums;
-    console.log('count of items: ' + gums.length);
+    console.log('Total number of items: ' + gums.length);
 
     //gums.forEach(function (gum) {
     //   console.log(gum);
     //});
 })
     .sort('id');
+
+function fetchData() {
+    let query = Gum.find({}).sort('id');
+    return query;
+}
 
 module.exports = {
     wholeCollection: () => {
@@ -50,10 +59,16 @@ module.exports = {
     getAllExpandIdentifiers: () => {
         let arrOfObjects = createViewAsArray(collections, false);   //false to display only identifiers
         return arrOfObjects;
-    }, 
-    getAllExpandIdentifiersAndText: () => {
-         let arrOfObjects = createViewAsArray(collections, true);   //true to display also text
-         return arrOfObjects;
+    },
+    getAllExpandIdentifiersAndText: (callback) => {
+        let arrOfObjects = createViewAsArray(collections, true);   //true to display also text
+        return arrOfObjects;
+        //v100.2:bottom lines will use async functions and callback to read the whole DB collection on page display
+        // let query = fetchData();
+        // query.exec(function(err, collections){
+        //    let arrOfObjects = createViewAsArray(collections, true);   //true to display also text
+        //    callback(err, arrOfObjects)
+        // })
     },
     getRowOnlyIdentifiers: (row) => {
         let itemsCountText = convertStrToObj(collections[row].items);
@@ -102,55 +117,58 @@ module.exports = {
         let itemsCountText = convertStrToObj(updatedItems);
         let itemsForDB = _compactResult(itemsCountText);
 
-        Gum.findOneAndUpdate({"id": intId}, {$set:{"items": itemsForDB}}, {new: true,runValidators: true}, function(err, data){
-            if(err){
+        Gum.findOneAndUpdate({ "id": intId }, { $set: { "items": itemsForDB } }, { new: true, runValidators: true }, function (err, data) {
+            if (err) {
                 console.log("Something wrong when updating data!");
             }
-            callback(err, {"id":data.id, "items":data.items});
+
+            //v100.1 update global collections in order to avoid reading every time the collection from Mongo
+            collections[intId].items = data.items;
+            callback(err, { "id": data.id, "items": data.items });
         });
     }
 };
 
-function createViewAsArray(collections, appendText)  {
+function createViewAsArray(collections, appendText) {
     var resultArr = [];
 
-        for (let i = 0; i < collections.length; i++) {
-            let tempObj = {};
-            let row = collections[i];
-            tempObj.id = row.id;
-            tempObj.make = row.make;
-            tempObj.serie = row.serie;
-            tempObj.margins = row.margins;
+    for (let i = 0; i < collections.length; i++) {
+        let tempObj = {};
+        let row = collections[i];
+        tempObj.id = row.id;
+        tempObj.make = row.make;
+        tempObj.serie = row.serie;
+        tempObj.margins = row.margins;
 
-            let itemsCountText = convertStrToObj(row.items);
-            let result = '';
+        let itemsCountText = convertStrToObj(row.items);
+        let result = '';
 
-            for (var key in itemsCountText.items) {
-                let firstAppend = true;
-                let count = itemsCountText.items[key];
-                
-                if (appendText){
-                    result += (itemsCountText.text[key]? key + '('+itemsCountText.text[key]+')' : key ) + ',';
+        for (var key in itemsCountText.items) {
+            let firstAppend = true;
+            let count = itemsCountText.items[key];
+
+            if (appendText) {
+                result += (itemsCountText.text[key] ? key + '(' + itemsCountText.text[key] + ')' : key) + ',';
+            } else {
+                result += key + ',';
+            }
+
+            firstAppend = false;
+
+            while (count > 1) {
+                if (appendText && firstAppend) {
+                    result += (itemsCountText.text[key] ? key + '(' + itemsCountText.text[key] + ')' : key) + ',';
                 } else {
                     result += key + ',';
                 }
-                
-                firstAppend = false;
-               
-                while (count > 1) {
-                    if (appendText && firstAppend) {
-                        result += (itemsCountText.text[key]? key + '('+itemsCountText.text[key]+')' : key ) + ',';
-                    } else {
-                        result += key + ',';
-                    }
-                    
-                    count--;
-                }
+
+                count--;
             }
-            tempObj.items = result.substr(0, result.length - 1);
-            resultArr.push(tempObj);
         }
-        return resultArr;
+        tempObj.items = result.substr(0, result.length - 1);
+        resultArr.push(tempObj);
+    }
+    return resultArr;
 }
 
 function collapse(itemsCountText) {
@@ -186,7 +204,7 @@ function _compactResult(itemsCountText) {
             j++;
         }
 
-        if ((itemsCountText.text[onlyNumbers[i + j - 1]] || 
+        if ((itemsCountText.text[onlyNumbers[i + j - 1]] ||
             itemsCountText.items[onlyNumbers[i + j - 1]] > 1) &&
             j > 1) {
             j--;//номерът с коментар да не е в интервала х-у, а да е отделен със запетая
