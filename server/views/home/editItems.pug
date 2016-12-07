@@ -1,6 +1,6 @@
 extends ../common/layout
 block main-content
-	h1 List of guminserts
+	h1 List of guminserts [edit mode]
 	p #{title}
 	form(name="modify-items", method="post", action="/save")
 		each collection, index in collections
