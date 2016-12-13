@@ -1,15 +1,17 @@
 //let gum = require('../utilities/gum').seedGumInserts();
 let gum = require('../utilities/gum');
 
+let captions = ['Show original data, stored in the DB', 'Show Item identifiers', 'Show additional text', 'Сбит списък'];
+
 module.exports = {
     index: (req, res) => {
-        res.render('home/index', { title: 'Картинки от дъвки', collections: gum.wholeCollection() });
+        res.render('home/index', { title: captions, collections: gum.wholeCollection() });
     },
     expand: (req, res) => {
-        res.render('home/index', { title: 'Разширен списък без допълнителен текст', collections: gum.getAllExpandIdentifiers() });
+        res.render('home/index', { title: captions, is_checked2: true, collections: gum.getAllExpandIdentifiers() });
     },
     expandAll: (req, res) => {
-        res.render('home/index', { title: 'Разширен списък с допълнителен текст', collections: gum.getAllExpandIdentifiersAndText() });
+        res.render('home/index', { title: captions, is_checked3: true, collections: gum.getAllExpandIdentifiersAndText() });
         //bottom lines will use async functions and callback to read the whole DB collection on page display
         // gum.getAllExpandIdentifiersAndText(function (err, arrOfObjects){
         // 	if (err) console.log(err);
@@ -17,7 +19,7 @@ module.exports = {
         // })
     },
     collapse: (req, res) => {
-        res.render('home/editItems', { title: 'Сбит списък', collections: gum.getAllCollapsedItems() });
+        res.render('home/editItems', { title3: captions[3], collections: gum.getAllCollapsedItems() });
     },
     about: (req, res) => {
         res.render('home/about');

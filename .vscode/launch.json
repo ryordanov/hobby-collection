@@ -9,7 +9,11 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceRoot}\\index.js",
-            "cwd": "${workspaceRoot}"
+            "cwd": "${workspaceRoot}",
+            "runtimeArgs": ["--use-strict"],
+            "env": {
+                "db": "mongodb://amok:static10@ds157187.mlab.com:57187/hobby-collection-db"
+            }
         },
         {
             "type": "node",

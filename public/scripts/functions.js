@@ -49,3 +49,7 @@ function deColorify(id) {
     
 
 }
+function updateList(action) {
+    
+    window.location.href=action
+}

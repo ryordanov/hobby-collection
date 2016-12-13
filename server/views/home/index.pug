@@ -1,7 +1,21 @@
 extends ../common/layout
 block main-content
+	p #{is_checked}
 	h1 List of guminserts [view only]
-	p #{title}
+	fieldset
+		legend Choose an action:
+		input(type="checkbox", name="chk_numbers", checked=(is_checked2), onchange="updateList('/expand')")
+		=title[1]
+		label.radio.inline
+			input(type="radio", name="unique_filter", value="0", checked=(is_checked21), onchange="updateList('/expand')")
+			| Unique
+		label.radio.inline
+			input(type="radio", name="unique_filter", value="1", checked=(is_checked22), onchange="updateList('/expand')")
+			| All (including doubling)
+		input(type="checkbox", name="chk_numbers", checked=(is_checked3), onchange="updateList('/expandAll')")
+		=title[2]
+	br
+	p.caption And here is what you have:
 		each collection, index in collections
 			div.nl
 				a(href="/collection/"+ index)= (collection.make + '[' + collection.margins + ']')

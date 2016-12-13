@@ -69,3 +69,20 @@ span {
     float: none;
     clear: both;
 }
+p.caption{
+    font-weight: bolder;
+    font-style: italic
+}
+a{
+    color: #795548
+}
+fieldset{
+    display: inline-block
+}
+input[type=radio] + label{
+    display: block;
+    padding-left: 10px
+}
+input[type=checkbox] + label {
+    display: block
+}
