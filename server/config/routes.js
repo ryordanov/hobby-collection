@@ -25,5 +25,5 @@ module.exports = (app) => {
         res.status(404);
         res.send('File not found');
         res.end();
-    })
+    });
 };

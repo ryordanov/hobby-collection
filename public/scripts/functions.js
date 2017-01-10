@@ -15,7 +15,7 @@
 function saveAjax(id) {
     var xhr = new XMLHttpRequest();
 
-    var newStrItems = document.getElementsByClassName("editableItems")[id].value;
+    var newStrItems = document.getElementsByClassName('editableItems')[id].value;
 
     xhr.open('POST', '/save/id');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -29,27 +29,27 @@ function saveAjax(id) {
         }
         else {
             deColorify(id);
-            document.getElementsByClassName("editableItems")[id].value = jsonResponse.items;
+            document.getElementsByClassName('editableItems')[id].value = jsonResponse.items;
         }
     };
     xhr.send(encodeURI('itemIdToUpdate=' + id + '&itemValueToUpdate=' + newStrItems));
 }
 
 function colorify(id) {
-    var pressedButton = document.getElementsByClassName("btnPendingSaveGreen")[id];
+    var pressedButton = document.getElementsByClassName('btnPendingSaveGreen')[id];
     //pressedButton.className += " btnPendingSaveYellow";
-    pressedButton.classList.add("btnPendingSaveYellow");
+    pressedButton.classList.add('btnPendingSaveYellow');
     
 }
 
 function deColorify(id) {
-    var pressedButton = document.getElementsByClassName("btnPendingSaveGreen")[id];
+    var pressedButton = document.getElementsByClassName('btnPendingSaveGreen')[id];
     //pressedButton.className -= " btnPendingSaveYellow";
-    pressedButton.classList.remove("btnPendingSaveYellow");
+    pressedButton.classList.remove('btnPendingSaveYellow');
     
 
 }
 function updateList(action) {
     
-    window.location.href=action
+    window.location.href=action;
 }

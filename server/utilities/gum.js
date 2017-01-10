@@ -117,14 +117,14 @@ module.exports = {
         let itemsCountText = convertStrToObj(updatedItems);
         let itemsForDB = _compactResult(itemsCountText);
 
-        Gum.findOneAndUpdate({ "id": intId }, { $set: { "items": itemsForDB } }, { new: true, runValidators: true }, function (err, data) {
+        Gum.findOneAndUpdate({ 'id': intId }, { $set: { 'items': itemsForDB } }, { new: true, runValidators: true }, function (err, data) {
             if (err) {
-                console.log("Something wrong when updating data!");
+                console.log('Something wrong when updating data!');
             }
 
             //v100.1 update global collections in order to avoid reading every time the collection from Mongo
             collections[intId].items = data.items;
-            callback(err, { "id": data.id, "items": data.items });
+            callback(err, { 'id': data.id, 'items': data.items });
         });
     }
 };
@@ -179,9 +179,9 @@ function collapse(itemsCountText) {
         resultString += key;
         let count = itemsCountText.items[key];
         if ((count > 1) && (itemsCountText.text[key]))
-            resultString += "(" + count + ";" + itemsCountText.text[key] + ")"
-        else if (count > 1) resultString = "(" + count + ")"
-        else if (itemsCountText.text[key]) resultString += "(" + itemsCountText.text[key] + ")"
+            resultString += '(' + count + ';' + itemsCountText.text[key] + ')';
+        else if (count > 1) resultString = '(' + count + ')';
+        else if (itemsCountText.text[key]) resultString += '(' + itemsCountText.text[key] + ')';
         else resultString += ',';
     }
     return resultString.substr(0, -1);
@@ -192,7 +192,7 @@ function _compactResult(itemsCountText) {
     let onlyNumbers = Object.keys(itemsCountText.items);
 
     var i = 0,
-        res = "",
+        res = '',
         iMax = Object.keys(itemsCountText.items).length;
 
     while (i < iMax) {
@@ -210,21 +210,21 @@ function _compactResult(itemsCountText) {
             j--;//номерът с коментар да не е в интервала х-у, а да е отделен със запетая
         }
 
-        if (j > 2) res += onlyNumbers[i] + "-" + onlyNumbers[i + j - 1]
-        else if (j == 2) res += onlyNumbers[i] + "," + onlyNumbers[i + j - 1]
+        if (j > 2) res += onlyNumbers[i] + '-' + onlyNumbers[i + j - 1];
+        else if (j == 2) res += onlyNumbers[i] + ',' + onlyNumbers[i + j - 1];
         else res += onlyNumbers[i + j - 1];
 
         if ((itemsCountText.text[onlyNumbers[i + j - 1]]) && (itemsCountText.items[onlyNumbers[i + j - 1]] > 1)) {	//бройка и коментар
-            res += '(' + itemsCountText.items[onlyNumbers[i + j - 1]] + ';' + itemsCountText.text[onlyNumbers[i + j - 1]] + ')'
+            res += '(' + itemsCountText.items[onlyNumbers[i + j - 1]] + ';' + itemsCountText.text[onlyNumbers[i + j - 1]] + ')';
         } else if (itemsCountText.items[onlyNumbers[i + j - 1]] > 1) {	//само бройка
-            res += '(' + itemsCountText.items[onlyNumbers[i + j - 1]] + ')'
+            res += '(' + itemsCountText.items[onlyNumbers[i + j - 1]] + ')';
         } else if (itemsCountText.text[onlyNumbers[i + j - 1]]) {	//само коментар
-            res += '(' + itemsCountText.text[onlyNumbers[i + j - 1]] + ')'
+            res += '(' + itemsCountText.text[onlyNumbers[i + j - 1]] + ')';
         }
         res += ',';
         i += j;
     }
-    return res.slice(0, -1)//премахва последната запетайка
+    return res.slice(0, -1);//премахва последната запетайка
 
 }
 
@@ -289,7 +289,7 @@ function convertStrToObj(items) {
     let sortedNumbers = sortObject(itemsCountText.items);
     let sortedText = sortObject(itemsCountText.text);
 
-    return { items: sortedNumbers, text: sortedText }
+    return { items: sortedNumbers, text: sortedText };
 }
 
 function addItem(itemsCountText, item, count, text) {
@@ -306,8 +306,8 @@ function addItem(itemsCountText, item, count, text) {
 //returns [number=X, counts=Y, text="Z"]
 function splitItemToComponents(item) {
     //let item = "3(7;texxxt)";
-    let leftBracket = item.indexOf("("),
-        rightBracket = item.indexOf(")"),//трябва да търси отзад напред, ако има (2;текст(ощетекст))
+    let leftBracket = item.indexOf('('),
+        rightBracket = item.indexOf(')'),//трябва да търси отзад напред, ако има (2;текст(ощетекст))
         number = parseInt(item),
         counts = 1,
         text = null;
@@ -322,7 +322,7 @@ function splitItemToComponents(item) {
 
     if (leftBracket > -1) {//and rigthBracket > -1 to be sure...
         let additionalText = item.substring(leftBracket + 1, rightBracket);
-        let semiColon = item.indexOf(";");
+        let semiColon = item.indexOf(';');
 
         if (semiColon > -1) {//има разделяне на бройка и текст
             counts = parseInt(item.substring(leftBracket + 1, semiColon));
@@ -338,7 +338,7 @@ function splitItemToComponents(item) {
             }
         }
     }
-    return { "number": number, "counts": counts, "text": text };
+    return { 'number': number, 'counts': counts, 'text': text };
 }
 
 function sortObject(o) {
