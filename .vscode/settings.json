@@ -1,4 +1,7 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    "eslint.enable": false
+    "eslint.enable": true,
+    "eslint.options": {
+        "configFile": "C:\\Users\\user\\AppData\\Roaming\\npm\\node_modules\\eslint\\.eslintrc.json"
+    }
 }
