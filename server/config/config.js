@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 let rootPath = path.normalize(path.join(__dirname, '../../'));
 let preRootPath = path.normalize(path.join(__dirname, '../../../'));
-let hostname = require("os").hostname() || 'localhost';
+let hostname = require('os').hostname() || 'localhost';
 console.log('hostname: ' + hostname);
 
 if (doesExist(preRootPath + 'private-configuration.js')) {
