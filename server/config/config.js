@@ -15,7 +15,8 @@ if (doesExist(preRootPath + 'private-configuration.js')) {
 module.exports = {
     rootPath: rootPath,
     db: process.env.DB || privateConfiguration_db || 'mongodb://localhost:27017/hobby-collection-db',
-    port: process.env.PORT || privateConfiguration_port || 10101
+    port: process.env.PORT || privateConfiguration_port || 10101,
+    lang: 'en'
 };
 
 function doesExist(fileName) {

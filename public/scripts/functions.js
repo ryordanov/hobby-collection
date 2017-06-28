@@ -19,7 +19,7 @@ function saveAjax(id) {
 
     xhr.open('POST', '/save/id');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function () {
+    xhr.onload = function () {      //onreadystatechange        //if (this.readyState === 4) {
         var jsonResponse = JSON.parse(xhr.responseText);
         if (xhr.status === 200 && jsonResponse.id !== id && jsonResponse.items !== undefined) {
             alert('Something went wrong when modifying id [' + id +']. Database is not getting updated after submitting. ' + jsonResponse.items);

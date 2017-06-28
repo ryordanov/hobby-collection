@@ -79,10 +79,10 @@ a{
 fieldset{
     display: inline-block
 }
-input[type=radio] + label{
+/*input[type=radio] + label{
     display: block;
     padding-left: 10px
 }
 input[type=checkbox] + label {
     display: block
-}
+}*/

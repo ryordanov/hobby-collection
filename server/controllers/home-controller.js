@@ -1,7 +1,6 @@
 //let gum = require('../utilities/gum').seedGumInserts();
 let gum = require('../utilities/gum');
-
-let captions = ['Show original data, stored in the DB', 'Show Item identifiers', 'Show additional text', 'Сбит списък'];
+let captions = require('../config/translation')['bg']
 
 module.exports = {
     index: (req, res) => {
