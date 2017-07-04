@@ -53,6 +53,9 @@ module.exports = {
     wholeCollection: () => {
         return collections;
     },
+    getCollection: (row) => {
+        return collections[row];
+    },
     getItemList: (row) => {
         return collections[row].items;
     },

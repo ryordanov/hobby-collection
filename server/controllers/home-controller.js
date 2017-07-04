@@ -3,6 +3,9 @@ let gum = require('../utilities/gum');
 let captions = require('../config/translation')['bg'];
 
 module.exports = {
+    getItemList: row => gum.getItemList(row),
+    getCollection: row => gum.getCollection(row),
+    
     index: (req, res) => {
         res.render('home/index', { title: captions, collections: gum.wholeCollection() });
     },

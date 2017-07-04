@@ -366,7 +366,7 @@ var collections = [
 ];
 */
 module.exports = (config) => {
-    mongoose.connect(config.db);
+    mongoose.connect(config.db);    // , { useMongoClient: true }
 
     let db = mongoose.connection;
 
