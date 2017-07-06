@@ -1,7 +1,7 @@
 {
   "name": "hobby-collection",
   "version": "1.0.0",
-  "description": "Collection from wrappers and magazines",
+  "description": "Collection of wrappers and magazines",
   "main": "index.js",
   "scripts": {
     "start": "npm-run-all --parallel webpack:build index",
@@ -9,6 +9,7 @@
     "webpack:build": "webpack -w",
     "server": "node server.js",
     "server-vscode": "node --nolazy --debug-brk=5858 index.js",
+    "server-vscode_node8": "node --nolazy --inspect-brk=5858 index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "__start": "node --use_strict ./index.js"
   },
@@ -43,11 +44,11 @@
   "engines": {
     "node": "6.10.3"
   },
-  "_depTemp": {
+  "_dependenciesTMP": {
     "history": "^4.6.3",
     "react-router": "^4.1.1"
   },
-  "_devTemp": {
+  "_devDependenciesTMP": {
     "babel-cli": "^6.22.2",
     "css-loader": "^0.26.1",
     "style-loader": "^0.13.1",

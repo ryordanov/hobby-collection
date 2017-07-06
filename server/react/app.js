@@ -5,10 +5,77 @@ import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 
 import Home from './components/Home';
 import About from './components/About';
+import Collections from './components/Collections';
+import CollectionDetails from './components/CollectionDetails';
+import SubCollection from './components/SubCollection';
 import ListItems from './components/ListItems';
 import ItemInfo from './components/ItemInfo';
 import NotFound from './components/NotFound';
 
+
+// const Items = () => (
+//     <Switch>
+//         <Route exact path='/items' component={ListItems} />
+//         <Route path='/items/:number' component={ItemInfo} />
+//     </Switch>
+// )
+
+const Main = () => (
+    <main>
+        <Switch>
+            <Route exact path='/' component={Home} />
+            <Route path='/collections' component={Collections} />
+            <Route exact path='/collection/:name' component={CollectionDetails} />
+            <Route path='/collection/:name/:subcollectionname' component={SubCollection} />
+            {/*<Route path='/items' component={Items} />*/}
+            <Route path='/about' component={About} />
+            <Route component={NotFound} />
+        </Switch>
+    </main>
+)
+
+const Header = () => (
+    <header>
+        <nav>
+            <ul>
+                <li><Link to='/'>Home</Link></li>
+                <li><Link to='/collections'>Collections</Link></li>
+                {/*<li><Link to='/items'>Items</Link></li>*/}
+                <li><Link to='/about'>About</Link></li>
+            </ul>
+        </nav>
+    </header>
+)
+
+const Footer = () => (
+    <footer>
+        <nav>
+            <ul>
+                <li><Link to='/'>Copyrights</Link></li>
+            </ul>
+        </nav>
+    </footer>
+)
+
+const App = () => (
+    <div>
+        <Header />
+        <Main />
+        <Footer />
+    </div>
+)
+
+ReactDOM.render((
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
+), document.getElementById('app'));
+
+
+// https://medium.com/@pshrmn/a-simple-react-router-v4-tutorial-7f23ff27adf
+
+
+/*
 // A simple data API that will be used to get the data for our
 // components. On a real website, a more robust data fetching
 // solution would be more appropriate.
@@ -62,45 +129,4 @@ const Player = (props) => {
         </div>
     )
 }
-
-const Items = () => (
-    <Switch>
-        <Route exact path='/items' component={ListItems} />
-        <Route path='/items/:number' component={ItemInfo} />
-    </Switch>
-)
-
-const Main = () => (
-    <main>
-        <Switch>
-            <Route exact path='/' component={Home} />
-            <Route path='/items' component={Items} />
-            <Route path='/about' component={About} />
-        </Switch>
-    </main>
-)
-
-const Header = () => (
-    <header>
-        <nav>
-            <ul>
-                <li><Link to='/'>Home</Link></li>
-                <li><Link to='/items'>Items</Link></li>
-                <li><Link to='/about'>About</Link></li>
-            </ul>
-        </nav>
-    </header>
-)
-
-const App = () => (
-    <div>
-        <Header />
-        <Main />
-    </div>
-)
-
-ReactDOM.render((
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>
-), document.getElementById('app'));
+*/

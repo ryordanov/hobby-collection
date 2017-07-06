@@ -1,6 +1,6 @@
 import React from 'react';
 
-class NotFound extends React.Component {
+export default class NotFound extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -9,7 +9,7 @@ class NotFound extends React.Component {
     }
 
     componentDidMount() {
-        fetch('backendRequest')
+        fetch('notFound')
           .then(function(response) {
               if (response.status >= 400) {
                   throw new Error('Bad response from server');
@@ -23,9 +23,7 @@ class NotFound extends React.Component {
 
     render() {
         return (
-          <div>Data from backend: {this.state.data.a} </div>
+          <div>{this.state.data.notFound}</div>
         );
     }
 }
-
-export default NotFound;

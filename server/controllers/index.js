@@ -1,5 +1,5 @@
-let homeController = require('./home-controller');
+let gumsController = require('./gumsController');
 
 module.exports = {
-    home: homeController
+    gums: gumsController
 };

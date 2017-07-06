@@ -2,8 +2,9 @@ const bodyParser = require('body-parser');
 const express = require('express');
 
 module.exports = (config, app) => {
-    // app.set('view engine', 'pug');
+    // uncomment next two lines in case of using PUG templates
     // app.set('views', config.rootPath + './server/views');
+    // app.set('view engine', 'pug');
 
     // Serve public files from static directory
     app.use(express.static(config.rootPath + 'public'));

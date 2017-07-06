@@ -3,9 +3,26 @@ let gum = require('../utilities/gum');
 let captions = require('../config/translation')['bg'];
 
 module.exports = {
+    getCollections: (req, res) => {
+        res.send(gum.getCollections());
+    },
+    getCollectionDetails: (req, res) => {
+        res.send(gum.getCollectionDetails(req.params.name));    // 'collection name' from url
+    },
+    getSubCollectionDetails: (req, res) => {
+        res.send(gum.getSubCollectionDetails(req.params.name, req.params.subcollection));    // 'collection name' and 'subcollection name' from url
+    },
+
+
+
+    getItemDetails: (req, res) => {
+        // gum.getItemDetails()
+    },
+    getItems: (req, res) => {
+        // gum.getItems()
+    },
     getItemList: row => gum.getItemList(row),
     getCollection: row => gum.getCollection(row),
-    
     index: (req, res) => {
         res.render('home/index', { title: captions, collections: gum.wholeCollection() });
     },
@@ -28,7 +45,7 @@ module.exports = {
     },
     update: (req, res) => {
         // console.log( req.params.id); - doesn't work
-        gum.setItemsById(req.body.itemIdToUpdate, req.body.itemValueToUpdate, function(err, data) {
+        gum.setItemsById(req.body.itemIdToUpdate, req.body.itemValueToUpdate, function (err, data) {
             if (err) console.log(err);
 
             res.send(data);

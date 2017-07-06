@@ -33,7 +33,9 @@ var Gum = mongoose.model('Guminserts', gumSchema);
 
 var collections = [];
 Gum.find({}, function (err, gums) {
-    if (err) console.log(err);
+    if (err) {
+        console.log(err);
+    }
 
     collections = gums;
     console.log('Total number of items: ' + gums.length);
@@ -42,17 +44,111 @@ Gum.find({}, function (err, gums) {
     //   console.log(gum);
     //});
 })
-    .sort('id');
+.sort('id');
 
-function fetchData() {
-    let query = Gum.find({}).sort('id');
-    return query;
+// function fetchData() {
+//     let query = Gum.find({}).sort('id');
+//     return query;
+// }
+
+
+///////////////////////
+
+function getItems(id) {
+    var items = controllers.home.getItemList(id);
+    var margins = controllers.home.getCollection(id)['margins'].split('-');
+    var start = margins[0] | 0;
+    var end = margins[margins.length - 1] | 0;
+
+    var all = [], having = [], missing = [], merged = [];
+
+    if (start && end) {
+        for (let i = start; i < end; i++) {
+            all.push(i + '');
+        }
+
+        items.split(',').forEach((element) => {
+            if (element.indexOf('-') === -1) {
+                let n = element.split(/\D+/g)[0];
+                having.push(n);
+            } else {
+                let n = element.split('-');
+                let i = n[0] | 0;
+                let j = n[n.length - 1] | 0;
+
+                for (let k = i; k < j; k++) {
+                    having.push(k + '');
+                }
+
+                having.push(j + '');
+            }
+        });
+
+        missing = all.filter(element => having.indexOf(element) === -1);
+    }
+
+    return { items: items, having: having, missing: missing };
 }
 
+
+
+
+
+
+///////////////////////////////
+
+
+
 module.exports = {
-    wholeCollection: () => {
-        return collections;
+    getCollections: () => {
+        let details = [];
+        collections.forEach(function (item) {
+            details.push({
+                'make': item.make,
+                'serie': item.serie,
+                'margins': item.margins,
+                'items': item.items
+            });
+        }, this);
+        return details;
     },
+    getCollectionDetails: (collectionName) => {
+        let details = [];
+        collections.forEach(function (item) {
+            if (collectionName === item.make) {
+                details.push({
+                    'make': item.make,
+                    'serie': item.serie,
+                    'margins': item.margins,
+                    'items': item.items
+                });
+            }
+        }, this);
+        return details;
+    },
+    getSubCollectionDetails: (collectionName, subCollectionName) => {
+        let details = [];
+        collections.forEach(function (item) {
+            if (collectionName === item.make && subCollectionName === item.serie) {
+                details.push({
+                    'make': item.make,
+                    'serie': item.serie,
+                    'margins': item.margins,
+                    'items': item.items
+                });
+            }
+        }, this);
+        return details;
+    },
+
+
+
+
+    getItemDetails: () => {
+
+    },
+
+
     getCollection: (row) => {
         return collections[row];
     },
