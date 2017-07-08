@@ -1,0 +1,33 @@
+extends ../common/layout
+block main-content
+	p #{is_checked}
+	h1 List of guminserts [view only]
+	fieldset
+		legend Choose an action:
+		label.radio.inline
+			input(type="radio", name="unique_filter", value="0", checked=(is_checked1), onchange="updateList('/')")
+			=title[0]
+		br
+		input(type="checkbox", name="chk_numbers", checked=(is_checked12), onchange="updateList('/expand')")
+		=title[1]
+		br
+		input(type="checkbox", name="chk_numbers", checked=(is_checked13), onchange="updateList('/expandAll')")
+		=title[2]
+		br
+		label.radio.inline
+			input(type="radio", name="unique_filter", value="1", checked=(is_checked2), onchange="updateList('/expand')")
+			=title[3]
+
+	
+	p.caption And here is what you have:
+		each collection, index in collections
+			div.nl
+				a(href="/collection/"+ index)= (collection.make + '[' + collection.margins + ']')
+				span : 
+				div.inputWrapper
+					//-input.editableItems(type="text", value=collection.items)
+					div.displayInCell #{collection.items}
+//- r Show items as they are stored in DB
+//- c Show only unique
+//- c also show additional text
+//- r Edit items

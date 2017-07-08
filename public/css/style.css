@@ -1,0 +1,179 @@
+html {
+    height: 100%;
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  min-height: 100%;
+  position: relative;
+  /*margin: 0;*/
+}
+
+h5 {
+    color: chocolate;
+    text-align: left;
+}
+
+/* react */
+
+/* menu */
+header nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #f1f1f1;
+}
+
+header nav li {
+    float: left;
+}
+
+header nav li a {
+    display: block;
+    color: #000;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+header nav li a:hover {
+    background-color: #555;
+    color: white;
+}
+
+footer {
+    position: absolute;
+    text-align: center;
+    bottom: 0;
+    right: 2%;
+    left: 2%;
+}
+
+footer nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #555;
+}
+footer nav li {
+    float: none
+}
+footer nav li a {
+    display: block;
+    color: #000;
+    text-align: center;
+    padding: 2px 16px;
+    text-decoration: none;
+}
+footer nav li a:hover {
+    background-color: #555;
+    color: white;
+}
+/* menu ^^^ */
+
+
+#app {
+    padding-left: 2%;
+    padding-right: 2%;
+}
+a{
+    color: #795548
+}
+div.nl {
+    border-bottom: 1px solid saddlebrown;
+    background-color: lightgoldenrodyellow;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+div.nl a {
+    text-decoration: none
+}
+.collection-link {
+    padding-left: 5px;
+    font-weight: bolder
+}
+span.delimiter {
+    /*cursor: no-drop;*/
+    padding-left: 5px;
+    padding-right: 5px;
+}
+div.input-wrapper {
+	display: inline;
+    width: 80%;
+	float: right;
+}
+div.display-in-cell {
+    font-size: smaller
+}
+/*fieldset{
+    display: inline-block
+}*/
+
+
+/* react ^^^*/
+
+
+
+
+
+/*.menu {
+    list-style-type: none;
+    padding-left: 0;
+    background: coral;
+}
+
+.menu li {
+    display: inline-block;
+    margin: 10px
+}
+
+.menu li:after {
+    content: "\00a0";
+}
+div.rowTitle {
+    display: inline;
+    width: 20%
+}
+.rowTitle:before {
+    content: "\2713"
+}
+.rowTitle:after {
+    content: ":"
+}
+
+input.editableItems {
+    width: 85%
+}
+
+button.btnPendingSaveGreen {
+    color: green
+}
+
+button.btnPendingSaveYellow {
+    color: darkorange
+}
+
+span {
+    float: none;
+    clear: both;
+}
+p.caption{
+    font-weight: bolder;
+    font-style: italic
+}
+
+input[type=radio] + label{
+    display: block;
+    padding-left: 10px
+}
+input[type=checkbox] + label {
+    display: block
+}*/

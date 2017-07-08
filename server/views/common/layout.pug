@@ -1,0 +1,22 @@
+doctype
+html
+    head
+        title Hello
+        link(href="/css/style.css" rel="stylesheet")
+        script(type="text/javascript", src="/scripts/functions.js")
+    body
+        .container
+            ul.menu
+                li
+                    a(href="/") Home
+                li
+                    a(href="/expand") Expand (only identifiers)
+                li
+                    a(href="/expandAll") Expand (with text)
+                li
+                    a(href="/collapse") Collapse (edit mode)
+                li
+                     a(href="/about") About
+
+            block main-content
+            p Footer text
