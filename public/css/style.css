@@ -113,8 +113,17 @@ div.input-wrapper {
 div.display-in-cell {
     font-size: smaller
 }
-/*fieldset{
-    display: inline-block
+fieldset{
+    width: 100px;
+    display: inline-block;
+}
+
+/*input[type=radio] {
+    display: block;
+    padding-left: 10px
+}
+input[type=checkbox]  {
+    display: block
 }*/
 
 
@@ -170,10 +179,5 @@ p.caption{
     font-style: italic
 }
 
-input[type=radio] + label{
-    display: block;
-    padding-left: 10px
-}
-input[type=checkbox] + label {
-    display: block
+
 }*/

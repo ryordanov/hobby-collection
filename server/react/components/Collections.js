@@ -12,7 +12,7 @@ export default class Collections extends React.Component {
     }
 
     componentDidMount() {
-        fetch('/api/collections')
+        fetch('/api/collections', {credentials: 'same-origin'}) // in order to send cookies too
             .then(function (response) {
                 if (response.status >= 400) {
                     throw new Error('Bad response from server');

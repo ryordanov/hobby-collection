@@ -39,6 +39,8 @@ jspm_packages
 # VS code settings
 .vscode
 
+.idea
+
 # webpack bundle
-public/bundle.js
+/public/bundle.js
 
