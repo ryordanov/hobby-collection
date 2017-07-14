@@ -5,7 +5,7 @@ import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import Home from './components/Home';
 import About from './components/About';
 import Collections from './components/Collections';
-import CollectionDetails from './components/CollectionDetails';
+import SingleCollection from './components/SingleCollection';
 import SubCollection from './components/SubCollection';
 // import ListItems from './components/ListItems';
 // import ItemInfo from './components/ItemInfo';
@@ -24,7 +24,7 @@ const Main = () => (
         <Switch>
             <Route exact path='/' component={Home} />
             <Route path='/collections' component={Collections} />
-            <Route exact path='/collection/:name' component={CollectionDetails} />
+            <Route exact path='/collection/:name' component={SingleCollection} />
             <Route path='/collection/:name/:subcollectionname' component={SubCollection} />
             {/*<Route path='/items' component={Items} />*/}
             <Route path='/about' component={About} />
