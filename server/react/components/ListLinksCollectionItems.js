@@ -64,6 +64,7 @@ export default class ListLinksCollectionItems extends React.Component {
 
         this.state = {
             dataContent: {
+                origninalCollectionData: [],
                 collectionData: []
             }
         };
@@ -74,6 +75,7 @@ export default class ListLinksCollectionItems extends React.Component {
             this.props.getCollectionData((data) => {
                 this.setState({
                     dataContent: {
+                        origninalCollectionData: data.map(obj => Object.assign({}, obj)),
                         collectionData: data,
                         currentCollection: this.props.currentCollection,
                         currentSubCollection: this.props.currentSubCollection
@@ -89,15 +91,19 @@ export default class ListLinksCollectionItems extends React.Component {
         let dataContent = this.state.dataContent;
         switch (viewState) {
             case 'ORG':
-                dataContent.currentSubCollection = dataContent.currentSubCollection + ' - Original';
-                // dataContent = dataContent;
+                dataContent.currentSubCollection = this.props.currentCollection + ' - Original';
+                console.log('dataContent.collectionData', dataContent.collectionData);
+                console.log('dataContent.origninalCollectionData', dataContent.origninalCollectionData);
+
+                dataContent.collectionData = dataContent.origninalCollectionData;
                 break;
             case 'CLLPS':
-                dataContent.currentSubCollection = dataContent.currentSubCollection + ' - Collapsed';
+                dataContent.currentSubCollection = this.props.currentCollection + ' - Collapsed';
                 dataContent.collectionData = gumUtils.collapse(dataContent.collectionData);
+                // dataContent.collectionData[0].items = '1,2,3';
                 break;
             case 'EXPND':
-                dataContent.currentSubCollection = dataContent.currentSubCollection + ' - Expanded';
+                dataContent.currentSubCollection = this.props.currentCollection + ' - Expanded';
                 dataContent.collectionData = gumUtils.expand(dataContent.collectionData);
                 break;
             default:
