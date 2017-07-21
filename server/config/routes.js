@@ -37,7 +37,7 @@ module.exports = (config, app) => {
 
     // handle every other route with index.html, which will hold a React application
     app.all('*', function(request, response) {
-        console.log('*: ', request.originalUrl);
+        console.log('* redirect to React: ', request.originalUrl);
         response.sendFile(path.resolve(config.rootPath, 'public/index.html'));
     });
 

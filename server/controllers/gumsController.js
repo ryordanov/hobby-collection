@@ -6,15 +6,15 @@ module.exports = {
     getCollections: (req, res) => {
         // res.send(gum.getCollections());
         gum.getCollections()
-        .then((data) => {
-            // console.log('data', data);
-            res.send( data);
-        })
-        .catch((err) => {
-            console.log('err (getCollections)', err);
-            res.send(err);
+            .then((data) => {
+                res.send(data);
+            // res.send( {'reqwes' : Object.keys(req.query)[0]});
+            })
+            .catch((err) => {
+                console.log('err (getCollections)', err);
+                res.send(err);
 
-        });
+            });
     },
     getCollectionDetails: (req, res) => {
         res.send(gum.getCollectionDetails(req.params.name));    // 'collection name' from url

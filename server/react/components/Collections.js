@@ -1,5 +1,6 @@
 import React from 'react';
 // import { Link } from 'react-router-dom';
+import OptionView from './OptionView';
 import ListLinksCollectionItems from './ListLinksCollectionItems';
 
 export default class Collections extends React.Component {
@@ -7,27 +8,20 @@ export default class Collections extends React.Component {
         super(props);
 
         this.state = {
-            dataFromBackend: []
+            dataFromBackend: [],
+            selectedView: ''
         };
 
-        this.getCollectionData = this.getCollectionData.bind(this);
+        this.selectingOption = this.selectingOption.bind(this);
     }
 
-    // componentDidMount() {
-    //     this.getCollectionData();
-    // }
+    componentDidMount() {
+        this.getCollectionData();
+    }
 
-    getCollectionData(callback) {
-        console.log('parent', this.state, callback);
-        // if (this.state.dataFromBackend.length > 0) {
-        //     if (callback) {
-        //         return callback(this.state.dataFromBackend);
-        //     }
-
-        //     return this.state.dataFromBackend;
-        // }
-
-        fetch('/api/collections', {credentials: 'same-origin'}) // in order to send cookies too
+    getCollectionData(rbData, callback) {
+        rbData = rbData || 'ORG';
+        fetch('/api/collections?' + rbData, {credentials: 'same-origin'}) // in order to send cookies too
             .then(function(response) {
                 if (response.status >= 400) {
                     throw new Error('Bad response from server');
@@ -36,19 +30,29 @@ export default class Collections extends React.Component {
             })
             .then((resData) => {
                 this.setState({ dataFromBackend: resData });
-                if (callback) {
-                    return callback(resData);
-                }
+                // if (callback) {
+                //     return callback(resData);
+                // }
                 return resData;
             });
     }
 
+    selectingOption(rbData) {
+        console.log('rbData', rbData);
+        this.setState({selectedView: rbData});
+        this.getCollectionData(rbData);
+    }
+    
     render() {
         return (
             <div>
-                {/* { JSON.stringify(this.state.dataFromBackend)}   */}
+                 { JSON.stringify(this.state.dataFromBackend)}   
                 {/* collectionData={this.state.dataFromBackend}  */}
-                <ListLinksCollectionItems getCollectionData={this.getCollectionData} />
+                <OptionView selectedView={this.selectingOption} />
+                
+                da vidq kak da zakaram i refreshna dannite v ListLinksCollectionItems component
+                
+                <ListLinksCollectionItems wholeCollectionData={this.state.dataFromBackend} /> 
             </div>
         );
     }

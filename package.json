@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "npm-run-all --parallel webpack:build index",
-    "start-vscode": "npm-run-all --parallel webpack:build server-vscode",
+    "start-vscode": "npm-run-all --parallel webpack:build server-vscode-node8",
     "webpack:build": "webpack -w",
     "server": "node server.js",
     "server-vscode": "node --nolazy --debug-brk=5858 index.js",
-    "server-vscode_node8": "node --nolazy --inspect-brk=5858 index.js",
+    "server-vscode-node8": "node --nolazy --inspect-brk=5858 index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "__start": "node --use_strict ./index.js"
   },

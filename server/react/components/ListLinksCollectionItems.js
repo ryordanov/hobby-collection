@@ -3,86 +3,30 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as gumUtils from '../../utilities/gumUtils';
 
-// ---------- FIELDSET -----------------------------------------------------------------------
-class OptionView extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedOption: ''
-        };
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    // npm install --save-dev babel-preset-stage-1
-    // handleChange = (e) => {
-    //     const { name, value } = e.target;
-    //     this.setState({
-    //         [name]: value
-    //     });
-    // }
-
-    handleChange(e) {
-        const { id, value } = e.target;
-        this.setState({
-            selectedOption: e.target.value
-        });
-
-        if (this.props.changeItemsViewCallback) {
-            this.props.changeItemsViewCallback(value);
-        }
-    }
-
-    render() {
-        return (
-            <form>
-                <fieldset className='radio-buttons'>
-                    <legend>Choice:</legend>
-                    <input type='radio' name='choice' id='original' value='ORG' checked={this.state.selectedOption === 'ORG'} onChange={this.handleChange} />
-                    <label htmlFor='original'>Original</label>
-
-                    <input type='radio' name='choice' id='collapse' value='CLLPS' checked={this.state.selectedOption === 'CLLPS'} onChange={this.handleChange} />
-                    <label htmlFor='collapse'>Collapse</label>
-
-                    <input type='radio' name='choice' id='expand' value='EXPND' checked={this.state.selectedOption === 'EXPND'} onChange={this.handleChange} />
-                    <label htmlFor='expand'>Expand</label>
-
-                </fieldset>
-            </form>
-        );
-    }
-};
-
-OptionView.propTypes = {
-    changeItemsViewCallback: PropTypes.func
-};
-
-// ---------- MAIN CLASS -----------------------------------------------------------------------
-
 export default class ListLinksCollectionItems extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             dataContent: {
-                origninalCollectionData: [],
                 collectionData: []
             }
         };
 
-        if (this.props && /* this.props.collectionData && Array.isArray(this.props.collectionData) && this.props.collectionData.length === 0 && */
-            this.props.getCollectionData && typeof this.props.getCollectionData === 'function') {
-            // callback to get data from parent
-            this.props.getCollectionData((data) => {
-                this.setState({
-                    dataContent: {
-                        origninalCollectionData: data.map(obj => Object.assign({}, obj)),
-                        collectionData: data,
-                        currentCollection: this.props.currentCollection,
-                        currentSubCollection: this.props.currentSubCollection
-                    }
-                });
-            });
-        }
+        // if (this.props && /* this.props.collectionData && Array.isArray(this.props.collectionData) && this.props.collectionData.length === 0 && */
+        //     this.props.getCollectionData && typeof this.props.getCollectionData === 'function') {
+        //     // callback to get data from parent
+        //     this.props.getCollectionData((data) => {
+        //         this.setState({
+        //             dataContent: {
+        //                 origninalCollectionData: data.map(obj => Object.assign({}, obj)),
+        //                 collectionData: data,
+        //                 currentCollection: this.props.currentCollection,
+        //                 currentSubCollection: this.props.currentSubCollection
+        //             }
+        //         });
+        //     });
+        // }
 
         this.changeItemsView = this.changeItemsView.bind(this);
     }
@@ -93,9 +37,6 @@ export default class ListLinksCollectionItems extends React.Component {
             case 'ORG':
                 dataContent.currentSubCollection = this.props.currentCollection + ' - Original';
                 console.log('dataContent.collectionData', dataContent.collectionData);
-                console.log('dataContent.origninalCollectionData', dataContent.origninalCollectionData);
-
-                dataContent.collectionData = dataContent.origninalCollectionData;
                 break;
             case 'CLLPS':
                 dataContent.currentSubCollection = this.props.currentCollection + ' - Collapsed';
@@ -118,7 +59,7 @@ export default class ListLinksCollectionItems extends React.Component {
     render() {
         return (
             <div>
-                <OptionView d={this.state.dataContent} changeItemsViewCallback={this.changeItemsView} />
+                {/* <OptionView d={this.state.dataContent} changeItemsViewCallback={this.changeItemsView} /> */}
                 {
                     this.state.dataContent.currentCollection && !this.state.dataContent.currentSubCollection &&
                     <h5>Details of '{this.state.dataContent.currentCollection}': </h5>
