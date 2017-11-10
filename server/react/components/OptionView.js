@@ -1,12 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// ---------- FIELDSET -----------------------------------------------------------------------
+// ---------- FIELDSET ---------------------------------------------
 export default class OptionView extends React.Component {
     constructor(props) {
+        console.log('props', props);
+        
         super(props);
         this.state = {
-            selectedOption: 'ORG'
+            selectedOption: props.items[0].value || 'ORG',
+            items: props.items || [{id: 'original', value: 'ORG'},{id: 'collapse', value: 'CLLPS'}, {id: 'expand', value: 'EXPND'}]
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -25,8 +28,8 @@ export default class OptionView extends React.Component {
             selectedOption: e.target.value
         });
 
-        if (this.props.selectedView) {
-            this.props.selectedView(value);
+        if (this.props.selectedRB) {
+            this.props.selectedRB(value);
         }
     }
 
@@ -35,15 +38,12 @@ export default class OptionView extends React.Component {
             <form>
                 <fieldset className='radio-buttons'>
                     <legend>Choice:</legend>
-                    <input type='radio' name='choice' id='original' value='ORG' checked={this.state.selectedOption === 'ORG'} onChange={this.handleChange} />
-                    <label htmlFor='original'>Original</label>
-
-                    <input type='radio' name='choice' id='collapse' value='CLLPS' checked={this.state.selectedOption === 'CLLPS'} onChange={this.handleChange} />
-                    <label htmlFor='collapse'>Collapse</label>
-
-                    <input type='radio' name='choice' id='expand' value='EXPND' checked={this.state.selectedOption === 'EXPND'} onChange={this.handleChange} />
-                    <label htmlFor='expand'>Expand</label>
-
+                    {this.state.items.map( (i) => {
+                        return <div key={i.id}>
+                                    <input type='radio' name='choice' id={i.id} value={i.value} checked={this.state.selectedOption === i.value} onChange={this.handleChange} />
+                                    <label htmlFor={i.id}>{i.id.charAt(0).toUpperCase() + i.id.slice(1)}</label>
+                               </div>
+                    } )}
                 </fieldset>
             </form>
         );
@@ -51,5 +51,5 @@ export default class OptionView extends React.Component {
 };
 
 OptionView.propTypes = {
-    selectedView: PropTypes.func
+    selectedRB: PropTypes.func
 };

@@ -36,7 +36,7 @@ export default class ListLinksCollectionItems extends React.Component {
         switch (viewState) {
             case 'ORG':
                 dataContent.currentSubCollection = this.props.currentCollection + ' - Original';
-                console.log('dataContent.collectionData', dataContent.collectionData);
+                console.log('ListLinksCollectionItems: dataContent.collectionData', dataContent.collectionData);
                 break;
             case 'CLLPS':
                 dataContent.currentSubCollection = this.props.currentCollection + ' - Collapsed';
@@ -59,6 +59,7 @@ export default class ListLinksCollectionItems extends React.Component {
     render() {
         return (
             <div>
+                ListLinksCollectionItems: {this.props.opt}
                 {/* <OptionView d={this.state.dataContent} changeItemsViewCallback={this.changeItemsView} /> */}
                 {
                     this.state.dataContent.currentCollection && !this.state.dataContent.currentSubCollection &&
@@ -82,7 +83,7 @@ export default class ListLinksCollectionItems extends React.Component {
                                 <Link className='subcollection-link' to={`/collection/${encodeURIComponent(collectionItem.make)}/${encodeURIComponent(collectionItem.serie)}`}>{collectionItem.serie}</Link>
                                 <div className='input-wrapper'>
                                     <div className='display-in-cell'>
-                                        {collectionItem.items}
+                                        {/*collectionItem.items*/}
                                     </div>
                                 </div>
                             </div>

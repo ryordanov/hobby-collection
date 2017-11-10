@@ -3,13 +3,15 @@ import React from 'react';
 import OptionView from './OptionView';
 import ListLinksCollectionItems from './ListLinksCollectionItems';
 
+let itemsSeed = [{id: 'original', value: 'ORG'},{id: 'collapse', value: 'CLLPS'}, {id: 'expand', value: 'EXPND'}];
+
 export default class Collections extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             dataFromBackend: [],
-            selectedView: ''
+            selectedRB: ''
         };
 
         this.selectingOption = this.selectingOption.bind(this);
@@ -38,21 +40,18 @@ export default class Collections extends React.Component {
     }
 
     selectingOption(rbData) {
-        console.log('rbData', rbData);
-        this.setState({selectedView: rbData});
+        // console.log('Collections: rbData', rbData);
+        this.setState({selectedRB: rbData});
         this.getCollectionData(rbData);
     }
     
     render() {
         return (
             <div>
-                 { JSON.stringify(this.state.dataFromBackend)}   
+                 {/* JSON.stringify(this.state.dataFromBackend)*/}   
                 {/* collectionData={this.state.dataFromBackend}  */}
-                <OptionView selectedView={this.selectingOption} />
-                
-                da vidq kak da zakaram i refreshna dannite v ListLinksCollectionItems component
-                
-                <ListLinksCollectionItems wholeCollectionData={this.state.dataFromBackend} /> 
+                <OptionView selectedRB={this.selectingOption} items={itemsSeed}/>
+                <ListLinksCollectionItems dataContent={this.state.dataFromBackend} opt={this.state.selectedRB} /> 
             </div>
         );
     }

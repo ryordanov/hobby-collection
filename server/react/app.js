@@ -10,6 +10,7 @@ import SubCollection from './components/SubCollection';
 // import ListItems from './components/ListItems';
 // import ItemInfo from './components/ItemInfo';
 import NotFound from './components/NotFound';
+import Login from './components/Login';
 
 
 // const Items = () => (
@@ -23,6 +24,7 @@ const Main = () => (
     <main>
         <Switch>
             <Route exact path='/' component={Home} />
+            <Route path='/login' component={Login} />
             <Route path='/collections' component={Collections} />
             <Route exact path='/collection/:name' component={SingleCollection} />
             <Route path='/collection/:name/:subcollectionname' component={SubCollection} />
@@ -37,6 +39,7 @@ const Header = () => (
     <header>
         <nav>
             <ul>
+                <li><Link to='/login'>Login</Link></li>
                 <li><Link to='/'>Home</Link></li>
                 <li><Link to='/collections'>Collections</Link></li>
                 {/*<li><Link to='/items'>Items</Link></li>*/}

@@ -114,7 +114,7 @@ div.display-in-cell {
     font-size: smaller
 }
 fieldset{
-    width: 100px;
+    /* width: 100px; */
     display: inline-block;
 }
 
@@ -181,3 +181,16 @@ p.caption{
 
 
 }*/
+
+
+@media all and (min-width: 480px) {
+    .Login {
+      padding: 60px 0;
+      background-color: rgb(206, 206, 194)
+    }
+  
+    .Login form {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }
