@@ -2,7 +2,6 @@ let path = require('path');
 let controllers = require('../controllers');
 
 module.exports = (config, app) => {
-
     // app.get('/', controllers.home.index);
     // app.get('/expand', controllers.home.expand);
     // app.get('/expandAll', controllers.home.expandAll);
@@ -17,12 +16,10 @@ module.exports = (config, app) => {
     app.get('/api/collection/:name', controllers.gums.getCollectionDetails);
     app.get('/api/collection/:name/:subcollection', controllers.gums.getSubCollectionDetails);
 
-
-
     app.get('/items', controllers.gums.getItems);
     app.get('/item/:id', controllers.gums.getItemDetails);
     app.get('/notFound', function(req, res) {
-        res.send({notFound: 'ERROR 404 - Not found [' + new Date() + ']' })
+        res.send({ notFound: 'ERROR 404 - Not found [' + new Date() + ']' });
     });
 
     // app.get('/item/:id', function(request, response) {
@@ -31,7 +28,7 @@ module.exports = (config, app) => {
 
     // app.get('/items', function(request, response) {
     //     response.send(getItems(1));
-    
+
     //     // response.send({ b: 2 });
     // });
 

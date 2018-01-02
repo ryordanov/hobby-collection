@@ -13,10 +13,10 @@ module.exports = (config, app) => {
     app.use(bodyParser.urlencoded({ extended: false }));
     // to support JSON-encoded bodies
     app.use(bodyParser.json());
-    
+
     app.use(compression());
     // app.use(express.compress());
-    
+
     // Logging
     app.use('*', function(req, res, next) {
         console.log('request: ', req.method, ' ', req.protocol, ' ', req.host, ' ', decodeURIComponent(req.originalUrl));

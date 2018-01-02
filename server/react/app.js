@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
 
 import Home from './components/Home';
 import About from './components/About';
@@ -11,7 +11,6 @@ import SubCollection from './components/SubCollection';
 // import ItemInfo from './components/ItemInfo';
 import NotFound from './components/NotFound';
 import Login from './components/Login';
-
 
 // const Items = () => (
 //     <Switch>
@@ -28,12 +27,12 @@ const Main = () => (
             <Route path='/collections' component={Collections} />
             <Route exact path='/collection/:name' component={SingleCollection} />
             <Route path='/collection/:name/:subcollectionname' component={SubCollection} />
-            {/*<Route path='/items' component={Items} />*/}
+            {/* <Route path='/items' component={Items} /> */}
             <Route path='/about' component={About} />
             <Route component={NotFound} />
         </Switch>
     </main>
-)
+);
 
 const Header = () => (
     <header>
@@ -42,12 +41,12 @@ const Header = () => (
                 <li><Link to='/login'>Login</Link></li>
                 <li><Link to='/'>Home</Link></li>
                 <li><Link to='/collections'>Collections</Link></li>
-                {/*<li><Link to='/items'>Items</Link></li>*/}
+                {/* <li><Link to='/items'>Items</Link></li> */}
                 <li><Link to='/about'>About</Link></li>
             </ul>
         </nav>
     </header>
-)
+);
 
 const Footer = () => (
     <footer>
@@ -57,7 +56,7 @@ const Footer = () => (
             </ul>
         </nav>
     </footer>
-)
+);
 
 const App = () => (
     <div>
@@ -65,7 +64,7 @@ const App = () => (
         <Main />
         <Footer />
     </div>
-)
+);
 
 ReactDOM.render((
     <BrowserRouter>
@@ -73,9 +72,7 @@ ReactDOM.render((
     </BrowserRouter>
 ), document.getElementById('app'));
 
-
 // https://medium.com/@pshrmn/a-simple-react-router-v4-tutorial-7f23ff27adf
-
 
 /*
 // A simple data API that will be used to get the data for our

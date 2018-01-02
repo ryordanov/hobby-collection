@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 var mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
@@ -365,22 +367,26 @@ var collections = [
     }, { id: 74, make: 'Списание "Дъга"', serie: '[1-42]', margins: '1-42', items: '1-40,42' }
 ];
 */
+
 module.exports = (config) => {
-    mongoose.connect(config.db);    // , { useMongoClient: true }
+    mongoose.connect(config.db, {
+        useMongoClient: true
+        // promiseLibrary: global.Promise
+    });
 
     let db = mongoose.connection;
 
     db.once('open', (err) => {
-        if (err) console.log(err);
+        if (err) {
+            console.log(err);
+        }
+        console.log('Connected to "%s" database!', config.db.substr(config.db.indexOf('@') + 1, config.db.length));
 
-        console.log('Connected to "%s" database!', config.db.substr(config.db.indexOf('@')+1, config.db.length));
-
-        //var collection = db.collection("guminserts");
-        //collection.find({id:3}).toArray(function (err, docs) {
+        // var collection = db.collection("guminserts");
+        // collection.find({id:3}).toArray(function (err, docs) {
         //    console.log(docs[0]);
-        //});
+        // });
     });
-
     db.on('error', err => console.log(err));
 
     return db;

@@ -1,4 +1,4 @@
-//let env = process.env.NODE_ENV || 'development';
+// let env = process.env.NODE_ENV || 'development';
 const path = require('path');
 const fs = require('fs');
 let rootPath = path.normalize(path.join(__dirname, '../../'));
@@ -8,14 +8,14 @@ console.log('hostname: ' + hostname);
 
 if (doesExist(preRootPath + 'private-configuration.js')) {
     var privateConfiguration = require(preRootPath + 'private-configuration.js')[hostname];
-    var privateConfiguration_db = privateConfiguration.db;
-    var privateConfiguration_port = privateConfiguration.port;
+    var privateConfigurationDb = privateConfiguration.db;
+    var privateConfigurationPort = privateConfiguration.port;
 }
 
 module.exports = {
     rootPath: rootPath,
-    db: process.env.DB || privateConfiguration_db || 'mongodb://localhost:27017/hobby-collection-db',
-    port: process.env.PORT || privateConfiguration_port || 10101,
+    db: process.env.DB || privateConfigurationDb || 'mongodb://localhost:27017/hobby-collection-db',
+    port: process.env.PORT || privateConfigurationPort || 10101,
     lang: 'en'
 };
 

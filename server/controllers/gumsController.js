@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // let gum = require('../utilities/gum').seedGumInserts();
 let gum = require('../utilities/gum');
 let captions = require('../config/translation')['bg'];
@@ -7,13 +8,12 @@ module.exports = {
         // res.send(gum.getCollections());
         gum.getCollections()
             .then((data) => {
-                res.send(data);
-            // res.send( {'reqwes' : Object.keys(req.query)[0]});
+                // res.send( {'reqwes' : Object.keys(req.query)[0]});
+                return res.send(data);
             })
             .catch((err) => {
                 console.log('err (getCollections)', err);
                 res.send(err);
-
             });
     },
     getCollectionDetails: (req, res) => {
@@ -22,8 +22,6 @@ module.exports = {
     getSubCollectionDetails: (req, res) => {
         res.send(gum.getSubCollectionDetails(req.params.name, req.params.subcollection));    // 'collection name' and 'subcollection name' from url
     },
-
-
 
     getItemDetails: (req, res) => {
         // gum.getItemDetails()
@@ -55,7 +53,7 @@ module.exports = {
     },
     update: (req, res) => {
         // console.log( req.params.id); - doesn't work
-        gum.setItemsById(req.body.itemIdToUpdate, req.body.itemValueToUpdate, function (err, data) {
+        gum.setItemsById(req.body.itemIdToUpdate, req.body.itemValueToUpdate, function(err, data) {
             if (err) console.log(err);
 
             res.send(data);
