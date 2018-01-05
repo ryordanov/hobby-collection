@@ -12,12 +12,13 @@ module.exports = (config, app) => {
     // app.post('/save', controllers.home.update);
     // app.post('/save/:id', controllers.home.update);
 
-    app.get('/api/collections', controllers.gums.getCollections);
-    app.get('/api/collection/:name', controllers.gums.getCollectionDetails);
-    app.get('/api/collection/:name/:subcollection', controllers.gums.getSubCollectionDetails);
+    app.post('/api/collections', controllers.gums.getCollections);
+    // app.get('/api/collections', controllers.gums.getCollections);
+    // app.get('/api/collection/:name', controllers.gums.getCollectionDetails);
+    // app.get('/api/collection/:name/:subcollection', controllers.gums.getSubCollectionDetails);
 
-    app.get('/items', controllers.gums.getItems);
-    app.get('/item/:id', controllers.gums.getItemDetails);
+    // app.get('/items', controllers.gums.getItems);
+    // app.get('/item/:id', controllers.gums.getItemDetails);
     app.get('/notFound', function(req, res) {
         res.send({ notFound: 'ERROR 404 - Not found [' + new Date() + ']' });
     });

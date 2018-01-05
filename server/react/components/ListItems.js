@@ -20,7 +20,7 @@
 //             })
 //             .then((resData) => {
 //                 // console.log('resData', resData);
-                
+
 //                 this.setState({ data: resData });
 //             });
 //     };

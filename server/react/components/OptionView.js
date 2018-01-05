@@ -4,12 +4,11 @@ import PropTypes from 'prop-types';
 // ---------- FIELDSET ---------------------------------------------
 export default class OptionView extends React.Component {
     constructor(props) {
-        console.log('props', props);
-        
+        // console.log('props', props);
         super(props);
         this.state = {
             selectedOption: props.items[0].value || 'ORG',
-            items: props.items || [{id: 'original', value: 'ORG'},{id: 'collapse', value: 'CLLPS'}, {id: 'expand', value: 'EXPND'}]
+            items: props.items || [{id: 'original', value: 'ORG'}, {id: 'collapse', value: 'CLLPS'}, {id: 'expand', value: 'EXPND'}]
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -23,13 +22,13 @@ export default class OptionView extends React.Component {
     // }
 
     handleChange(e) {
-        const { id, value } = e.target;
+        // const { id, value } = e.target;
         this.setState({
             selectedOption: e.target.value
         });
 
         if (this.props.selectedRB) {
-            this.props.selectedRB(value);
+            this.props.selectedRB(e.target.value);
         }
     }
 
@@ -38,12 +37,12 @@ export default class OptionView extends React.Component {
             <form>
                 <fieldset className='radio-buttons'>
                     <legend>Choice:</legend>
-                    {this.state.items.map( (i) => {
+                    {this.state.items.map((i) => {
                         return <div key={i.id}>
                                     <input type='radio' name='choice' id={i.id} value={i.value} checked={this.state.selectedOption === i.value} onChange={this.handleChange} />
                                     <label htmlFor={i.id}>{i.id.charAt(0).toUpperCase() + i.id.slice(1)}</label>
-                               </div>
-                    } )}
+                               </div>;
+                    })}
                 </fieldset>
             </form>
         );
@@ -51,5 +50,6 @@ export default class OptionView extends React.Component {
 };
 
 OptionView.propTypes = {
-    selectedRB: PropTypes.func
+    selectedRB: PropTypes.func,
+    items: PropTypes.array
 };
