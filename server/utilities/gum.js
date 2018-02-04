@@ -100,7 +100,7 @@ var generalCollectionsModel = mongoose.model('generalCollections', generalCollec
 //     return { items: items, having: having, missing: missing };
 // }
 
-function DBFetchData() {
+function DBFetchData(criteria) {
     let query = generalCollectionsModel.find({}, function(err, gums) { // Gum -> generalCollectionsModel
         if (err) {
             console.log('DBFetchData query error: ', err);

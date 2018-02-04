@@ -3,8 +3,17 @@ import React from 'react';
 import OptionView from './OptionView';
 import ListLinksCollectionItems from './ListLinksCollectionItems';
 
-let itemsSeed = [{id: 'original', value: 'ORG'}, {id: 'collapse', value: 'CLLPS'}, {id: 'expand', value: 'EXPND'}];
+import { getCollectionData } from '../utils';
 
+let itemsSeed = [
+    { id: 'original', value: 'ORG' },
+    { id: 'collapse', value: 'CLLPS' },
+    { id: 'expand', value: 'EXPND' }
+];
+
+let url = '/api/collections?option=';
+
+// some kind of View-Controller
 export default class Collections extends React.Component {
     constructor(props) {
         super(props);
@@ -18,62 +27,67 @@ export default class Collections extends React.Component {
     }
 
     componentDidMount() {
-        this.getCollectionData();
+        console.log('collections', this.props.match);
+        getCollectionData(url + itemsSeed[0].value)
+            .then((resData) => {
+                this.setState({ dataFromBackend: resData });
+                // console.log('resData', resData);
+                return resData;
+            });
     }
 
-    getCollectionData(rbData, callback) {
-        // rbData = rbData || 'ORG';
-        // fetch('/api/collections?option=' + rbData, {credentials: 'same-origin'}) // in order to send cookies too
-        //     .then(function(response) {
-        //         if (response.status >= 400) {
-        //             throw new Error('Bad response from server');
-        //         }
-        //         return response.json();
-        //     })
-        fetch('/api/collections', {
-            credentials: 'same-origin', // send cookies too
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                option: rbData || 'ORG'
-            })
-        })
-        .then(function(response) {
-            if (response.status >= 400) {
-                throw new Error('Bad response from server');
-            }
-            return response.json();
-        })
-        .then((resData) => {
-            this.setState({ dataFromBackend: resData });
-            // if (callback) {
-            //     return callback(resData);
-            // }
-            console.log('resData', resData);
+    // getCollectionData(rbData) {
+    //     // rbData = rbData || 'ORG';
+    //     // fetch('/api/collections?option=' + rbData, {credentials: 'same-origin'}) // in order to send cookies too
+    //     //     .then(function(response) {
+    //     //         if (response.status >= 400) {
+    //     //             throw new Error('Bad response from server');
+    //     //         }
+    //     //         return response.json();
+    //     //     })
+    //     // console.log('rbData', rbData);
+    //     fetch(`/api/collections?option=` + rbData, {
+    //         credentials: 'same-origin', // send cookies too
+    //         method: 'GET',
+    //         headers: {
+    //             Accept: 'application/json',
+    //             'Content-Type': 'application/json'
+    //         }
+    //         // body: JSON.stringify({
+    //         //     option: rbData || 'ORG' // TODO: remove default argument
+    //         // })
+    //     })
+    //         .then(function (response) {
+    //             if (response.status >= 400) {
+    //                 throw new Error('Bad response from server');
+    //             }
+    //             return response.json();
+    //         })
+    //         .then((resData) => {
+    //             this.setState({ dataFromBackend: resData });
+    //             // console.log('resData', resData);
 
-            return resData;
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-    }
+    //             return resData;
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //         });
+    // }
 
     selectingOption(rbData) {
-        // console.log('Collections: rbData', rbData);
-        this.setState({selectedRB: rbData});
-        this.getCollectionData(rbData);
+        this.setState({ selectedRB: rbData });
+        getCollectionData(url + rbData);
     }
 
     render() {
         return (
             <div>
-                 { /* JSON.stringify(this.state.dataFromBackend) */ }
-                {/* collectionData={this.state.dataFromBackend}  */}
-                <OptionView selectedRB={this.selectingOption} items={itemsSeed} />
-                <ListLinksCollectionItems dataContent={this.state.dataFromBackend} opt={this.state.selectedRB} />
+                <OptionView
+                    selectedRB={this.selectingOption}
+                    items={itemsSeed} />
+                <ListLinksCollectionItems
+                    collectionRecords={this.state.dataFromBackend}
+                    opt={this.state.selectedRB} />
             </div>
         );
     }

@@ -4,14 +4,14 @@
   "description": "Collection of wrappers and magazines",
   "main": "index.js",
   "scripts": {
-    "start": "npm-run-all --parallel webpack:build index",
+    "_start": "npm-run-all --parallel webpack:build index",
     "start-vscode": "npm-run-all --parallel webpack:build server-vscode",
     "start-vscode_node8": "npm-run-all --parallel webpack:build server-vscode_node8",
     "webpack:build": "webpack -w",
-    "server": "node server.js",
+    "_server": "node server.js",
     "server-vscode": "node --nolazy --debug-brk=5858 index.js",
     "server-vscode_node8": "node --nolazy --inspect-brk=5858 index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "_test": "echo \"Error: no test specified\" && exit 1",
     "__start": "node --use_strict ./index.js"
   },
   "repository": {
@@ -28,6 +28,7 @@
     "body-parser": "^1.17.2",
     "compression": "^1.6.2",
     "express": "^4.15.3",
+    "material-ui": "^0.20.0",
     "mongoose": "^4.10.8",
     "npm-run-all": "^4.0.2",
     "os": "^0.1.1",

@@ -12,7 +12,7 @@ module.exports = (config, app) => {
     // app.post('/save', controllers.home.update);
     // app.post('/save/:id', controllers.home.update);
 
-    app.post('/api/collections', controllers.gums.getCollections);
+    app.get('/api/collections', controllers.gums.getCollections);
     // app.get('/api/collections', controllers.gums.getCollections);
     // app.get('/api/collection/:name', controllers.gums.getCollectionDetails);
     // app.get('/api/collection/:name/:subcollection', controllers.gums.getSubCollectionDetails);

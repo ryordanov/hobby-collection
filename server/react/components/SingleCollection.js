@@ -1,7 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 // import { Link } from 'react-router-dom';
 import ListLinksCollectionItems from './ListLinksCollectionItems';
-import PropTypes from 'prop-types';
+
+import { getCollectionData } from '../utils';
+
+let url = '/api/collection/';
 
 export default class SingleCollection extends React.Component {
     constructor(props) {
@@ -10,46 +14,25 @@ export default class SingleCollection extends React.Component {
         this.state = {
             dataFromBackend: []
         };
-        this.getCollectionData = this.getCollectionData.bind(this);
+        // this.getCollectionData = this.getCollectionData.bind(this);
     }
 
     componentDidMount() {
-        fetch('/api/collection/' + this.props.match.params.name)
-            .then(function(response) {
-                if (response.status >= 400) {
-                    throw new Error('Bad response from server');
-                }
-                return response.json();
-            })
-            .then((resData) => {
-                this.setState({ dataFromBackend: resData });
-            });
-    };
+        console.log('singlecollection', this.props.match);
 
-    getCollectionData(callback) {
-        fetch('/api/collection/' + this.props.match.params.name)
-            .then(function(response) {
-                if (response.status >= 400) {
-                    throw new Error('Bad response from server');
-                }
-                return response.json();
-            })
+        getCollectionData(url + this.props.match.params.name)
             .then((resData) => {
-                // console.log('resData', resData);
                 this.setState({ dataFromBackend: resData });
-                if (callback) {
-                    return callback(resData);
-                }
+                // console.log('resData', resData);
                 return resData;
             });
     }
 
     render() {
         return (
-            // collectionData={this.state.dataFromBackend} 
-             <ListLinksCollectionItems
-               getCollectionData={this.getCollectionData}
-               currentCollection={this.props.match.params.name} />
+            <ListLinksCollectionItems
+                collectionRecords={this.state.dataFromBackend}
+                currentCollection={this.props.match.params.name} />
         );
     }
 }

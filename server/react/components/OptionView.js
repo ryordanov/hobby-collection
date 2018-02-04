@@ -7,8 +7,8 @@ export default class OptionView extends React.Component {
         // console.log('props', props);
         super(props);
         this.state = {
-            selectedOption: props.items[0].value || 'ORG',
-            items: props.items || [{id: 'original', value: 'ORG'}, {id: 'collapse', value: 'CLLPS'}, {id: 'expand', value: 'EXPND'}]
+            selectedOption: props.items[0].value || 'ONE',
+            items: props.items || [{ id: 'one', value: 'ONE' }, { id: 'two', value: 'TWO' }, { id: 'three', value: 'THREE' }]
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -32,6 +32,12 @@ export default class OptionView extends React.Component {
         }
     }
 
+    // componentDidMount() {
+    //     if (this.props.selectedRB) {
+    //         this.props.selectedRB(this.state.selectedOption);
+    //     }
+    // }
+
     render() {
         return (
             <form>
@@ -39,9 +45,9 @@ export default class OptionView extends React.Component {
                     <legend>Choice:</legend>
                     {this.state.items.map((i) => {
                         return <div key={i.id}>
-                                    <input type='radio' name='choice' id={i.id} value={i.value} checked={this.state.selectedOption === i.value} onChange={this.handleChange} />
-                                    <label htmlFor={i.id}>{i.id.charAt(0).toUpperCase() + i.id.slice(1)}</label>
-                               </div>;
+                            <input type='radio' name='choice' id={i.id} value={i.value} checked={this.state.selectedOption === i.value} onChange={this.handleChange} />
+                            <label htmlFor={i.id}>{i.id.charAt(0).toUpperCase() + i.id.slice(1)}</label>
+                        </div>;
                     })}
                 </fieldset>
             </form>

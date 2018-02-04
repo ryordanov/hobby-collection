@@ -27,3 +27,12 @@ function doesExist(fileName) {
         return !(err && err.code === 'ENOENT');
     }
 }
+
+// function doesXst(fileName) {
+//     fs.stat(fileName, function(err, stats) {
+//         if (err) 
+//             console.log('it does not exist');
+//         else 
+//             console.log('it exists');
+//     });
+// }
