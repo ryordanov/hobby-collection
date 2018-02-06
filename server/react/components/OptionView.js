@@ -27,14 +27,14 @@ export default class OptionView extends React.Component {
             selectedOption: e.target.value
         });
 
-        if (this.props.selectedRB) {
-            this.props.selectedRB(e.target.value);
+        if (this.props.selectedOption) {
+            this.props.selectedOption(e.target.value);
         }
     }
 
     // componentDidMount() {
-    //     if (this.props.selectedRB) {
-    //         this.props.selectedRB(this.state.selectedOption);
+    //     if (this.props.selectedOption) {
+    //         this.props.selectedOption(this.state.selectedOption);
     //     }
     // }
 
@@ -56,6 +56,6 @@ export default class OptionView extends React.Component {
 };
 
 OptionView.propTypes = {
-    selectedRB: PropTypes.func,
+    selectedOption: PropTypes.func,
     items: PropTypes.array
 };

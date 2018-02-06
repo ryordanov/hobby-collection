@@ -9,15 +9,15 @@ const ListLinksCollectionItems = (props) => (
 
         ListLinksCollectionItems: {props.opt}
         {
-            props.collectionRecords.currentCollection && !props.collectionRecords.currentSubCollection &&
-            <h5>Details of '{props.collectionRecords.currentCollection}': </h5>
+            props.currentCollection && !props.currentSubCollection &&
+            <h5>Details of '{props.currentCollection}': </h5>
         }
         {
-            props.collectionRecords.currentCollection && props.collectionRecords.currentSubCollection &&
-            <h5>Details of '{props.collectionRecords.currentCollection} / {decodeURIComponent(props.collectionRecords.currentSubCollection)}': </h5>
+            props.currentCollection && props.currentSubCollection &&
+            <h5>Details of '{props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}': </h5>
         }
         {
-            !(props.collectionRecords.currentCollection || props.collectionRecords.currentSubCollection) &&
+            !(props.currentCollection || props.currentSubCollection) &&
             <h5>Details of currentCollection </h5>
         }
 
@@ -31,7 +31,7 @@ const ListLinksCollectionItems = (props) => (
                         <Link className='subcollection-link' to={`/collection/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}`}>{element.serie}</Link>
                         <div className='input-wrapper'>
                             <div className='display-in-cell'>
-                                {/* element.items */}
+                                {Object.keys(element.items).join(', ')}
                             </div>
                         </div>
                     </div>

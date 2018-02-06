@@ -20,10 +20,10 @@ export default class Collections extends React.Component {
 
         this.state = {
             dataFromBackend: [],
-            selectedRB: ''
+            selectedOption: itemsSeed[0].value
         };
 
-        this.selectingOption = this.selectingOption.bind(this);
+        this.selectOption = this.selectOption.bind(this);
     }
 
     componentDidMount() {
@@ -36,46 +36,8 @@ export default class Collections extends React.Component {
             });
     }
 
-    // getCollectionData(rbData) {
-    //     // rbData = rbData || 'ORG';
-    //     // fetch('/api/collections?option=' + rbData, {credentials: 'same-origin'}) // in order to send cookies too
-    //     //     .then(function(response) {
-    //     //         if (response.status >= 400) {
-    //     //             throw new Error('Bad response from server');
-    //     //         }
-    //     //         return response.json();
-    //     //     })
-    //     // console.log('rbData', rbData);
-    //     fetch(`/api/collections?option=` + rbData, {
-    //         credentials: 'same-origin', // send cookies too
-    //         method: 'GET',
-    //         headers: {
-    //             Accept: 'application/json',
-    //             'Content-Type': 'application/json'
-    //         }
-    //         // body: JSON.stringify({
-    //         //     option: rbData || 'ORG' // TODO: remove default argument
-    //         // })
-    //     })
-    //         .then(function (response) {
-    //             if (response.status >= 400) {
-    //                 throw new Error('Bad response from server');
-    //             }
-    //             return response.json();
-    //         })
-    //         .then((resData) => {
-    //             this.setState({ dataFromBackend: resData });
-    //             // console.log('resData', resData);
-
-    //             return resData;
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //         });
-    // }
-
-    selectingOption(rbData) {
-        this.setState({ selectedRB: rbData });
+    selectOption(rbData) {
+        this.setState({ selectedOption: rbData });
         getCollectionData(url + rbData);
     }
 
@@ -83,11 +45,11 @@ export default class Collections extends React.Component {
         return (
             <div>
                 <OptionView
-                    selectedRB={this.selectingOption}
+                    selectedOption={this.selectOption}
                     items={itemsSeed} />
                 <ListLinksCollectionItems
                     collectionRecords={this.state.dataFromBackend}
-                    opt={this.state.selectedRB} />
+                    opt={this.state.selectedOption} />
             </div>
         );
     }

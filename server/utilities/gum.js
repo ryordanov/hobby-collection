@@ -101,7 +101,16 @@ var generalCollectionsModel = mongoose.model('generalCollections', generalCollec
 // }
 
 function DBFetchData(criteria) {
-    let query = generalCollectionsModel.find({}, function(err, gums) { // Gum -> generalCollectionsModel
+    console.log('DBFetchData - criteria', criteria);
+    let tmp = {};
+    if (criteria.collectionName) {
+        tmp.make = criteria.collectionName;
+    }
+    if (criteria.subCollectionName) {
+        tmp.serie = criteria.subCollectionName;
+    }
+
+    let query = generalCollectionsModel.find(tmp, function(err, gums) { // Gum -> generalCollectionsModel
         if (err) {
             console.log('DBFetchData query error: ', err);
         } else
@@ -161,20 +170,12 @@ module.exports = {
         // return details;
         return DBFetchData(criteria);
     },
-    // getCollectionDetails: (collectionName) => {
-    //     let details = [];
-    //     collections.forEach(function(item) {
-    //         if (collectionName === item.make) {
-    //             details.push({
-    //                 'make': item.make,
-    //                 'serie': item.serie,
-    //                 'margins': item.margins,
-    //                 'items': item.items
-    //             });
-    //         }
-    //     }, this);
-    //     return details;
-    // },
+    getCollectionDetails: (collectionName) => {
+        return DBFetchData({collectionName});
+    },
+    getSubCollectionDetails: (collectionName, subCollectionName) => {
+        return DBFetchData({collectionName, subCollectionName});
+    },
     // getSubCollectionDetails: (collectionName, subCollectionName) => {
     //     let details = [];
     //     collections.forEach(function(item) {

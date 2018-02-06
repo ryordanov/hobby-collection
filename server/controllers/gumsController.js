@@ -6,22 +6,21 @@ let captions = require('../config/translation')['bg'];
 module.exports = {
     getCollections: (req, res) => {
         // res.send(gum.getCollections());
-        let constraints = req.query || req.body || {option: 'ORG'};
+        let constraints = req.query || req.body;
         gum.getCollections(constraints)
-            .then((data) => {
-                // res.send( {'reqwes' : Object.keys(req.query)[0]});
-                return res.send(data);
-            })
+            .then(data => res.send(data))
             .catch((err) => {
                 console.log('err (getCollections)', err);
-                res.send(err);
+                return res.send(err);
             });
     },
     getCollectionDetails: (req, res) => {
-        res.send(gum.getCollectionDetails(req.params.name));    // 'collection name' from url
+        gum.getCollectionDetails(req.params.name)
+            .then(data => res.send(data));
     },
     getSubCollectionDetails: (req, res) => {
-        res.send(gum.getSubCollectionDetails(req.params.name, req.params.subcollection));    // 'collection name' and 'subcollection name' from url
+        gum.getSubCollectionDetails(req.params.name, req.params.subcollection)    // 'collection name' and 'subcollection name' from url
+            .then(data => res.send(data));
     },
 
     getItemDetails: (req, res) => {
