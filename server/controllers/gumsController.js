@@ -6,7 +6,8 @@ let captions = require('../config/translation')['bg'];
 module.exports = {
     getCollections: (req, res) => {
         // res.send(gum.getCollections());
-        let constraints = req.query || req.body;
+        // let constraints = req.query || req.body;
+        let constraints = {...req.query, collectionName: req.params.name, subCollectionName: req.params.subcollection};
         gum.getCollections(constraints)
             .then(data => res.send(data))
             .catch((err) => {

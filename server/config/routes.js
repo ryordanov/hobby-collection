@@ -12,9 +12,12 @@ module.exports = (config, app) => {
     // app.post('/save', controllers.home.update);
     // app.post('/save/:id', controllers.home.update);
 
-    app.get('/api/collections', controllers.gums.getCollections);
-    app.get('/api/collection/:name', controllers.gums.getCollectionDetails);
-    app.get('/api/collection/:name/:subcollection', controllers.gums.getSubCollectionDetails);
+    // app.get('/api/collections', controllers.gums.getCollections);
+    // app.get('/api/collection/:name', controllers.gums.getCollectionDetails);
+    // app.get('/api/collection/:name/:subcollection', controllers.gums.getSubCollectionDetails);
+    app.get('/api/collections/:name?/:subcollection?', controllers.gums.getCollections);
+
+    // app.all(/\/path\/([^\/]+)\/?(.+)?/,function(req,res,next).apply..
 
     // app.get('/items', controllers.gums.getItems);
     // app.get('/item/:id', controllers.gums.getItemDetails);

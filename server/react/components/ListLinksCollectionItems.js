@@ -31,7 +31,7 @@ const ListLinksCollectionItems = (props) => (
                         <Link className='subcollection-link' to={`/collection/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}`}>{element.serie}</Link>
                         <div className='input-wrapper'>
                             <div className='display-in-cell'>
-                                {Object.keys(element.items).join(', ')}
+                                {element.items}
                             </div>
                         </div>
                     </div>

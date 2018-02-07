@@ -110,19 +110,19 @@ function DBFetchData(criteria) {
         tmp.serie = criteria.subCollectionName;
     }
 
-    let query = generalCollectionsModel.find(tmp, function(err, gums) { // Gum -> generalCollectionsModel
+    let query = generalCollectionsModel.find(tmp, function (err, gums) { // Gum -> generalCollectionsModel
         if (err) {
             console.log('DBFetchData query error: ', err);
         } else
             console.log('Total number of items: ' + gums.length);
     })
-    .sort('id');
+        .sort('id');
 
     return query.exec()
         .then((data) => {
             let details = [];
             let i = 0;
-            data.forEach(function(singleCollection) {
+            data.forEach(function (singleCollection) {
                 details.push({
                     'make': singleCollection.make,
                     'serie': singleCollection.serie,
@@ -130,7 +130,7 @@ function DBFetchData(criteria) {
                     // 'items': singleCollection.items // TODO: replace [_dot_] [_dollar_]
                     'items': encodeItem(singleCollection.items)
                 });
-// new structure of items - store as object (v)
+                // new structure of items - store as object (v)
                 // new generalCollections({
                 //     'id': i++,
                 //     'make': item.make,
@@ -145,7 +145,7 @@ function DBFetchData(criteria) {
                 //     // saved!
                 // })
             }, this);
-// new structure of items - store as object (^)
+            // new structure of items - store as object (^)
             return details;
         })
         .catch((err) => {
@@ -155,26 +155,67 @@ function DBFetchData(criteria) {
 }
 
 // /////////////////////////////
+function squishObjToString(itemsObj) {
+    let identifiersArr = Object.keys(itemsObj);
+
+    var i = 0,
+        res = '',
+        iMax = Object.keys(itemsObj).length;
+
+    while (i < iMax) {
+        let j = 1;
+
+        while (/* (i+j < iMax) && */ (identifiersArr[i + j - 1] == identifiersArr[i + j] - 1)
+            && (itemsObj[identifiersArr[i + j - 1]].cnt == 1)
+            && (!itemsObj[identifiersArr[i + j - 1].note])) {
+            j++;
+        }
+
+        if ((itemsObj[identifiersArr[i + j - 1].note] ||
+            itemsObj[identifiersArr[i + j - 1]].cnt > 1) &&
+            j > 1) {
+            j--;// номерът с коментар да не е в интервала х-у, а да е отделен със запетая
+        }
+
+        if (j > 2) res += identifiersArr[i] + '-' + identifiersArr[i + j - 1];
+        else if (j == 2) res += identifiersArr[i] + ',' + identifiersArr[i + j - 1];
+        else res += identifiersArr[i + j - 1];
+
+        if ((itemsObj[identifiersArr[i + j - 1].note]) && (itemsObj[identifiersArr[i + j - 1]].cnt > 1)) {	// бройка и коментар
+            res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ';' + itemsObj[identifiersArr[i + j - 1].note] + ')';
+        } else if (itemsObj[identifiersArr[i + j - 1]].cnt > 1) {	// само бройка
+            res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ')';
+        } else if (itemsObj[identifiersArr[i + j - 1].note]) {	// само коментар
+            res += '(' + itemsObj[identifiersArr[i + j - 1].note] + ')';
+        }
+        res += ',';
+        i += j;
+    }
+    return res.slice(0, -1);// премахва последната запетайка
+}
 
 module.exports = {
     getCollections: (criteria) => {
-        // let details = [];
-        // collections.forEach(function (item) {
-        //     details.push({
-        //         'make': item.make,
-        //         'serie': item.serie,
-        //         'margins': item.margins,
-        //         'items': item.items
-        //     });
-        // }, this);
-        // return details;
-        return DBFetchData(criteria);
+        return DBFetchData(criteria)
+            .then(collection => {
+                let formattedOutput = [];
+                collection.forEach(function (item) {
+                    formattedOutput.push({
+                        'make': item.make,
+                        'serie': item.serie,
+                        'margins': item.margins,
+                        'items': squishObjToString(item.items)
+                    });
+                }, this);
+
+                return formattedOutput;
+            });
     },
     getCollectionDetails: (collectionName) => {
-        return DBFetchData({collectionName});
+        return DBFetchData({ collectionName });
     },
     getSubCollectionDetails: (collectionName, subCollectionName) => {
-        return DBFetchData({collectionName, subCollectionName});
+        return DBFetchData({ collectionName, subCollectionName });
     },
     // getSubCollectionDetails: (collectionName, subCollectionName) => {
     //     let details = [];
@@ -412,13 +453,13 @@ function encodeItem(itemsObject) {
             }
             encodeditemsObject[encodedKey] = itemsObject[key];
         }
-     }
-     return encodeditemsObject;
+    }
+    return encodeditemsObject;
 }
 //convert string representation of items to object with key=item name (v)
 function reorganizeData(items) {
     // let itemsCountText = { items: {}, text: {} };         // items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
-    let itemsCountText = { };         // {1:{cnt: 4, note: ''}, 3:{cnt: 1, note: ''}, 5:{cnt: 1, note: '*'}, 6:{cnt: 3, note: ''}}
+    let itemsCountText = {};         // {1:{cnt: 4, note: ''}, 3:{cnt: 1, note: ''}, 5:{cnt: 1, note: '*'}, 6:{cnt: 3, note: ''}}
 
     items = items.split(',');
 
@@ -431,11 +472,10 @@ function reorganizeData(items) {
                 let iMin = parseInt(m[1]),
                     iMax = parseInt(m[2]);
 
-                for (let j = iMin; j <= iMax; j++)
-                    {
-                        addItem2(itemsCountText, j, 1, null);
-                    }
-            }            else // ако има (text) след числото - се вади в нов асоциативен масив/обект
+                for (let j = iMin; j <= iMax; j++) {
+                    addItem2(itemsCountText, j, 1, null);
+                }
+            } else // ако има (text) след числото - се вади в нов асоциативен масив/обект
                 if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
                     let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
                     addItem2(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
@@ -465,7 +505,7 @@ function addItem2(itemsCountText, item, count, text) {
     if (key in itemsCountText) {
         itemsCountText[key].cnt += count;
     } else {
-        itemsCountText[key] = {'cnt': count};
+        itemsCountText[key] = { 'cnt': count };
     }
     if (text !== null) {
         itemsCountText[key]['note'] = text;

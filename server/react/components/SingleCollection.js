@@ -5,7 +5,7 @@ import ListLinksCollectionItems from './ListLinksCollectionItems';
 
 import { getCollectionData } from '../utils';
 
-let url = '/api/collection/';
+let url = '/api/collections/';
 
 export default class SingleCollection extends React.Component {
     constructor(props) {

@@ -4,7 +4,7 @@ import ListLinksCollectionItems from './ListLinksCollectionItems';
 import PropTypes from 'prop-types';
 import { getCollectionData } from '../utils';
 
-let url = '/api/collection/';
+let url = '/api/collections/';
 
 export default class SubCollection extends React.Component {
     constructor(props) {
