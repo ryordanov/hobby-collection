@@ -100,98 +100,17 @@ var generalCollectionsModel = mongoose.model('generalCollections', generalCollec
 //     return { items: items, having: having, missing: missing };
 // }
 
-function DBFetchData(criteria) {
-    console.log('DBFetchData - criteria', criteria);
-    let tmp = {};
-    if (criteria.collectionName) {
-        tmp.make = criteria.collectionName;
-    }
-    if (criteria.subCollectionName) {
-        tmp.serie = criteria.subCollectionName;
-    }
-
-    let query = generalCollectionsModel.find(tmp, function (err, gums) { // Gum -> generalCollectionsModel
-        if (err) {
-            console.log('DBFetchData query error: ', err);
-        } else
-            console.log('Total number of items: ' + gums.length);
-    })
-        .sort('id');
-
-    return query.exec()
-        .then((data) => {
-            let details = [];
-            let i = 0;
-            data.forEach(function (singleCollection) {
-                details.push({
-                    'make': singleCollection.make,
-                    'serie': singleCollection.serie,
-                    'margins': singleCollection.margins,
-                    // 'items': singleCollection.items // TODO: replace [_dot_] [_dollar_]
-                    'items': encodeItem(singleCollection.items)
-                });
-                // new structure of items - store as object (v)
-                // new generalCollections({
-                //     'id': i++,
-                //     'make': item.make,
-                //     'serie': item.serie,
-                //     'margins': item.margins,
-                //     'items': reorganizeData(item.items)
-                // })
-                // .save(function (err) {
-                //     if (err) {
-                //         return console.log(err);
-                //     }
-                //     // saved!
-                // })
-            }, this);
-            // new structure of items - store as object (^)
-            return details;
-        })
-        .catch((err) => {
-            console.log('DBFetchData catch error: ', err);
-            return err;
-        });
-}
-
-// /////////////////////////////
-function squishObjToString(itemsObj) {
-    let identifiersArr = Object.keys(itemsObj);
-
-    var i = 0,
-        res = '',
-        iMax = Object.keys(itemsObj).length;
-
-    while (i < iMax) {
-        let j = 1;
-
-        while (/* (i+j < iMax) && */ (identifiersArr[i + j - 1] == identifiersArr[i + j] - 1)
-            && (itemsObj[identifiersArr[i + j - 1]].cnt == 1)
-            && (!itemsObj[identifiersArr[i + j - 1].note])) {
-            j++;
+function tmpCompare(original, modified) {
+    let eq = true;
+    for (const key in original) {
+        if (original.hasOwnProperty(key)) {
+            eq = eq //&& original[key] === modified[key]
+                    && original[key]['cnt'] === modified[key]['cnt']
+                    && original[key]['note'] === modified[key]['note'];
+            
         }
-
-        if ((itemsObj[identifiersArr[i + j - 1].note] ||
-            itemsObj[identifiersArr[i + j - 1]].cnt > 1) &&
-            j > 1) {
-            j--;// номерът с коментар да не е в интервала х-у, а да е отделен със запетая
-        }
-
-        if (j > 2) res += identifiersArr[i] + '-' + identifiersArr[i + j - 1];
-        else if (j == 2) res += identifiersArr[i] + ',' + identifiersArr[i + j - 1];
-        else res += identifiersArr[i + j - 1];
-
-        if ((itemsObj[identifiersArr[i + j - 1].note]) && (itemsObj[identifiersArr[i + j - 1]].cnt > 1)) {	// бройка и коментар
-            res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ';' + itemsObj[identifiersArr[i + j - 1].note] + ')';
-        } else if (itemsObj[identifiersArr[i + j - 1]].cnt > 1) {	// само бройка
-            res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ')';
-        } else if (itemsObj[identifiersArr[i + j - 1].note]) {	// само коментар
-            res += '(' + itemsObj[identifiersArr[i + j - 1].note] + ')';
-        }
-        res += ',';
-        i += j;
     }
-    return res.slice(0, -1);// премахва последната запетайка
+    return eq;
 }
 
 module.exports = {
@@ -200,11 +119,15 @@ module.exports = {
             .then(collection => {
                 let formattedOutput = [];
                 collection.forEach(function (item) {
+                    let formattedItemsStr = squishObjToString(item.items);
+                    let formattedItemObj = expandStringToObj(formattedItemsStr);
+                    console.log(tmpCompare(item.items, formattedItemObj), item.make + '---'+item.serie);
+
                     formattedOutput.push({
                         'make': item.make,
                         'serie': item.serie,
                         'margins': item.margins,
-                        'items': squishObjToString(item.items)
+                        'items': formattedItemObj
                     });
                 }, this);
 
@@ -314,6 +237,311 @@ module.exports = {
     //     });
     // }
 };
+
+// helper functions
+function DBFetchData(criteria) {
+    console.log('DBFetchData - criteria', criteria);
+    let tmp = {};
+    if (criteria.collectionName) {
+        tmp.make = criteria.collectionName;
+    }
+    if (criteria.subCollectionName) {
+        tmp.serie = criteria.subCollectionName;
+    }
+
+    let query = generalCollectionsModel.find(tmp, function (err, gums) { // Gum -> generalCollectionsModel
+        if (err) {
+            console.log('DBFetchData query error: ', err);
+        } else
+            console.log('Total number of items: ' + gums.length);
+    })
+        .sort('id');
+
+    return query.exec()
+        .then((data) => {
+            let details = [];
+            let i = 0;
+            data.forEach(function (singleCollection) {
+                details.push({
+                    'make': singleCollection.make,
+                    'serie': singleCollection.serie,
+                    'margins': singleCollection.margins,
+                    // 'items': singleCollection.items // TODO: replace [_dot_] [_dollar_]
+                    'items': encodeItem(singleCollection.items)
+                });
+                // new structure of items - store as object (v)
+                // new generalCollections({
+                //     'id': i++,
+                //     'make': item.make,
+                //     'serie': item.serie,
+                //     'margins': item.margins,
+                //     'items': reorganizeData(item.items)
+                // })
+                // .save(function (err) {
+                //     if (err) {
+                //         return console.log(err);
+                //     }
+                //     // saved!
+                // })
+            }, this);
+            // new structure of items - store as object (^)
+            return details;
+        })
+        .catch((err) => {
+            console.log('DBFetchData catch error: ', err);
+            return err;
+        });
+}
+
+// convert mongoose encoded (_dot_) key to . and (_dollar_) to $ - special symbols in mongo db
+function encodeItem(itemsObject) {
+    let encodeditemsObject = {};
+
+    for (var key in itemsObject) {
+        if (itemsObject.hasOwnProperty(key)) {
+            let encodedKey = key;
+            if (key.includes('[_dot_]')) {
+                encodedKey = key.replace(/\[_dot_\]/g, '.');
+            } else if (key.includes('[_dollar_]')) {
+                encodedKey = key.replace(/\[_dollar_\]/g, '$');
+            }
+            encodeditemsObject[encodedKey] = itemsObject[key];
+        }
+    }
+    return encodeditemsObject;
+}
+
+//mongo object to single row string
+function squishObjToString(itemsObj) {
+    let identifiersArr = Object.keys(itemsObj);
+
+    var i = 0,
+        res = '',
+        iMax = Object.keys(itemsObj).length;
+
+    while (i < iMax) {
+        let j = 1;
+
+        while (/* (i+j < iMax) && */ (identifiersArr[i + j - 1] == identifiersArr[i + j] - 1)
+            && (itemsObj[identifiersArr[i + j - 1]].cnt == 1)
+            && (!itemsObj[identifiersArr[i + j - 1]].note)) {
+            j++;
+        }
+
+        if ((itemsObj[identifiersArr[i + j - 1]].note ||
+            itemsObj[identifiersArr[i + j - 1]].cnt > 1) &&
+            j > 1) {
+            j--;// номерът с коментар да не е в интервала х-у, а да е отделен със запетая
+        }
+
+        if (j > 2) res += identifiersArr[i] + '-' + identifiersArr[i + j - 1];
+        else if (j == 2) res += identifiersArr[i] + ',' + identifiersArr[i + j - 1];
+        else res += identifiersArr[i + j - 1];
+
+        if ((itemsObj[identifiersArr[i + j - 1]].note) && (itemsObj[identifiersArr[i + j - 1]].cnt > 1)) {	// бройка и коментар
+            res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ';' + itemsObj[identifiersArr[i + j - 1]].note + ')';
+        } else if (itemsObj[identifiersArr[i + j - 1]].cnt > 1) {	// само бройка
+            res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ')';
+        } else if (itemsObj[identifiersArr[i + j - 1]].note) {	// само коментар
+            res += '(' + itemsObj[identifiersArr[i + j - 1]].note + ')';
+        }
+        res += ',';
+        i += j;
+    }
+    return res.slice(0, -1);// премахва последната запетайка
+}
+
+//convert string representation of items to object with key=item name (v)
+function expandStringToObj(items) {
+    // let itemsCountText = { items: {}, text: {} };         // items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
+    let itemsCountText = {};         // {1:{cnt: 4, note: ''}, 3:{cnt: 1, note: ''}, 5:{cnt: 1, note: '*'}, 6:{cnt: 3, note: ''}}
+
+    items = items.split(',');
+
+    if (isNumber(items[0].substr(0, 1))) {      // to be replaced with REGEX some bright day!!! "1,3(7),4(txt),5-10,12(2;ttt)"
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i],
+                m = item.match(/^(\d+)[-](\d+)$/);
+
+            if (m != null) {
+                let iMin = parseInt(m[1]),
+                    iMax = parseInt(m[2]);
+
+                for (let j = iMin; j <= iMax; j++) {
+                    addItemToObject(itemsCountText, j, 1, null);
+                }
+            } else // ако има (text) след числото - се вади в нов асоциативен масив/обект
+                if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
+                    let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+                    addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+                }
+        }
+    } else {
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i];
+            let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null -> to be replaced with REGEX?
+            addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+        }
+    }
+
+    // let sortedNumbers = sortObject(itemsCountText.items);
+    // let sortedText = sortObject(itemsCountText.text);
+    // return { items: sortedNumbers, text: sortedText };
+    return itemsCountText;
+}
+
+function addItemToObject(itemsCountText, item, count, text) {
+    let key = item.toString();
+    if (key.includes('.')) {
+        key = key.replace(/\./g, '[_dot_]');
+    } else if (key.includes('$')) {
+        key = key.replace(/\$/g, '[_dollar_]');
+    }
+    if (key in itemsCountText) {
+        itemsCountText[key].cnt += count;
+    } else {
+        itemsCountText[key] = { 'cnt': count };
+    }
+    if (text !== null) {
+        itemsCountText[key]['note'] = text;
+    }
+}
+
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+// "1,3(7),4(txt),5-10,12(2;ttt)"  ---> [number=X, counts=Y, text="Z"]
+function splitItemToComponents(item) {
+    // let item = "3(7;texxxt)";
+    let leftBracket = item.indexOf('('),
+        rightBracket = item.indexOf(')'), // трябва да търси отзад напред, ако има (2;текст(ощетекст))
+        number = parseInt(item),
+        counts = 1,
+        text = null;
+
+    if (isNaN(number)) {
+        if (leftBracket > -1) {
+            number = item.substring(0, leftBracket);
+        } else {
+            number = item;
+        }
+    }
+
+    if (leftBracket > -1) { // and rigthBracket > -1 to be sure...
+        let additionalText = item.substring(leftBracket + 1, rightBracket);
+        let semiColon = item.indexOf(';');
+
+        if (semiColon > -1) { // има разделяне на бройка и текст
+            counts = parseInt(item.substring(leftBracket + 1, semiColon));
+            text = item.substring(semiColon + 1, rightBracket);
+        } else { // има само бройка или само текст
+            let isTxtTmp = parseInt(additionalText);
+            if (isNaN(isTxtTmp)) { // текст
+                text = additionalText;
+            } else { // брой
+                counts = isTxtTmp;
+            }
+        }
+    }
+    return { 'number': number, 'counts': counts, 'text': text };
+}
+
+//convert string representation of items to object with key=item name (^)
+
+////////////////////---------------------------- original code of reorganizeData (v)
+// function convertStrToObj(items) {
+//     let itemsCountText = { items: {}, text: {} };         // items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
+
+//     items = items.split(',');
+
+//     if (isNumber(items[0].substr(0, 1))) {      // to be replaced with REGEX one day!!! "1,3(7),4(txt),5-10,12(2;ttt)"
+//         for (let i = 0; i < items.length; i++) {
+//             let item = items[i],
+//                 m = item.match(/^(\d+)[-](\d+)$/);
+
+//             if (m != null) {
+//                 let iMin = parseInt(m[1]),
+//                     iMax = parseInt(m[2]);
+
+//                 for (let j = iMin; j <= iMax; j++)
+//                     {addItem(itemsCountText, j, 1, null);}
+//             }            else // ако има (text) след числото - се вади в нов асоциативен масив/обект
+//                 if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
+//                     let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+//                     addItem(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+//                 }
+//         }
+//     } else {
+//         for (let i = 0; i < items.length; i++) {
+//             let item = items[i];
+//             let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+//             addItem(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+//         }
+//     }
+
+//     let sortedNumbers = sortObject(itemsCountText.items);
+//     let sortedText = sortObject(itemsCountText.text);
+
+//     return { items: sortedNumbers, text: sortedText };
+// }
+
+// function addItem(itemsCountText, item, count, text) {
+//     if (item in itemsCountText.items) {
+//         itemsCountText.items[item] += count;
+//     } else {
+//         itemsCountText.items[item] = count;
+//     }
+//     if (text !== null) {
+//         itemsCountText.text[item] = text;
+//     }
+// }
+
+// // returns [number=X, counts=Y, text="Z"]
+// function splitItemToComponents(item) {
+//     // let item = "3(7;texxxt)";
+//     let leftBracket = item.indexOf('('),
+//         rightBracket = item.indexOf(')'), // трябва да търси отзад напред, ако има (2;текст(ощетекст))
+//         number = parseInt(item),
+//         counts = 1,
+//         text = null;
+
+//     if (isNaN(number)) {
+//         if (leftBracket > -1) {
+//             number = item.substring(0, leftBracket);
+//         } else {
+//             number = item;
+//         }
+//     }
+
+//     if (leftBracket > -1) { // and rigthBracket > -1 to be sure...
+//         let additionalText = item.substring(leftBracket + 1, rightBracket);
+//         let semiColon = item.indexOf(';');
+
+//         if (semiColon > -1) { // има разделяне на бройка и текст
+//             counts = parseInt(item.substring(leftBracket + 1, semiColon));
+//             text = item.substring(semiColon + 1, rightBracket);
+//         }        else { // има само бройка или само текст
+//             let isTxtTmp = parseInt(additionalText);
+//             if (isNaN(isTxtTmp)) { // текст
+//                 text = additionalText;
+//             }            else { // брой
+//                 counts = isTxtTmp;
+//             }
+//         }
+//     }
+//     return { 'number': number, 'counts': counts, 'text': text };
+// }
+
+// function sortObject(o) {
+//     return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+// }
+
+// function isNumber(n) {
+//     return !isNaN(parseFloat(n)) && isFinite(n);
+// }
+////////////////////---------------------------- original code of reorganizeData (^)
+
 
 // function createViewAsArray(collections, appendText) {
 //     var resultArr = [];
@@ -439,169 +667,3 @@ module.exports = {
  return true;
  } */
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-function encodeItem(itemsObject) {
-    let encodeditemsObject = {};
-
-    for (var key in itemsObject) {
-        if (itemsObject.hasOwnProperty(key)) {
-            let encodedKey = key;
-            if (key.includes('[_dot_]')) {
-                encodedKey = key.replace(/\[_dot_\]/g, '.');
-            } else if (key.includes('[_dollar_]')) {
-                encodedKey = key.replace(/\[_dollar_\]/g, '$');
-            }
-            encodeditemsObject[encodedKey] = itemsObject[key];
-        }
-    }
-    return encodeditemsObject;
-}
-//convert string representation of items to object with key=item name (v)
-function reorganizeData(items) {
-    // let itemsCountText = { items: {}, text: {} };         // items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
-    let itemsCountText = {};         // {1:{cnt: 4, note: ''}, 3:{cnt: 1, note: ''}, 5:{cnt: 1, note: '*'}, 6:{cnt: 3, note: ''}}
-
-    items = items.split(',');
-
-    if (isNumber(items[0].substr(0, 1))) {      // to be replaced with REGEX some bright day!!! "1,3(7),4(txt),5-10,12(2;ttt)"
-        for (let i = 0; i < items.length; i++) {
-            let item = items[i],
-                m = item.match(/^(\d+)[-](\d+)$/);
-
-            if (m != null) {
-                let iMin = parseInt(m[1]),
-                    iMax = parseInt(m[2]);
-
-                for (let j = iMin; j <= iMax; j++) {
-                    addItem2(itemsCountText, j, 1, null);
-                }
-            } else // ако има (text) след числото - се вади в нов асоциативен масив/обект
-                if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
-                    let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
-                    addItem2(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
-                }
-        }
-    } else {
-        for (let i = 0; i < items.length; i++) {
-            let item = items[i];
-            let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
-            addItem2(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
-        }
-    }
-
-    // let sortedNumbers = sortObject(itemsCountText.items);
-    // let sortedText = sortObject(itemsCountText.text);
-    // return { items: sortedNumbers, text: sortedText };
-    return itemsCountText;
-}
-
-function addItem2(itemsCountText, item, count, text) {
-    let key = item.toString();
-    if (key.includes('.')) {
-        key = key.replace(/\./g, '[_dot_]');
-    } else if (key.includes('$')) {
-        key = key.replace(/\$/g, '[_dollar_]');
-    }
-    if (key in itemsCountText) {
-        itemsCountText[key].cnt += count;
-    } else {
-        itemsCountText[key] = { 'cnt': count };
-    }
-    if (text !== null) {
-        itemsCountText[key]['note'] = text;
-    }
-}
-//convert string representation of items to object with key=item name (^)
-
-////////////////////---------------------------- original code of reorganizeData (v)
-// function convertStrToObj(items) {
-//     let itemsCountText = { items: {}, text: {} };         // items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
-
-//     items = items.split(',');
-
-//     if (isNumber(items[0].substr(0, 1))) {      // to be replaced with REGEX one day!!! "1,3(7),4(txt),5-10,12(2;ttt)"
-//         for (let i = 0; i < items.length; i++) {
-//             let item = items[i],
-//                 m = item.match(/^(\d+)[-](\d+)$/);
-
-//             if (m != null) {
-//                 let iMin = parseInt(m[1]),
-//                     iMax = parseInt(m[2]);
-
-//                 for (let j = iMin; j <= iMax; j++)
-//                     {addItem(itemsCountText, j, 1, null);}
-//             }            else // ако има (text) след числото - се вади в нов асоциативен масив/обект
-//                 if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
-//                     let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
-//                     addItem(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
-//                 }
-//         }
-//     } else {
-//         for (let i = 0; i < items.length; i++) {
-//             let item = items[i];
-//             let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
-//             addItem(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
-//         }
-//     }
-
-//     let sortedNumbers = sortObject(itemsCountText.items);
-//     let sortedText = sortObject(itemsCountText.text);
-
-//     return { items: sortedNumbers, text: sortedText };
-// }
-
-// function addItem(itemsCountText, item, count, text) {
-//     if (item in itemsCountText.items) {
-//         itemsCountText.items[item] += count;
-//     } else {
-//         itemsCountText.items[item] = count;
-//     }
-//     if (text !== null) {
-//         itemsCountText.text[item] = text;
-//     }
-// }
-
-// // returns [number=X, counts=Y, text="Z"]
-// function splitItemToComponents(item) {
-//     // let item = "3(7;texxxt)";
-//     let leftBracket = item.indexOf('('),
-//         rightBracket = item.indexOf(')'), // трябва да търси отзад напред, ако има (2;текст(ощетекст))
-//         number = parseInt(item),
-//         counts = 1,
-//         text = null;
-
-//     if (isNaN(number)) {
-//         if (leftBracket > -1) {
-//             number = item.substring(0, leftBracket);
-//         } else {
-//             number = item;
-//         }
-//     }
-
-//     if (leftBracket > -1) { // and rigthBracket > -1 to be sure...
-//         let additionalText = item.substring(leftBracket + 1, rightBracket);
-//         let semiColon = item.indexOf(';');
-
-//         if (semiColon > -1) { // има разделяне на бройка и текст
-//             counts = parseInt(item.substring(leftBracket + 1, semiColon));
-//             text = item.substring(semiColon + 1, rightBracket);
-//         }        else { // има само бройка или само текст
-//             let isTxtTmp = parseInt(additionalText);
-//             if (isNaN(isTxtTmp)) { // текст
-//                 text = additionalText;
-//             }            else { // брой
-//                 counts = isTxtTmp;
-//             }
-//         }
-//     }
-//     return { 'number': number, 'counts': counts, 'text': text };
-// }
-
-// function sortObject(o) {
-//     return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
-// }
-
-// function isNumber(n) {
-//     return !isNaN(parseFloat(n)) && isFinite(n);
-// }
-////////////////////---------------------------- original code of reorganizeData (^)
