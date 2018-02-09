@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 const ListLinksCollectionItems = (props) => (
     <div>
         {/* {JSON.stringify(props.collectionRecords)} */}
-        {console.log(props.collectionRecords)}
-
         ListLinksCollectionItems: {props.opt}
         {
             props.currentCollection && !props.currentSubCollection &&
@@ -26,9 +24,9 @@ const ListLinksCollectionItems = (props) => (
                 props.collectionRecords && 
                 props.collectionRecords.map((element, index) => (
                     <div className='nl' key={index}>
-                        <Link className='collection-link' to={`/collection/${encodeURIComponent(element.make)}`}>{element.make}</Link>
+                        <Link className='collection-link' to={`/listCollections/${encodeURIComponent(element.make)}`}>{element.make}</Link>
                         <span className='delimiter'>/</span>
-                        <Link className='subcollection-link' to={`/collection/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}`}>{element.serie}</Link>
+                        <Link className='subcollection-link' to={`/listCollections/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}`}>{element.serie}</Link>
                         <div className='input-wrapper'>
                             <div className='display-in-cell'>
                                 {element.items}

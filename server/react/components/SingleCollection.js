@@ -20,7 +20,7 @@ export default class SingleCollection extends React.Component {
     componentDidMount() {
         console.log('singlecollection', this.props.match);
 
-        getCollectionData(url + this.props.match.params.name)
+        getCollectionData(url + this.props.match.params.collectionName)
             .then((resData) => {
                 this.setState({ dataFromBackend: resData });
                 // console.log('resData', resData);
@@ -32,7 +32,8 @@ export default class SingleCollection extends React.Component {
         return (
             <ListLinksCollectionItems
                 collectionRecords={this.state.dataFromBackend}
-                currentCollection={this.props.match.params.name} />
+                currentCollection={this.props.match.params.collectionName}
+                currentSubCollection={this.props.match.params.subCollectionName} />
         );
     }
 }

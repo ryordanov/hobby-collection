@@ -7,9 +7,9 @@ import Footer from './components/common/Footer.js';
 
 import Home from './components/Home';
 import About from './components/About';
-import Collections from './components/Collections';
-import SingleCollection from './components/SingleCollection';
-import SubCollection from './components/SubCollection';
+import ListCollections from './components/ListCollections';
+// import SingleCollection from './components/SingleCollection';
+// import SubCollection from './components/SubCollection';
 import NotFound from './components/NotFound';
 // import Login from './components/Login';
 import Login from './components/Login/App';
@@ -21,9 +21,9 @@ const App = () => (
         <Switch>
             <Route exact path='/' component={Home} />
             <Route path='/login' component={Login} />
-            <Route path='/collections' component={Collections} />
-            <Route exact path='/collection/:name' component={SingleCollection} />
-            <Route path='/collection/:name/:subcollectionname' component={SubCollection} />
+            {/* <Route path='/collections' component={Collections} />
+            <Route exact path='/collection/:name' component={SingleCollection} /> */}
+            <Route path='/listCollections/:collectionName?/:subCollectionName?' component={ListCollections} />
             <Route path='/about' component={About} />
             <Route component={NotFound} />
         </Switch>

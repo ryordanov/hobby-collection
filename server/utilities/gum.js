@@ -109,8 +109,42 @@ function tmpCompare(original, modified) {
                     && original[key]['note'] === modified[key]['note'];
             
         }
+
+        if ((itemsObj[identifiersArr[i + j - 1].note] ||
+            itemsObj[identifiersArr[i + j - 1]].cnt > 1) &&
+            j > 1) {
+            j--;// номерът с коментар да не е в интервала х-у, а да е отделен със запетая
+        }
+
+        if (j > 2) res += identifiersArr[i] + '-' + identifiersArr[i + j - 1];
+        else if (j == 2) res += identifiersArr[i] + ',' + identifiersArr[i + j - 1];
+        else res += identifiersArr[i + j - 1];
+
+        if ((itemsObj[identifiersArr[i + j - 1].note]) && (itemsObj[identifiersArr[i + j - 1]].cnt > 1)) {	// бройка и коментар
+            res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ';' + itemsObj[identifiersArr[i + j - 1].note] + ')';
+        } else if (itemsObj[identifiersArr[i + j - 1]].cnt > 1) {	// само бройка
+            res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ')';
+        } else if (itemsObj[identifiersArr[i + j - 1].note]) {	// само коментар
+            res += '(' + itemsObj[identifiersArr[i + j - 1].note] + ')';
+        }
+        res += ', ';
+        i += j;
     }
     return eq;
+}
+
+function typeOfResult(option, items) {
+    switch (option) {
+        case 'CLLPS':
+            return squishObjToString(items);
+            break;
+        case 'EXPND':
+            return Object.keys(items).join(', ');
+            break;
+        default:
+            return Object.keys(items).join(', ')
+            break;
+    }
 }
 
 module.exports = {
@@ -119,15 +153,14 @@ module.exports = {
             .then(collection => {
                 let formattedOutput = [];
                 collection.forEach(function (item) {
-                    let formattedItemsStr = squishObjToString(item.items);
-                    let formattedItemObj = expandStringToObj(formattedItemsStr);
-                    console.log(tmpCompare(item.items, formattedItemObj), item.make + '---'+item.serie);
-
+                    // let formattedItemsStr = squishObjToString(item.items);
+                    // let formattedItemObj = expandStringToObj(formattedItemsStr);
+                    // console.log(tmpCompare(item.items, formattedItemObj), item.make + '---'+item.serie);
                     formattedOutput.push({
-                        'make': item.make,
-                        'serie': item.serie,
-                        'margins': item.margins,
-                        'items': formattedItemObj
+                        'make': item.make || '',
+                        'serie': item.serie || '',
+                        'margins': item.margins || '',
+                        'items': typeOfResult(criteria.option || '', item.items || {})
                     });
                 }, this);
 
