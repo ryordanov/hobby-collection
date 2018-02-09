@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 const ListLinksCollectionItems = (props) => (
     <div>
-        {/* {JSON.stringify(props.collectionRecords)} */}
         ListLinksCollectionItems: {props.opt}
         {
             props.currentCollection && !props.currentSubCollection &&
@@ -16,9 +15,8 @@ const ListLinksCollectionItems = (props) => (
         }
         {
             !(props.currentCollection || props.currentSubCollection) &&
-            <h5>Details of currentCollection </h5>
+            <h5>Details</h5>
         }
-
         <div className='path-to-item'>
             {
                 props.collectionRecords && 
@@ -36,7 +34,7 @@ const ListLinksCollectionItems = (props) => (
                 ))
             }
         </div>
-        {/* <Link to='/collections'>Collections</Link> */}
+        {/* <Link to='/listCollections'>Collections</Link> */}
     </div>
 );
 

@@ -105,30 +105,9 @@ function tmpCompare(original, modified) {
     for (const key in original) {
         if (original.hasOwnProperty(key)) {
             eq = eq //&& original[key] === modified[key]
-                    && original[key]['cnt'] === modified[key]['cnt']
-                    && original[key]['note'] === modified[key]['note'];
-            
+                && original[key]['cnt'] === modified[key]['cnt']
+                && original[key]['note'] === modified[key]['note'];
         }
-
-        if ((itemsObj[identifiersArr[i + j - 1].note] ||
-            itemsObj[identifiersArr[i + j - 1]].cnt > 1) &&
-            j > 1) {
-            j--;// номерът с коментар да не е в интервала х-у, а да е отделен със запетая
-        }
-
-        if (j > 2) res += identifiersArr[i] + '-' + identifiersArr[i + j - 1];
-        else if (j == 2) res += identifiersArr[i] + ',' + identifiersArr[i + j - 1];
-        else res += identifiersArr[i + j - 1];
-
-        if ((itemsObj[identifiersArr[i + j - 1].note]) && (itemsObj[identifiersArr[i + j - 1]].cnt > 1)) {	// бройка и коментар
-            res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ';' + itemsObj[identifiersArr[i + j - 1].note] + ')';
-        } else if (itemsObj[identifiersArr[i + j - 1]].cnt > 1) {	// само бройка
-            res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ')';
-        } else if (itemsObj[identifiersArr[i + j - 1].note]) {	// само коментар
-            res += '(' + itemsObj[identifiersArr[i + j - 1].note] + ')';
-        }
-        res += ', ';
-        i += j;
     }
     return eq;
 }
@@ -137,13 +116,10 @@ function typeOfResult(option, items) {
     switch (option) {
         case 'CLLPS':
             return squishObjToString(items);
-            break;
         case 'EXPND':
             return Object.keys(items).join(', ');
-            break;
         default:
-            return Object.keys(items).join(', ')
-            break;
+            return Object.keys(items).join(', ');
     }
 }
 
@@ -293,7 +269,6 @@ function DBFetchData(criteria) {
     return query.exec()
         .then((data) => {
             let details = [];
-            let i = 0;
             data.forEach(function (singleCollection) {
                 details.push({
                     'make': singleCollection.make,
@@ -404,10 +379,10 @@ function expandStringToObj(items) {
                     addItemToObject(itemsCountText, j, 1, null);
                 }
             } else // ако има (text) след числото - се вади в нов асоциативен масив/обект
-                if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
-                    let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
-                    addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
-                }
+            if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
+                let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+                addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+            }
         }
     } else {
         for (let i = 0; i < items.length; i++) {

@@ -17,6 +17,7 @@ export default class ListCollections extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            url: '',
             dataFromBackend: [],
             selectedOption: itemsSeed[0].value
         };
@@ -24,60 +25,54 @@ export default class ListCollections extends React.Component {
     }
 
     componentWillMount() {
-        let url = '';
-        if (this.props.match.params.collectionName && this.props.match.params.subCollectionName) {
-            url = `/api/collection/${this.props.match.params.collectionName}/${this.props.match.params.subCollectionName}`;
-        } else if (this.props.match.params.collectionName) {
-            url = `/api/collection/${this.props.match.params.collectionName}`;
-        } else {
-            url = `/api/collections?option=${itemsSeed[0].value}`;
-        }
+        let url = this.buildUrl(this.props.match.params.collectionName, this.props.match.params.subCollectionName, this.state.selectedOption);
 
         getCollectionData(url)
             .then((resData) => {
                 this.setState({ dataFromBackend: resData });
-                return resData;
             });
     }
 
     componentWillReceiveProps(nextProps) {
-        let url = '';
-        if (nextProps.match.params.collectionName && nextProps.match.params.subCollectionName) {
-            url = `/api/collection/${nextProps.match.params.collectionName}/${nextProps.match.params.subCollectionName}`;
-        } else if (nextProps.match.params.collectionName) {
-            url = `/api/collection/${nextProps.match.params.collectionName}`;
-        } else {
-            url = `/api/collections?option=${this.state.selectedOption}`;
+        if (this.props.location.pathname !== nextProps.location.pathname) {
+            let url = this.buildUrl(nextProps.match.params.collectionName, nextProps.match.params.subCollectionName, this.state.selectedOption);
+            getCollectionData(url)
+                .then((resData) => {
+                    // console.log('resData', resData);
+                    this.setState({ dataFromBackend: resData });
+                    return resData;
+                });
         }
-        this.setState({ dataFromBackend: [] })
-        console.log('url', url);
-
-        getCollectionData(url)
-            .then((resData) => {
-                console.log('resData', resData);
-
-                this.setState({ dataFromBackend: resData });
-                return resData;
-            });
-
     }
 
     selectOption(rbData) {
-        this.setState({ selectedOption: rbData });
-        getCollectionData(`/api/collections?option=${rbData}`)
+        let url = this.buildUrl(null, null, rbData);
+        getCollectionData(url)
             .then((resData) => {
                 this.setState({ dataFromBackend: resData });
-                return resData;
             });
+    }
+
+    buildUrl(collectionName, subCollectionName, selectedOption) {
+        let url = '/api/collections';
+        selectedOption = selectedOption || this.state.selectedOption || '';
+
+        if (collectionName) {
+            url += `/${collectionName}`;
+        }
+        if (subCollectionName) {
+            url += `/${subCollectionName}`;
+        }
+        this.setState({ url, selectedOption, dataFromBackend: [] }) // loader...
+        return url + `?option=${selectedOption}`;
     }
 
     render() {
         return (
             <div>
-                {!this.props.match.params.collectionName && !this.props.match.params.subCollectionName &&
-                    <OptionView
-                        selectedOption={this.selectOption}
-                        items={itemsSeed} />}
+                <OptionView
+                    selectedOption={this.selectOption}
+                    items={itemsSeed} />
                 <ListLinksCollectionItems
                     opt={this.state.selectedOption}
                     collectionRecords={this.state.dataFromBackend}
