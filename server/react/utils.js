@@ -1,4 +1,4 @@
-export const getCollectionData = (url) => { //rbData
+export const getCollectionDataFromBackend = (url) => { //rbData
     // rbData = rbData || 'ORG';
     // fetch('/api/collections?option=' + rbData, {credentials: 'same-origin'}) // in order to send cookies too
     //     .then(function(response) {

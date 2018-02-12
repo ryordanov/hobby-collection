@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import OptionView from './OptionView';
 import ListLinksCollectionItems from './ListLinksCollectionItems';
 
-import { getCollectionData } from '../utils';
+import { getCollectionDataFromBackend } from '../utils';
 
 let itemsSeed = [
     { id: 'original', value: 'ORG' },
@@ -25,35 +25,20 @@ export default class ListCollections extends React.Component {
     }
 
     componentWillMount() {
-        let url = this.buildUrl(this.props.match.params.collectionName, this.props.match.params.subCollectionName, this.state.selectedOption);
-
-        getCollectionData(url)
-            .then((resData) => {
-                this.setState({ dataFromBackend: resData });
-            });
+        this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, this.state.selectedOption);
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.location.pathname !== nextProps.location.pathname) {
-            let url = this.buildUrl(nextProps.match.params.collectionName, nextProps.match.params.subCollectionName, this.state.selectedOption);
-            getCollectionData(url)
-                .then((resData) => {
-                    // console.log('resData', resData);
-                    this.setState({ dataFromBackend: resData });
-                    return resData;
-                });
+            this.loadNewData(nextProps.match.params.collectionName, nextProps.match.params.subCollectionName, this.state.selectedOption);
         }
     }
 
     selectOption(rbData) {
-        let url = this.buildUrl(null, null, rbData);
-        getCollectionData(url)
-            .then((resData) => {
-                this.setState({ dataFromBackend: resData });
-            });
+        this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, rbData);
     }
 
-    buildUrl(collectionName, subCollectionName, selectedOption) {
+    loadNewData(collectionName, subCollectionName, selectedOption) {
         let url = '/api/collections';
         selectedOption = selectedOption || this.state.selectedOption || '';
 
@@ -63,8 +48,12 @@ export default class ListCollections extends React.Component {
         if (subCollectionName) {
             url += `/${subCollectionName}`;
         }
-        this.setState({ url, selectedOption, dataFromBackend: [] }) // loader...
-        return url + `?option=${selectedOption}`;
+        this.setState({ dataFromBackend: [] }); // loader...
+
+        return getCollectionDataFromBackend(url + `?option=${selectedOption}`)
+            .then((resData) => {
+                this.setState({ url, selectedOption, dataFromBackend: resData });
+            });
     }
 
     render() {

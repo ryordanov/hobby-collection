@@ -19,16 +19,18 @@ const ListLinksCollectionItems = (props) => (
         }
         <div className='path-to-item'>
             {
-                props.collectionRecords && 
+                props.collectionRecords &&
                 props.collectionRecords.map((element, index) => (
                     <div className='nl' key={index}>
                         <Link className='collection-link' to={`/listCollections/${encodeURIComponent(element.make)}`}>{element.make}</Link>
                         <span className='delimiter'>/</span>
                         <Link className='subcollection-link' to={`/listCollections/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}`}>{element.serie}</Link>
                         <div className='input-wrapper'>
-                            <div className='display-in-cell'>
-                                {element.items}
-                            </div>
+                            <Link to={`/edit/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}/${props.opt}`}>
+                                <div className='display-in-cell'>
+                                    {element.items}
+                                </div>
+                            </Link>
                         </div>
                     </div>
                 ))

@@ -11,14 +11,18 @@ module.exports = {
         filename: 'bundle.js'
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader?cacheDirectory=true',
-                options: {
-                    presets: ['es2015', 'react'/* ,'babel-preset-stage-1' */]
-                }
+                use: [
+                    {
+                        loader: 'babel-loader?cacheDirectory=true',
+                        options: {
+                            presets: [/*'es2015'*/ 'env', 'react'/* ,'babel-preset-stage-1' */]
+                        }
+                    }
+                ]
             }
         ]
     }
