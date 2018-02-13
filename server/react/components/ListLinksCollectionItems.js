@@ -7,11 +7,11 @@ const ListLinksCollectionItems = (props) => (
         ListLinksCollectionItems: {props.opt}
         {
             props.currentCollection && !props.currentSubCollection &&
-            <h5>Details of '{props.currentCollection}': </h5>
+            <h5>Details of `${props.currentCollection}`: </h5>
         }
         {
             props.currentCollection && props.currentSubCollection &&
-            <h5>Details of '{props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}': </h5>
+            <h5>Details of `${props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}`: </h5>
         }
         {
             !(props.currentCollection || props.currentSubCollection) &&
@@ -22,9 +22,9 @@ const ListLinksCollectionItems = (props) => (
                 props.collectionRecords &&
                 props.collectionRecords.map((element, index) => (
                     <div className='nl' key={index}>
-                        <Link className='collection-link' to={`/listCollections/${encodeURIComponent(element.make)}`}>{element.make}</Link>
+                        <Link className='collection-link' to={`/collections/${encodeURIComponent(element.make)}`}>{element.make}</Link>
                         <span className='delimiter'>/</span>
-                        <Link className='subcollection-link' to={`/listCollections/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}`}>{element.serie}</Link>
+                        <Link className='subcollection-link' to={`/collections/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}`}>{element.serie}</Link>
                         <div className='input-wrapper'>
                             <Link to={`/edit/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}/${props.opt}`}>
                                 <div className='display-in-cell'>
@@ -40,8 +40,8 @@ const ListLinksCollectionItems = (props) => (
 );
 
 ListLinksCollectionItems.propTypes = {
-    collectionData: PropTypes.array,
-    getCollectionData: PropTypes.func,
+    opt: PropTypes.bool,
+    collectionRecords: PropTypes.array,
     currentCollection: PropTypes.string,
     currentSubCollection: PropTypes.string
 };
