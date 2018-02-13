@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // import { Link } from 'react-router-dom';
-import OptionView from './OptionView';
-import ListLinksCollectionItems from './ListLinksCollectionItems';
+import OptionView from '../components/OptionView';
+import ListLinksCollectionItems from '../components/ListLinksCollectionItems';
 
 import { getCollectionDataFromBackend } from '../utils';
 
@@ -13,7 +13,7 @@ let itemsSeed = [
 ];
 
 // some kind of View-Controller
-export default class ListCollections extends React.Component {
+export default class Collections extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -72,10 +72,10 @@ export default class ListCollections extends React.Component {
     }
 }
 
-ListCollections.propTypes = {
+Collections.propTypes = {
     match: PropTypes.object
 };
-ListCollections.defaultProps = {
+Collections.defaultProps = {
     match: {
         params: {
             collectionName: '',

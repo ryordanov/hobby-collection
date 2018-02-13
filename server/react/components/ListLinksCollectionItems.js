@@ -36,7 +36,6 @@ const ListLinksCollectionItems = (props) => (
                 ))
             }
         </div>
-        {/* <Link to='/listCollections'>Collections</Link> */}
     </div>
 );
 
