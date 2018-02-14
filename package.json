@@ -51,7 +51,7 @@
   "engines": {
     "node": "8.1.3"
   },
-  "_dependenciesTMP": {
+  "_TMPdependencies": {
     "history": "^4.6.3",
     "react-router": "^4.1.1",
     "react-bootstrap": "^0.32.1",
@@ -59,7 +59,7 @@
     "reactstrap": "^5.0.0-beta",
     "save": "^2.3.2"
   },
-  "_devDependenciesTMP": {
+  "_TMPdevDependencies": {
     "babel-preset-stage-1": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-cli": "^6.22.2",

@@ -1,37 +1,37 @@
-import React, { Component } from "react";
-import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import React, { Component } from 'react';
+// import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 
 export default class Login extends Component {
-  constructor(props) {
-    super(props);
-    
-    this.state = {
-        email: "",
-        password: ""
-    };
+    constructor(props) {
+        super(props);
 
-    this.handleChange = this.handleChange.bind(this);    
-  }
+        this.state = {
+            email: '',
+            password: ''
+        };
 
-  validateForm() {
-    return this.state.email.length > 0 && this.state.password.length > 0;
-  }
+        this.handleChange = this.handleChange.bind(this);
+    }
 
-  handleChange(event) {
-    this.setState({
-      [event.target.id]: event.target.value
-    });
-  }
+    validateForm() {
+        return this.state.email.length > 0 && this.state.password.length > 0;
+    }
 
-  handleSubmit(event) {
-      
-    event.preventDefault();
-  }
+    handleChange(event) {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
+    }
 
-  render() {
-    return (
-      <div className="Login">
-        <form onSubmit={this.handleSubmit}>
+    handleSubmit(event) {
+
+        event.preventDefault();
+    }
+
+    render() {
+        return (
+            <div className="Login">
+                {/* <form onSubmit={this.handleSubmit}>
           <FormGroup controlId="email" bsSize="large">
             <ControlLabel>Email: </ControlLabel>
             <FormControl
@@ -57,8 +57,8 @@ export default class Login extends Component {
           >
             Login
           </Button>
-        </form>
-      </div>
-    );
-  }
+        </form> */}
+            </div>
+        );
+    }
 }

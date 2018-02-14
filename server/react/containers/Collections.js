@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // import { Link } from 'react-router-dom';
 import OptionView from '../components/OptionView';
-import ListLinksCollectionItems from '../components/ListLinksCollectionItems';
+import ViewCollections from '../components/ViewCollections';
 
 import { getCollectionDataFromBackend } from '../utils';
 
@@ -62,7 +62,7 @@ export default class Collections extends React.Component {
                 <OptionView
                     selectedOption={this.selectOption}
                     items={itemsSeed} />
-                <ListLinksCollectionItems
+                <ViewCollections
                     opt={this.state.selectedOption}
                     collectionRecords={this.state.dataFromBackend}
                     currentCollection={this.props.match.params.collectionName}

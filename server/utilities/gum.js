@@ -128,9 +128,9 @@ module.exports = {
         return DBFetchData(criteria)
             .then(collection => {
                 let formattedOutput = [];
-                collection.forEach(function (item) {
-                    // let formattedItemsStr = squishObjToString(item.items);
-                    // let formattedItemObj = expandStringToObj(formattedItemsStr);
+                collection.forEach(function(item) {
+                    let formattedItemsStr = squishObjToString(item.items);
+                    let formattedItemObj = expandStringToObj(formattedItemsStr);
                     // console.log(tmpCompare(item.items, formattedItemObj), item.make + '---'+item.serie);
                     formattedOutput.push({
                         'make': item.make || '',
@@ -258,7 +258,7 @@ function DBFetchData(criteria) {
         tmp.serie = criteria.subCollectionName;
     }
 
-    let query = generalCollectionsModel.find(tmp, function (err, gums) { // Gum -> generalCollectionsModel
+    let query = generalCollectionsModel.find(tmp, function(err, gums) { // Gum -> generalCollectionsModel
         if (err) {
             console.log('DBFetchData query error: ', err);
         } else
@@ -269,7 +269,7 @@ function DBFetchData(criteria) {
     return query.exec()
         .then((data) => {
             let details = [];
-            data.forEach(function (singleCollection) {
+            data.forEach(function(singleCollection) {
                 details.push({
                     'make': singleCollection.make,
                     'serie': singleCollection.serie,
@@ -325,7 +325,7 @@ function squishObjToString(itemsObj) {
 
     var i = 0,
         res = '',
-        iMax = Object.keys(itemsObj).length;
+        iMax = identifiersArr.length;
 
     while (i < iMax) {
         let j = 1;
@@ -363,6 +363,12 @@ function squishObjToString(itemsObj) {
 function expandStringToObj(items) {
     // let itemsCountText = { items: {}, text: {} };         // items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
     let itemsCountText = {};         // {1:{cnt: 4, note: ''}, 3:{cnt: 1, note: ''}, 5:{cnt: 1, note: '*'}, 6:{cnt: 3, note: ''}}
+
+    // let regex = /(\w+\(\w+\))|(\w+\(\w+;\w+\))|(\d+\-\d+)|(\d+)/g;
+    // let negativeLookbehind = /(?<!\()/; // not supported in JS
+    let regex = /(\w+(?:\(\w+(?:\;[\w+|\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1})/g;
+    let regMatch = items.match(regex);
+    // 108(кирилица) -> 108
 
     items = items.split(',');
 

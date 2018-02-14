@@ -2,16 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const ListLinksCollectionItems = (props) => (
+const ViewCollections = (props) => (
     <div>
-        ListLinksCollectionItems: {props.opt}
+        ViewCollections: {props.opt}
         {
             props.currentCollection && !props.currentSubCollection &&
-            <h5>Details of `${props.currentCollection}`: </h5>
+            <h5>Details of `{props.currentCollection}`: </h5>
         }
         {
             props.currentCollection && props.currentSubCollection &&
-            <h5>Details of `${props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}`: </h5>
+            <h5>Details of `{props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}`: </h5>
         }
         {
             !(props.currentCollection || props.currentSubCollection) &&
@@ -39,11 +39,11 @@ const ListLinksCollectionItems = (props) => (
     </div>
 );
 
-ListLinksCollectionItems.propTypes = {
-    opt: PropTypes.bool,
+ViewCollections.propTypes = {
+    opt: PropTypes.string,
     collectionRecords: PropTypes.array,
     currentCollection: PropTypes.string,
     currentSubCollection: PropTypes.string
 };
 
-export default ListLinksCollectionItems;
+export default ViewCollections;
