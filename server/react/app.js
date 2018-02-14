@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
+// import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import Header from './common/Header.js';
 import Footer from './common/Footer.js';
