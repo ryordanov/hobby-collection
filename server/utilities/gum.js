@@ -103,8 +103,9 @@ var generalCollectionsModel = mongoose.model('generalCollections', generalCollec
 function tmpCompare(original, modified) {
     let eq = true;
     for (const key in original) {
-        if (original.hasOwnProperty(key)) {
+        if (key && original.hasOwnProperty(key)) {
             eq = eq //&& original[key] === modified[key]
+                && modified.hasOwnProperty(key)
                 && original[key]['cnt'] === modified[key]['cnt']
                 && original[key]['note'] === modified[key]['note'];
         }
@@ -130,8 +131,8 @@ module.exports = {
                 let formattedOutput = [];
                 collection.forEach(function(item) {
                     let formattedItemsStr = squishObjToString(item.items);
-                    let formattedItemObj = expandStringToObj(formattedItemsStr);
-                    // console.log(tmpCompare(item.items, formattedItemObj), item.make + '---'+item.serie);
+                    let formattedItemObj = expandStringToObj2(formattedItemsStr);
+                    console.log(tmpCompare(item.items, formattedItemObj), item.make + '---'+item.serie);
                     formattedOutput.push({
                         'make': item.make || '',
                         'serie': item.serie || '',
@@ -359,6 +360,34 @@ function squishObjToString(itemsObj) {
     return res.slice(0, -1);// премахва последната запетайка
 }
 
+
+//convert string representation of items to object with key=item name (v)
+function expandStringToObj2(items) {
+    let itemsObj = {};
+
+    let regex = /([\wа-я♦♥♠♣\s]+(?:\([\wа-я\s\-\/\*\:\.\?]+(?:\;[\wа-я\s\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1})/ig;
+    let regMatch = items.match(regex);
+    regMatch && regMatch.forEach(part => {
+
+        let m = part.match(/^(\d+)[-](\d+)$/);
+
+        if (m != null) {
+            for (let j = parseInt(m[1]); j <= parseInt(m[2]); j++) {
+                itemsObj['' + j] = itemsObj['' + j] || {};
+                itemsObj['' + j].cnt = (itemsObj['' + j].cnt || 0) + 1;
+            }
+        } else {
+            let splitted = splitItemToComponents(part); // TODO: regex
+            itemsObj[splitted.number] = itemsObj[splitted.number] || {};
+            itemsObj[splitted.number].cnt = (itemsObj[splitted.number].cnt || 0) + splitted.counts;
+
+            if (splitted.text) {
+                itemsObj[splitted.number].note = splitted.text;
+            }
+        }
+    });
+    return itemsObj;
+}
 //convert string representation of items to object with key=item name (v)
 function expandStringToObj(items) {
     // let itemsCountText = { items: {}, text: {} };         // items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
@@ -366,7 +395,8 @@ function expandStringToObj(items) {
 
     // let regex = /(\w+\(\w+\))|(\w+\(\w+;\w+\))|(\d+\-\d+)|(\d+)/g;
     // let negativeLookbehind = /(?<!\()/; // not supported in JS
-    let regex = /(\w+(?:\(\w+(?:\;[\w+|\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1})/g;
+    // let regex = /(\w+(?:\(\w+(?:\;[\w+|\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1})/g;
+    let regex = /([\p{Cyrillic}\w]+(?:\([\p{Cyrillic}\s\w\*\-]+(?:\;[\p{Cyrillic}\s\w\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1})/g;
     let regMatch = items.match(regex);
     // 108(кирилица) -> 108
 
