@@ -159,6 +159,7 @@ module.exports = {
 
         return generalCollectionsModel.findByIdAndUpdate(oid, {
             items: expandStringToObj(updatedData.items)
+            //to edit category or not?!
           }, {new: true}).exec()
           .then((updatedData) => {
             if (updatedData) {
@@ -171,34 +172,6 @@ module.exports = {
                 };
             }
           })
-
-
-
-        // let promise = generalCollectionsModel.findOneAndUpdate(oid).exec();
-
-        // promise.then(function (data) {
-        //     // data.items = expandStringToObj(updatedData);
-
-        //     let details = [];
-        //     data.forEach(function (singleCollection) {
-        //         details.push({
-        //             'oid': singleCollection._id.toString(),
-        //             'id': singleCollection.id,
-        //             'make': singleCollection.make,
-        //             'serie': singleCollection.serie,
-        //             'margins': singleCollection.margins,
-        //             'items': encodeItem(singleCollection.items)
-        //         });
-        //     }, this);
-        //     return details;
-        //     // return data.save(); // returns a promise
-        // })
-        // .then(function (data) {
-        //     console.log('updated data: ' + data);
-        // })
-        // .catch(function (err) {
-        //     console.log('error:', err);
-        // });
 
         // generalCollectionsModel.findOneAndUpdate({ 'id': parseInt(id) }, { $set: { 'items': itemsForDB } }, { new: true, runValidators: true }, function (err, data) {
         //     if (err) {

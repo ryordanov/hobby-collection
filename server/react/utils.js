@@ -23,10 +23,7 @@ export const sendCollectionDataToBackend = (url, data) => {
         credentials: 'same-origin',
         headers: {"Content-Type": "application/json"},
         method: 'POST',
-        body: JSON.stringify(data),
-        // body: JSON.stringify({
-        //     'ala': 'bala'
-        // })
+        body: JSON.stringify(data)
     })
     .then((response) => {
         if (response.status >= 400) {
@@ -37,19 +34,4 @@ export const sendCollectionDataToBackend = (url, data) => {
     .catch((error) => {
         console.error(error);
     });
-
-    // fetch('/api/save/2',{
-    //     method: 'POST',
-    //     body: JSON.stringify({
-    //       'task': 'self.refs.task.value'
-    //     }),
-    //     headers: {"Content-Type": "application/json"}
-    //   })
-    //   .then(function(response){
-    //       debugger
-    //     return response.json()
-    //   }).then(function(body){
-    //     console.log(body);
-    //     alert(self.refs.task.value)
-    //   });
 }

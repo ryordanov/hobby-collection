@@ -50,6 +50,7 @@ export default class Edit extends React.Component {
 
         sendCollectionDataToBackend(`/api/save/${oid}`, { oid, id, category, subCategory, items })
             .then(data => this.setState({
+                oid: data.oid,
                 id: data.data,
                 category: data.make,
                 subCategory: data.serie,

@@ -7,8 +7,8 @@ import ViewCollections from '../components/ViewCollections';
 import { getCollectionDataFromBackend } from '../utils';
 
 let itemsSeed = [
-    { id: 'original', value: 'ORG' },
-    { id: 'collapse', value: 'CLLPS' },
+    { id: 'numbers only', value: 'ORG' },
+    { id: 'squished', value: 'CLLPS' },
     { id: 'expand', value: 'EXPND' }
 ];
 
