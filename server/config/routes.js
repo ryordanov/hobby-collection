@@ -16,6 +16,9 @@ module.exports = (config, app) => {
     // app.get('/api/collection/:name', controllers.gums.getCollectionDetails);
     // app.get('/api/collection/:name/:subcollection', controllers.gums.getSubCollectionDetails);
     app.get('/api/collections/:name?/:subcollection?', controllers.gums.getCollections);
+    
+    app.post('/api/save/:id', controllers.gums.update);
+
 
     // app.all(/\/path\/([^\/]+)\/?(.+)?/,function(req,res,next).apply..
 

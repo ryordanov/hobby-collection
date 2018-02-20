@@ -60,6 +60,7 @@ export default class Collections extends React.Component {
         return (
             <div>
                 <OptionView
+                    // selectedOption={(rbData) => this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, rbData)}
                     selectedOption={this.selectOption}
                     items={itemsSeed} />
                 <ViewCollections

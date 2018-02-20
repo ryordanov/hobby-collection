@@ -1,62 +1,82 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// import { Container, Row, Col, Breadcrumb, BreadcrumbItem, Alert } from 'reactstrap';
-
-import { getCollectionDataFromBackend } from '../utils';
+import { getCollectionDataFromBackend, sendCollectionDataToBackend } from '../utils';
 
 
 export default class Edit extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            records: []
+            oid: '',
+            id: '',
+            category: '',
+            subCategory: '',
+            items: ''
         };
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
         return getCollectionDataFromBackend(`/api/collections/${this.props.match.params.collectionName}/${this.props.match.params.subCollectionName}?option=${this.props.match.params.option}`)
             .then((resData) => {
-                this.setState({ records: resData });
+                this.setState({
+                    oid: resData[0].oid,
+                    id: resData[0].id,
+                    category: resData[0].make,
+                    subCategory: resData[0].serie,
+                    items: resData[0].items
+                });
             });
     }
 
-    render() {
-        return (<div></div>
-        // < Container >
-        //     <Alert color="primary">
-        //         This is a primary alert — check it out!
-        //     </Alert>
-        //     <Row>
-        //         <Col>
-        //             <Breadcrumb>
-        //                 <BreadcrumbItem active>Home</BreadcrumbItem>
-        //             </Breadcrumb>
-        //             <Breadcrumb>
-        //                 <BreadcrumbItem><a href="#">Home</a></BreadcrumbItem>
-        //                 <BreadcrumbItem active>Library</BreadcrumbItem>
-        //             </Breadcrumb>
-        //             <Breadcrumb>
-        //                 <BreadcrumbItem><a href="#">Home</a></BreadcrumbItem>
-        //                 <BreadcrumbItem><a href="#">Library</a></BreadcrumbItem>
-        //                 <BreadcrumbItem active>Data</BreadcrumbItem>
-        //             </Breadcrumb>
-        //         </Col>
-        //     </Row>
-        //     <Row>
-        //         <Col>{this.props.match.params.collectionName}</Col>
-        //     </Row>
-        //     <Row>
-        //         <Col>{this.props.match.params.subCollectionName}</Col>
-        //     </Row>
-        //     <Row>
-        //         <Col>{this.props.match.params.option}</Col>
-        //     </Row>
-        //     <Row>
-        //         <Col>{JSON.stringify(this.state.records)}</Col>
-        //     </Row>
-        // </Container >
+    handleChange(event) {
+        this.setState({ [event.target.name]: event.target.value });
+    }
 
+    handleSubmit(event) {
+        event.preventDefault();
+        // const data = new FormData(event.target);
+
+        // const form = event.target;
+        // const data = {}
+        // for (let element of form.elements) {
+        //     if (element.name) {
+        //         data[element.name] = element.value;
+        //     }
+        // }
+        let { oid, id, category, subCategory, items } = this.state;
+
+        sendCollectionDataToBackend(`/api/save/${oid}`, { oid, id, category, subCategory, items })
+            .then(data => this.setState({
+                id: data.data,
+                category: data.make,
+                subCategory: data.serie,
+                items: data.items
+            }))
+    }
+
+    render() {
+        return (
+            <div>
+                {JSON.stringify(this.state.records)}
+                <form id='updateForm' onSubmit={this.handleSubmit} noValidate>
+                    <label>
+                        Category:
+                        <input type="text" value={this.state.category} name='category' onChange={this.handleChange} />
+                    </label>
+                    <label>
+                        Subcategory:
+                        <input type="text" value={this.state.subCategory} name='subCategory' onChange={this.handleChange} />
+                    </label>
+                    <label>
+                        Items:
+                        <textarea value={this.state.items} name='items' onChange={this.handleChange} />
+                    </label>
+                    <input type="submit" value="Save" />
+                </form>
+            </div>
         );
     }
 

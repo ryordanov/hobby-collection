@@ -1,13 +1,4 @@
-export const getCollectionDataFromBackend = (url) => { //rbData
-    // rbData = rbData || 'ORG';
-    // fetch('/api/collections?option=' + rbData, {credentials: 'same-origin'}) // in order to send cookies too
-    //     .then(function(response) {
-    //         if (response.status >= 400) {
-    //             throw new Error('Bad response from server');
-    //         }
-    //         return response.json();
-    //     })
-    // console.log('rbData', rbData);
+export const getCollectionDataFromBackend = (url) => {
     return fetch(url, {
         credentials: 'same-origin', // send cookies too
         method: 'GET',
@@ -15,22 +6,50 @@ export const getCollectionDataFromBackend = (url) => { //rbData
             Accept: 'application/json',
             'Content-Type': 'application/json'
         }
+    })
+    .then((response) => {
+        if (response.status >= 400) {
+            throw new Error('Bad response from server');
+        }
+        return response.json();
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+};
+
+export const sendCollectionDataToBackend = (url, data) => {
+    return fetch(url, {
+        credentials: 'same-origin',
+        headers: {"Content-Type": "application/json"},
+        method: 'POST',
+        body: JSON.stringify(data),
         // body: JSON.stringify({
-        //     option: rbData || 'ORG' // TODO: remove default argument
+        //     'ala': 'bala'
         // })
     })
-        .then((response) => {
-            if (response.status >= 400) {
-                throw new Error('Bad response from server');
-            }
-            return response.json();
-        })
-        // .then((resData) => {
-        //     this.setState({ dataFromBackend: resData });
-        //     // console.log('resData', resData);
-        //     return resData;
-        // })
-        .catch((error) => {
-            console.error(error);
-        });
-};
+    .then((response) => {
+        if (response.status >= 400) {
+            throw new Error('Bad response from server');
+        }
+        return response.json();
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+
+    // fetch('/api/save/2',{
+    //     method: 'POST',
+    //     body: JSON.stringify({
+    //       'task': 'self.refs.task.value'
+    //     }),
+    //     headers: {"Content-Type": "application/json"}
+    //   })
+    //   .then(function(response){
+    //       debugger
+    //     return response.json()
+    //   }).then(function(body){
+    //     console.log(body);
+    //     alert(self.refs.task.value)
+    //   });
+}

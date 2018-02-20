@@ -24,7 +24,7 @@ let generalCollectionsSchema = new mongoose.Schema({
 });
 var generalCollectionsModel = mongoose.model('generalCollections', generalCollectionsSchema);
 // new structure of items - store as object (^)
-
+let delimiter = ',';
 /*
  module.exports.seedGumInserts = () => {
  Gum.find({}).then(gums=> {
@@ -100,14 +100,16 @@ var generalCollectionsModel = mongoose.model('generalCollections', generalCollec
 //     return { items: items, having: having, missing: missing };
 // }
 
-function tmpCompare(original, modified) {
+function tmpCompare(original, modified, item) {
     let eq = true;
     for (const key in original) {
-        if (key && original.hasOwnProperty(key)) {
+        if (/* key && */ original.hasOwnProperty(key)) {
             eq = eq //&& original[key] === modified[key]
                 && modified.hasOwnProperty(key)
                 && original[key]['cnt'] === modified[key]['cnt']
                 && original[key]['note'] === modified[key]['note'];
+        } else {
+            console.log('wrong', original, modified, item)
         }
     }
     return eq;
@@ -118,7 +120,7 @@ function typeOfResult(option, items) {
         case 'CLLPS':
             return squishObjToString(items);
         case 'EXPND':
-            return Object.keys(items).join(', ');
+            return Object.keys(items).join(',');
         default:
             return Object.keys(items).join(', ');
     }
@@ -128,28 +130,82 @@ module.exports = {
     getCollections: (criteria) => {
         return DBFetchData(criteria)
             .then(collection => {
-                let formattedOutput = [];
-                collection.forEach(function(item) {
-                    let formattedItemsStr = squishObjToString(item.items);
-                    let formattedItemObj = expandStringToObj2(formattedItemsStr);
-                    console.log(tmpCompare(item.items, formattedItemObj), item.make + '---'+item.serie);
-                    formattedOutput.push({
-                        'make': item.make || '',
-                        'serie': item.serie || '',
-                        'margins': item.margins || '',
-                        'items': typeOfResult(criteria.option || '', item.items || {})
-                    });
+                // let formattedOutput = [];
+                collection.forEach(function (item, index) {
+                    // let formattedItemsStr = squishObjToString(item.items);
+                    // let formattedItemObj = expandStringToObj(formattedItemsStr);
+                    // console.log(tmpCompare(item.items, formattedItemObj, item), item.make + '---'+item.serie);
+                    collection[index]['items'] = typeOfResult(criteria.option || '', item.items || {});
+                    // formattedOutput.push({
+                    //     'id': item.id,
+                    //     'make': item.make || '',
+                    //     'serie': item.serie || '',
+                    //     'margins': item.margins || '',
+                    //     'items': typeOfResult(criteria.option || '', item.items || {})
+                    // });
                 }, this);
 
-                return formattedOutput;
+                return collection; // formattedOutput
             });
     },
-    getCollectionDetails: (collectionName) => {
-        return DBFetchData({ collectionName });
-    },
-    getSubCollectionDetails: (collectionName, subCollectionName) => {
-        return DBFetchData({ collectionName, subCollectionName });
-    },
+    // getCollectionDetails: (collectionName) => {
+    //     return DBFetchData({ collectionName });
+    // },
+    // getSubCollectionDetails: (collectionName, subCollectionName) => {
+    //     return DBFetchData({ collectionName, subCollectionName });
+    // },
+    updateById: (id, updatedData) => {
+        var oid = mongoose.Types.ObjectId(id);
+
+        return generalCollectionsModel.findByIdAndUpdate(oid, {
+            items: expandStringToObj(updatedData.items)
+          }, {new: true}).exec()
+          .then((updatedData) => {
+            if (updatedData) {
+              return {
+                  items: squishObjToString(updatedData.items),
+                  make: updatedData.make,
+                  serie: updatedData.serie,
+                  id: updatedData.id,
+                  oid: updatedData._id.toString()
+                };
+            }
+          })
+
+
+
+        // let promise = generalCollectionsModel.findOneAndUpdate(oid).exec();
+
+        // promise.then(function (data) {
+        //     // data.items = expandStringToObj(updatedData);
+
+        //     let details = [];
+        //     data.forEach(function (singleCollection) {
+        //         details.push({
+        //             'oid': singleCollection._id.toString(),
+        //             'id': singleCollection.id,
+        //             'make': singleCollection.make,
+        //             'serie': singleCollection.serie,
+        //             'margins': singleCollection.margins,
+        //             'items': encodeItem(singleCollection.items)
+        //         });
+        //     }, this);
+        //     return details;
+        //     // return data.save(); // returns a promise
+        // })
+        // .then(function (data) {
+        //     console.log('updated data: ' + data);
+        // })
+        // .catch(function (err) {
+        //     console.log('error:', err);
+        // });
+
+        // generalCollectionsModel.findOneAndUpdate({ 'id': parseInt(id) }, { $set: { 'items': itemsForDB } }, { new: true, runValidators: true }, function (err, data) {
+        //     if (err) {
+        //         console.log('Something wrong when updating data!');
+        //     }
+        // });
+    }
     // getSubCollectionDetails: (collectionName, subCollectionName) => {
     //     let details = [];
     //     collections.forEach(function(item) {
@@ -251,27 +307,29 @@ module.exports = {
 // helper functions
 function DBFetchData(criteria) {
     console.log('DBFetchData - criteria', criteria);
-    let tmp = {};
+    let dbCriteria = {};
     if (criteria.collectionName) {
-        tmp.make = criteria.collectionName;
+        dbCriteria.make = criteria.collectionName;
     }
     if (criteria.subCollectionName) {
-        tmp.serie = criteria.subCollectionName;
+        dbCriteria.serie = criteria.subCollectionName;
     }
 
-    let query = generalCollectionsModel.find(tmp, function(err, gums) { // Gum -> generalCollectionsModel
+    let query = generalCollectionsModel.find(dbCriteria, function (err, gums) { // Gum -> generalCollectionsModel
         if (err) {
             console.log('DBFetchData query error: ', err);
         } else
             console.log('Total number of items: ' + gums.length);
     })
-        .sort('id');
+    .sort('id');
 
     return query.exec()
         .then((data) => {
             let details = [];
-            data.forEach(function(singleCollection) {
+            data.forEach(function (singleCollection) {
                 details.push({
+                    'oid': singleCollection._id.toString(),
+                    'id': singleCollection.id,
                     'make': singleCollection.make,
                     'serie': singleCollection.serie,
                     'margins': singleCollection.margins,
@@ -324,8 +382,9 @@ function encodeItem(itemsObject) {
 function squishObjToString(itemsObj) {
     let identifiersArr = Object.keys(itemsObj);
 
-    var i = 0,
+    let i = 0,
         res = '',
+        // delimiter = ',',
         iMax = identifiersArr.length;
 
     while (i < iMax) {
@@ -340,33 +399,45 @@ function squishObjToString(itemsObj) {
         if ((itemsObj[identifiersArr[i + j - 1]].note ||
             itemsObj[identifiersArr[i + j - 1]].cnt > 1) &&
             j > 1) {
-            j--;// номерът с коментар да не е в интервала х-у, а да е отделен със запетая
+            j--;// item with note to be outside x-y, but separated
         }
 
         if (j > 2) res += identifiersArr[i] + '-' + identifiersArr[i + j - 1];
-        else if (j == 2) res += identifiersArr[i] + ',' + identifiersArr[i + j - 1];
+        else if (j == 2) res += identifiersArr[i] + delimiter + identifiersArr[i + j - 1];
         else res += identifiersArr[i + j - 1];
 
-        if ((itemsObj[identifiersArr[i + j - 1]].note) && (itemsObj[identifiersArr[i + j - 1]].cnt > 1)) {	// бройка и коментар
+        if ((itemsObj[identifiersArr[i + j - 1]].note) && (itemsObj[identifiersArr[i + j - 1]].cnt > 1)) {	// count and notes
             res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ';' + itemsObj[identifiersArr[i + j - 1]].note + ')';
-        } else if (itemsObj[identifiersArr[i + j - 1]].cnt > 1) {	// само бройка
+        } else if (itemsObj[identifiersArr[i + j - 1]].cnt > 1) {	// count only
             res += '(' + itemsObj[identifiersArr[i + j - 1]].cnt + ')';
-        } else if (itemsObj[identifiersArr[i + j - 1]].note) {	// само коментар
+        } else if (itemsObj[identifiersArr[i + j - 1]].note) {	// note only
             res += '(' + itemsObj[identifiersArr[i + j - 1]].note + ')';
         }
-        res += ',';
+        res += delimiter;
         i += j;
     }
-    return res.slice(0, -1);// премахва последната запетайка
+    return res.slice(0, -delimiter.length);// remove last ', '
 }
-
 
 //convert string representation of items to object with key=item name (v)
 function expandStringToObj2(items) {
     let itemsObj = {};
 
+    // let regex = /(\w+\(\w+\))|(\w+\(\w+;\w+\))|(\d+\-\d+)|(\d+)/g;
+    // let negativeLookbehind = /(?<!\()/; // not supported in JS
+    // let regex = /(\w+(?:\(\w+(?:\;[\w+|\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1})/g;
+    // let regex = /([\p{Cyrillic}\w]+(?:\([\p{Cyrillic}\s\w\*\-]+(?:\;[\p{Cyrillic}\s\w\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1})/g;
+    // let regMatch = items.match(regex);
+
     let regex = /([\wа-я♦♥♠♣\s]+(?:\([\wа-я\s\-\/\*\:\.\?]+(?:\;[\wа-я\s\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1})/ig;
     let regMatch = items.match(regex);
+
+    // let regex = /(^\d+$)|(^\d+\-\d+$)|(^\d+\(\w+\)$)|(^\d+\(\w+\;\w+\)$)/;
+    // // let lastComaRegex = /^(.*)\,+$/;
+    // let comaRegex = /(\,)\s*/g;
+
+    // items = items./*replace(lastComaRegex, '$1').*/replace(comaRegex, '$1').split(',').filter(element => regex.test(element)); // valid items only
+
     regMatch && regMatch.forEach(part => {
 
         let m = part.match(/^(\d+)[-](\d+)$/);
@@ -393,14 +464,8 @@ function expandStringToObj(items) {
     // let itemsCountText = { items: {}, text: {} };         // items:{1:4, 3:1, 5:1, 6:3}, text:{6:'*', 10:'sometext'}
     let itemsCountText = {};         // {1:{cnt: 4, note: ''}, 3:{cnt: 1, note: ''}, 5:{cnt: 1, note: '*'}, 6:{cnt: 3, note: ''}}
 
-    // let regex = /(\w+\(\w+\))|(\w+\(\w+;\w+\))|(\d+\-\d+)|(\d+)/g;
-    // let negativeLookbehind = /(?<!\()/; // not supported in JS
-    // let regex = /(\w+(?:\(\w+(?:\;[\w+|\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1})/g;
-    let regex = /([\p{Cyrillic}\w]+(?:\([\p{Cyrillic}\s\w\*\-]+(?:\;[\p{Cyrillic}\s\w\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1})/g;
-    let regMatch = items.match(regex);
-    // 108(кирилица) -> 108
 
-    items = items.split(',');
+    items = items.split(',').map(el => el.trim());
 
     if (isNumber(items[0].substr(0, 1))) {      // to be replaced with REGEX some bright day!!! "1,3(7),4(txt),5-10,12(2;ttt)"
         for (let i = 0; i < items.length; i++) {
@@ -415,10 +480,10 @@ function expandStringToObj(items) {
                     addItemToObject(itemsCountText, j, 1, null);
                 }
             } else // ако има (text) след числото - се вади в нов асоциативен масив/обект
-            if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
-                let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
-                addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
-            }
+                if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
+                    let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+                    addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+                }
         }
     } else {
         for (let i = 0; i < items.length; i++) {
