@@ -109,7 +109,7 @@ function tmpCompare(original, modified, item) {
                 && original[key]['cnt'] === modified[key]['cnt']
                 && original[key]['note'] === modified[key]['note'];
         } else {
-            console.log('wrong', original, modified, item)
+            console.log('wrong', original, modified, item);
         }
     }
     return eq;
@@ -131,7 +131,7 @@ module.exports = {
         return DBFetchData(criteria)
             .then(collection => {
                 // let formattedOutput = [];
-                collection.forEach(function (item, index) {
+                collection.forEach(function(item, index) {
                     // let formattedItemsStr = squishObjToString(item.items);
                     // let formattedItemObj = expandStringToObj(formattedItemsStr);
                     // console.log(tmpCompare(item.items, formattedItemObj, item), item.make + '---'+item.serie);
@@ -160,18 +160,18 @@ module.exports = {
         return generalCollectionsModel.findByIdAndUpdate(oid, {
             items: expandStringToObj(updatedData.items)
             //to edit category or not?!
-          }, {new: true}).exec()
-          .then((updatedData) => {
-            if (updatedData) {
-              return {
-                  items: squishObjToString(updatedData.items),
-                  make: updatedData.make,
-                  serie: updatedData.serie,
-                  id: updatedData.id,
-                  oid: updatedData._id.toString()
-                };
-            }
-          })
+        }, {new: true}).exec()
+            .then((updatedData) => {
+                if (updatedData) {
+                    return {
+                        items: squishObjToString(updatedData.items),
+                        make: updatedData.make,
+                        serie: updatedData.serie,
+                        id: updatedData.id,
+                        oid: updatedData._id.toString()
+                    };
+                }
+            });
 
         // generalCollectionsModel.findOneAndUpdate({ 'id': parseInt(id) }, { $set: { 'items': itemsForDB } }, { new: true, runValidators: true }, function (err, data) {
         //     if (err) {
@@ -288,18 +288,18 @@ function DBFetchData(criteria) {
         dbCriteria.serie = criteria.subCollectionName;
     }
 
-    let query = generalCollectionsModel.find(dbCriteria, function (err, gums) { // Gum -> generalCollectionsModel
+    let query = generalCollectionsModel.find(dbCriteria, function(err, gums) { // Gum -> generalCollectionsModel
         if (err) {
             console.log('DBFetchData query error: ', err);
         } else
             console.log('Total number of items: ' + gums.length);
     })
-    .sort('id');
+        .sort('id');
 
     return query.exec()
         .then((data) => {
             let details = [];
-            data.forEach(function (singleCollection) {
+            data.forEach(function(singleCollection) {
                 details.push({
                     'oid': singleCollection._id.toString(),
                     'id': singleCollection.id,
@@ -438,11 +438,11 @@ function expandStringToObj(items) {
     let itemsCountText = {};         // {1:{cnt: 4, note: ''}, 3:{cnt: 1, note: ''}, 5:{cnt: 1, note: '*'}, 6:{cnt: 3, note: ''}}
 
 
-    items = items.split(',').map(el => el.trim());
+    items = items.split(',');
 
     if (isNumber(items[0].substr(0, 1))) {      // to be replaced with REGEX some bright day!!! "1,3(7),4(txt),5-10,12(2;ttt)"
         for (let i = 0; i < items.length; i++) {
-            let item = items[i],
+            let item = items[i].trim(),
                 m = item.match(/^(\d+)[-](\d+)$/);
 
             if (m != null) {
@@ -453,10 +453,10 @@ function expandStringToObj(items) {
                     addItemToObject(itemsCountText, j, 1, null);
                 }
             } else // ако има (text) след числото - се вади в нов асоциативен масив/обект
-                if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
-                    let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
-                    addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
-                }
+            if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
+                let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+                addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+            }
         }
     } else {
         for (let i = 0; i < items.length; i++) {

@@ -55,7 +55,7 @@ export default class Edit extends React.Component {
                 category: data.make,
                 subCategory: data.serie,
                 items: data.items
-            }))
+            }));
     }
 
     render() {
@@ -76,6 +76,7 @@ export default class Edit extends React.Component {
                         <textarea value={this.state.items} name='items' onChange={this.handleChange} />
                     </label>
                     <input type="submit" value="Save" />
+                    <input type="button" value="Cancel" onClick={() => this.props.history.goBack()} />
                 </form>
             </div>
         );
@@ -84,7 +85,8 @@ export default class Edit extends React.Component {
 }
 
 Edit.propTypes = {
-    match: PropTypes.object
+    match: PropTypes.object,
+    history: PropTypes.object
 };
 Edit.defaultProps = {
     match: {
