@@ -1,37 +1,41 @@
-export const getCollectionDataFromBackend = (url) => {
+export const getRequestToAPI = (url) => {
     return fetch(url, {
         credentials: 'same-origin', // send cookies too
         method: 'GET',
         headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'sessionID': 'dimitrichka'
         }
     })
-    .then((response) => {
-        if (response.status >= 400) {
-            throw new Error('Bad response from server');
-        }
-        return response.json();
-    })
-    .catch((error) => {
-        console.error(error);
-    });
+        .then((response) => {
+            if (response.status >= 400) {
+                throw new Error('Bad response from server');
+            }
+            return response.json();
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 };
 
-export const sendCollectionDataToBackend = (url, data) => {
+export const postRequestToAPI = (url, data) => {
     return fetch(url, {
         credentials: 'same-origin',
-        headers: {"Content-Type": "application/json"},
+        headers: {
+            'Content-Type': 'application/json',
+            'sessionID': 'dimitrichka'
+        },
         method: 'POST',
         body: JSON.stringify(data)
     })
-    .then((response) => {
-        if (response.status >= 400) {
-            throw new Error('Bad response from server');
-        }
-        return response.json();
-    })
-    .catch((error) => {
-        console.error(error);
-    });
-}
+        .then((response) => {
+            if (response.status >= 400) {
+                throw new Error('Bad response from server');
+            }
+            return response.json();
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+};

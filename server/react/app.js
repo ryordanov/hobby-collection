@@ -13,6 +13,8 @@ import Edit from './containers/Edit';
 import Collections from './containers/Collections';
 import NotFound from './components/NotFound';
 import Login from './components/Login';
+import SignUp from './components/SignUp';
+import EnsureLoggedInContainer from './containers/EnsureLoggedInContainer';
 
 const App = () => (
     <div>
@@ -20,8 +22,11 @@ const App = () => (
         <Switch>
             <Route exact path='/' component={Home} />
             <Route path='/login' component={Login} />
-            <Route path='/collections/:collectionName?/:subCollectionName?' component={Collections} />
-            <Route path='/edit/:collectionName/:subCollectionName/:option' component={Edit} />
+            <Route path='/signup' component={SignUp} />
+            <EnsureLoggedInContainer>
+                <Route path='/collections/:collectionName?/:subCollectionName?' component={Collections} />
+                <Route path='/edit/:collectionName/:subCollectionName/:option' component={Edit} />
+            </EnsureLoggedInContainer>
             <Route component={NotFound} />
         </Switch>
         <Footer />

@@ -5,11 +5,20 @@ let captions = require('../config/translation')['bg'];
 
 module.exports = {
     getCollections: (req, res) => {
+
+
+        if (req.session.isAuthenticated) {
+            console.log('logged user - return requested data');
+        } else {
+            console.log('redirect to index.html / login page');
+        }
         // res.send(gum.getCollections());
         // let constraints = req.query || req.body;
         let constraints = {/*...req.query, */option: req.query.option, collectionName: req.params.name, subCollectionName: req.params.subcollection };
         gum.getCollections(constraints)
-            .then(data => res.send(data))
+            .then(data => {
+                return res.send(data);
+            })
             .catch((err) => {
                 console.log('err (getCollections)', err);
                 return res.send(err);
@@ -22,25 +31,9 @@ module.exports = {
                 console.log('err (update)', err);
                 return res.send(err);
             });
-        // res.redirect('/expand');
     }
-    // getCollectionDetails: (req, res) => {
-    //     gum.getCollectionDetails(req.params.name)
-    //         .then(data => res.send(data));
-    // },
-    // getSubCollectionDetails: (req, res) => {
-    //     gum.getSubCollectionDetails(req.params.name, req.params.subcollection)    // 'collection name' and 'subcollection name' from url
-    //         .then(data => res.send(data));
-    // },
 
-    // getItemDetails: (req, res) => {
-    //     // gum.getItemDetails()
-    // },
-    // getItems: (req, res) => {
-    //     // gum.getItems()
-    // },
-    // getItemList: row => gum.getItemList(row),
-    // getCollection: row => gum.getCollection(row),
+    //pug
     // index: (req, res) => {
     //     res.render('home/index', { title: captions, collections: gum.wholeCollection() });
     // },

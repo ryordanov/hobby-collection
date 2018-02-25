@@ -126,11 +126,11 @@ input[type=checkbox]  {
     display: block
 }*/
 
-#updateForm label {
+#updateForm label, #loginForm label, #signupForm label {
     display: block;
-    margin-top: 20px
+    margin-top: 10px
 }
-#updateForm textarea {
+#updateForm textarea, #loginForm textarea, #signupForm textarea {
     width: 100%;
     height: 100px
 }
@@ -192,12 +192,12 @@ p.caption{
 
 
 @media all and (min-width: 480px) {
-    .Login {
+    .Login, .SignUp {
       padding: 60px 0;
       background-color: rgb(206, 206, 194)
     }
   
-    .Login form {
+    .Login form, .SignUp form {
       margin: 0 auto;
       max-width: 320px;
     }

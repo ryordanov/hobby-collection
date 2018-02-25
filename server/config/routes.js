@@ -2,46 +2,22 @@ let path = require('path');
 let controllers = require('../controllers');
 
 module.exports = (config, app) => {
-    // app.get('/', controllers.home.index);
-    // app.get('/expand', controllers.home.expand);
-    // app.get('/expandAll', controllers.home.expandAll);
+    // app.all(/\/path\/([^\/]+)\/?(.+)?/,function(req,res,next).apply..
+    app.post('/api/login', controllers.users.login);
+    app.post('/api/signup', controllers.users.signup);
+    app.post('/api/logout', controllers.users.logout);
 
-    // app.get('/collapse', controllers.home.collapse);
-    // app.get('/about', controllers.home.about);
-
-    // app.post('/save', controllers.home.update);
-    // app.post('/save/:id', controllers.home.update);
-
-    // app.get('/api/collections', controllers.gums.getCollections);
-    // app.get('/api/collection/:name', controllers.gums.getCollectionDetails);
-    // app.get('/api/collection/:name/:subcollection', controllers.gums.getSubCollectionDetails);
     app.get('/api/collections/:name?/:subcollection?', controllers.gums.getCollections);
-    
     app.post('/api/save/:id', controllers.gums.update);
 
-
-    // app.all(/\/path\/([^\/]+)\/?(.+)?/,function(req,res,next).apply..
-
-    // app.get('/items', controllers.gums.getItems);
-    // app.get('/item/:id', controllers.gums.getItemDetails);
     app.get('/notFound', function(req, res) {
         res.send({ notFound: 'ERROR 404 - Not found [' + new Date() + ']' });
     });
 
-    // app.get('/item/:id', function(request, response) {
-    //     response.send(getItems(request.params.id | 0));
-    // });
-
-    // app.get('/items', function(request, response) {
-    //     response.send(getItems(1));
-
-    //     // response.send({ b: 2 });
-    // });
-
     // handle every other route with index.html, which will hold a React application
-    app.all('*', function(request, response) {
-        console.log('* redirect to React: ', request.originalUrl);
-        response.sendFile(path.resolve(config.rootPath, 'public/index.html'));
+    app.all('*', function(req, res) {
+        console.log('* redirect to React: ', req.originalUrl);
+        res.sendFile(path.resolve(config.rootPath, 'public/index.html'));
     });
 
     // app.all('*', (req, res) => {

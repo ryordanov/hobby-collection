@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getCollectionDataFromBackend, sendCollectionDataToBackend } from '../utils';
+import { getRequestToAPI, postRequestToAPI } from '../utils';
 
 
 export default class Edit extends React.Component {
@@ -19,7 +19,7 @@ export default class Edit extends React.Component {
     }
 
     componentDidMount() {
-        return getCollectionDataFromBackend(`/api/collections/${this.props.match.params.collectionName}/${this.props.match.params.subCollectionName}?option=${this.props.match.params.option}`)
+        return getRequestToAPI(`/api/collections/${this.props.match.params.collectionName}/${this.props.match.params.subCollectionName}?option=${this.props.match.params.option}`)
             .then((resData) => {
                 this.setState({
                     oid: resData[0].oid,
@@ -48,7 +48,7 @@ export default class Edit extends React.Component {
         // }
         let { oid, id, category, subCategory, items } = this.state;
 
-        sendCollectionDataToBackend(`/api/save/${oid}`, { oid, id, category, subCategory, items })
+        return postRequestToAPI(`/api/save/${oid}`, { oid, id, category, subCategory, items })
             .then(data => this.setState({
                 oid: data.oid,
                 id: data.data,

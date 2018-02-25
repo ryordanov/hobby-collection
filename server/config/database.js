@@ -380,14 +380,14 @@ module.exports = (config) => {
         if (err) {
             console.log(err);
         }
-        console.log('Connected to "%s" database!', config.db.substr(config.db.indexOf('@') + 1, config.db.length));
+        console.log('# Mongo DB: Connected to "%s" database!', config.db.substr(config.db.indexOf('@') + 1, config.db.length));
 
         // var collection = db.collection("guminserts");
         // collection.find({id:3}).toArray(function (err, docs) {
         //    console.log(docs[0]);
         // });
     });
-    db.on('error', err => console.log(err));
-
+    // db.on('error', err => console.log(err));
+    db.on('error', console.error.bind(console, '# Mongo DB: connection error:'));
     return db;
 };

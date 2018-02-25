@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
-// import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+// import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { postRequestToAPI } from '../utils';
 
 export default class Login extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            resp: '',
             email: '',
             password: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     validateForm() {
@@ -24,36 +27,66 @@ export default class Login extends Component {
     }
 
     handleSubmit(event) {
-
         event.preventDefault();
+
+        return postRequestToAPI('/api/login', {
+            username: this.theUsername.value || 'dimitrichka',
+            password: this.thePassword.value || '123457',
+        })
+            .then((response) => {
+                if (response.status >= 400) {
+                    throw new Error('Bad response from server');
+                }
+                this.setState({ resp: response.data });
+                sessionStorage.setItem('loggedin', 'true');
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
 
     render() {
         return (
-            <div className="Login">
+            <div className='Login'>
+                <form id='loginForm' method='POST' onSubmit={this.handleSubmit} >
+                    <label>
+                        Username:
+                        <input type='text' name='username' ref={(r) => { this.theUsername = r; }} />
+                    </label>
+                    <label>
+                        Password:
+                        <input type='password' name='password' ref={(r) => { this.thePassword = r; }} />
+                    </label>
+                    <input type='submit' value='Submit' />
+                </form>
+                {'Server says:' + this.state.resp}
+                {/* store response in cookie??! */}
+
+
+
                 {/* <form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="email" bsSize="large">
+          <FormGroup controlId='email' bsSize='large'>
             <ControlLabel>Email: </ControlLabel>
             <FormControl
               autoFocus
-              type="email"
+              type='email'
               value={this.state.email}
               onChange={this.handleChange}
             />
           </FormGroup>
-          <FormGroup controlId="password" bsSize="large">
+          <FormGroup controlId='password' bsSize='large'>
             <ControlLabel>Password: </ControlLabel>
             <FormControl
               value={this.state.password}
               onChange={this.handleChange}
-              type="password"
+              type='password'
             />
           </FormGroup>
           <Button
             block
-            bsSize="large"
+            bsSize='large'
             disabled={!this.validateForm()}
-            type="submit"
+            type='submit'
           >
             Login
           </Button>

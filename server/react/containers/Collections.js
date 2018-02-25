@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import OptionView from '../components/OptionView';
 import ViewCollections from '../components/ViewCollections';
 
-import { getCollectionDataFromBackend } from '../utils';
+import { getRequestToAPI } from '../utils';
 
 let itemsSeed = [
     { id: 'numbers only', value: 'ORG' },
@@ -50,7 +50,7 @@ export default class Collections extends React.Component {
         }
         this.setState({ dataFromBackend: [] }); // loader...
 
-        return getCollectionDataFromBackend(url + `?option=${selectedOption}`)
+        return getRequestToAPI(url + `?option=${selectedOption}`)
             .then((resData) => {
                 this.setState({ url, selectedOption, dataFromBackend: resData });
             });
