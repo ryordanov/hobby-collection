@@ -24,7 +24,7 @@ export default class Collections extends React.Component {
         this.selectOption = this.selectOption.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, this.state.selectedOption);
     }
 

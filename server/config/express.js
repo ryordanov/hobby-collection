@@ -19,6 +19,7 @@ module.exports = (config, app) => {
     // app.use(express.compress());
 
     app.use(session({
+        key: 'user_sid',
         secret: 'this-is-a-secret-token',
         cookie: { maxAge: 60000 }
         // saveUninitialized: false, // don't create session until something stored

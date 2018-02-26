@@ -6,23 +6,23 @@ let captions = require('../config/translation')['bg'];
 module.exports = {
     getCollections: (req, res) => {
 
-
         if (req.session.isAuthenticated) {
-            console.log('logged user - return requested data');
+            let constraints = {/*...req.query, */option: req.query.option, collectionName: req.params.name, subCollectionName: req.params.subcollection };
+            gum.getCollections(constraints)
+                .then(data => {
+                    return res.send(data);
+                })
+                .catch((err) => {
+                    console.log('err (getCollections)', err);
+                    return res.send(err);
+                });
         } else {
             console.log('redirect to index.html / login page');
+            res.status(401).send();
         }
         // res.send(gum.getCollections());
         // let constraints = req.query || req.body;
-        let constraints = {/*...req.query, */option: req.query.option, collectionName: req.params.name, subCollectionName: req.params.subcollection };
-        gum.getCollections(constraints)
-            .then(data => {
-                return res.send(data);
-            })
-            .catch((err) => {
-                console.log('err (getCollections)', err);
-                return res.send(err);
-            });
+
     },
     update: (req, res) => {
         gum.updateById(req.params.id, req.body)

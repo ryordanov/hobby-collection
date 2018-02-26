@@ -9,8 +9,11 @@ export const getRequestToAPI = (url) => {
         }
     })
         .then((response) => {
-            if (response.status >= 400) {
-                throw new Error('Bad response from server');
+            // if (response.status >= 400) {
+            //     throw new Error('Bad response from server');
+            // }
+            if (response.status === 401) {
+                storage.removeItem('loggedin');
             }
             return response.json();
         })
@@ -30,8 +33,11 @@ export const postRequestToAPI = (url, data) => {
         body: JSON.stringify(data)
     })
         .then((response) => {
-            if (response.status >= 400) {
-                throw new Error('Bad response from server');
+            // if (response.status >= 400) {
+            //     throw new Error('Bad response from server');
+            // }
+            if (response.status === 401) {
+                storage.removeItem('loggedin');
             }
             return response.json();
         })
