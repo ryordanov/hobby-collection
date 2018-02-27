@@ -7,6 +7,7 @@ const Header = () => (
             <ul>
                 <li><Link to='/login'>Log In</Link></li>
                 <li><Link to='/signup'>Sign Up</Link></li>
+                <li><Link to='/logout'>Log Out</Link></li>
                 <li><Link to='/'>Home</Link></li>
                 <li><Link to='/collections'>Collections</Link></li>
                 {/* <li><Link to='/items'>Items</Link></li> */}

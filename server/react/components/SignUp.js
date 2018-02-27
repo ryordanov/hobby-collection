@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
+
 import { postRequestToAPI } from '../utils';
 
 export default class SignUp extends Component {
@@ -28,13 +30,9 @@ export default class SignUp extends Component {
                 username: this.theUsername.value || '',
                 password: this.thePassword.value || '',
                 email: this.theEmail.value || '',
-            })
+            }, this.props.history)
                 .then((response) => {
-                    debugger
-                    if (response.status >= 400) {
-                        throw new Error('Bad response from server');
-                    }
-                    this.setState({ resp: response.data });
+                    this.setState({ responseStatus: response.responseStatus, isAuthenticated: response.isAuthenticated });
                     sessionStorage.setItem('loggedin', 'true'); // sign up auto login
                 })
                 .catch((error) => {
@@ -65,7 +63,8 @@ export default class SignUp extends Component {
                     </label>
                     <input type='submit' value='Submit' />
                 </form>
-                {'Server says:' + this.state.resp}
+                {'Server says:' + (this.state.responseStatus || '')}
+                {this.state.isAuthenticated && <Redirect to='/collections' />}
             </div>
         );
     }

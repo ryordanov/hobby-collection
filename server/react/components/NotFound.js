@@ -9,7 +9,6 @@ export default class NotFound extends React.Component {
     }
 
     componentDidMount() {
-        debugger
         fetch('notFound')
             .then(function(response) {
                 if (response.status >= 400) {

@@ -19,7 +19,7 @@ export default class Edit extends React.Component {
     }
 
     componentDidMount() {
-        return getRequestToAPI(`/api/collections/${this.props.match.params.collectionName}/${this.props.match.params.subCollectionName}?option=${this.props.match.params.option}`)
+        return getRequestToAPI(`/api/collections/${this.props.match.params.collectionName}/${this.props.match.params.subCollectionName}?option=${this.props.match.params.option}`, this.props.history)
             .then((resData) => {
                 this.setState({
                     oid: resData[0].oid,
@@ -48,7 +48,7 @@ export default class Edit extends React.Component {
         // }
         let { oid, id, category, subCategory, items } = this.state;
 
-        return postRequestToAPI(`/api/save/${oid}`, { oid, id, category, subCategory, items })
+        return postRequestToAPI(`/api/save/${oid}`, { oid, id, category, subCategory, items }, this.props.history)
             .then(data => this.setState({
                 oid: data.oid,
                 id: data.data,

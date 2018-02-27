@@ -50,9 +50,11 @@ export default class Collections extends React.Component {
         }
         this.setState({ dataFromBackend: [] }); // loader...
 
-        return getRequestToAPI(url + `?option=${selectedOption}`)
+        return getRequestToAPI(url + `?option=${selectedOption}`, this.props.history)
             .then((resData) => {
-                this.setState({ url, selectedOption, dataFromBackend: resData });
+                if (resData) {
+                    this.setState({ url, selectedOption, dataFromBackend: resData });
+                }
             });
     }
 

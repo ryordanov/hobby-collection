@@ -20,15 +20,27 @@ module.exports = {
 
         return query.exec()
             .then((data) => {
-                req.session.isAuthenticated = !!data.length;
+                let status;
+                let statusText = '';
 
-                if (req.session.views) {
-                    req.session.views++;
-                    res.send({ data: 'views: ' + req.session.views + 'expires in: ' + (req.session.cookie.maxAge / 1000) + 's' });
+                if (!!data.length) {
+                    status = 200;
+                    statusText = 'Login successful';
+                    req.session.isAuthenticated = true;
                 } else {
-                    req.session.views = 1;
-                    res.send({ data: 'welcome to the session demo. refresh!' });
+                    status = 401;
+                    statusText = 'Wrong login credentials';
+                    req.session.isAuthenticated = false;
                 }
+                res.status(status).send({ responseStatus: statusText, isAuthenticated: req.session.isAuthenticated });
+
+                // if (req.session.views) {
+                //     req.session.views++;
+                //     res.status(status).send({ data: 'views: ' + req.session.views + 'expires in: ' + (req.session.cookie.maxAge / 1000) + 's' });
+                // } else {
+                //     req.session.views = 1;
+                //     res.status(status).send({ data: 'welcome to the session demo. refresh!' });
+                // }
             })
     },
     signup: (req, res) => {
@@ -42,7 +54,7 @@ module.exports = {
             .then((data) => {
                 if (data.length) {
                     console.log('# Mongo - user already exist (' + req.body.username + ')');
-                    res.send({ data: 'User already exists!' })
+                    res.status(401).send({ responseStatus: 'User already exists!', isAuthenticated: false })
                 } else {
                     let user = new usersModel(update);
                     user.save(function (err, result) {
@@ -50,7 +62,7 @@ module.exports = {
                             console.log('# Mongo insert user error: ', err)
                         }
                         req.session.isAuthenticated = true;
-                        res.send({ data: 'User has been created successfully' })
+                        res.status(200).send({ responseStatus: 'User has been created successfully', isAuthenticated: true })
                     });
                 }
             })
@@ -76,7 +88,8 @@ module.exports = {
             if (err) {
                 console.log('session destroy error: ', err);
             } else {
-                res.redirect('/');
+                // res.redirect('/');
+                res.send({ responseStatus: 'Logout successful', isAuthenticated: false })
             }
         });
     }

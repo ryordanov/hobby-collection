@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 // import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import { postRequestToAPI } from '../utils';
 
 export default class Login extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             resp: '',
             email: '',
@@ -31,14 +31,10 @@ export default class Login extends Component {
 
         return postRequestToAPI('/api/login', {
             username: this.theUsername.value || 'dimitrichka',
-            password: this.thePassword.value || '123457',
-        })
+            password: this.thePassword.value || '123',
+        }, this.props.history)
             .then((response) => {
-                if (response.status >= 400) {
-                    throw new Error('Bad response from server');
-                }
-                this.setState({ resp: response.data });
-                sessionStorage.setItem('loggedin', 'true');
+                this.setState({ responseStatus: response.responseStatus, isAuthenticated: response.isAuthenticated });
             })
             .catch((error) => {
                 console.error(error);
@@ -59,8 +55,8 @@ export default class Login extends Component {
                     </label>
                     <input type='submit' value='Submit' />
                 </form>
-                {'Server says:' + this.state.resp}
-                {/* store response in cookie??! */}
+                {'Server says:' + (this.state.responseStatus || '')}
+                {this.state.isAuthenticated && <Redirect to='/collections' />}
 
 
 

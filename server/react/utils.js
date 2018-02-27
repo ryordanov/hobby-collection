@@ -1,19 +1,16 @@
-export const getRequestToAPI = (url) => {
+export const getRequestToAPI = (url, historyRouter) => {
     return fetch(url, {
         credentials: 'same-origin', // send cookies too
         method: 'GET',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'sessionID': 'dimitrichka'
+            'Content-Type': 'application/json'
         }
     })
         .then((response) => {
-            // if (response.status >= 400) {
-            //     throw new Error('Bad response from server');
-            // }
             if (response.status === 401) {
-                storage.removeItem('loggedin');
+                sessionStorage.removeItem('loggedin');
+                historyRouter.push('/login');
             }
             return response.json();
         })
@@ -22,22 +19,22 @@ export const getRequestToAPI = (url) => {
         });
 };
 
-export const postRequestToAPI = (url, data) => {
+export const postRequestToAPI = (url, data, historyRouter) => {
     return fetch(url, {
         credentials: 'same-origin',
         headers: {
-            'Content-Type': 'application/json',
-            'sessionID': 'dimitrichka'
+            'Content-Type': 'application/json'
         },
         method: 'POST',
         body: JSON.stringify(data)
     })
         .then((response) => {
-            // if (response.status >= 400) {
-            //     throw new Error('Bad response from server');
-            // }
-            if (response.status === 401) {
-                storage.removeItem('loggedin');
+            if (response.status === 200 && response.url.indexOf('api/login')) {
+                sessionStorage.setItem('loggedin', 'true');
+            } else if (response.status === 401 || response.url.indexOf('api/logout')) {
+                sessionStorage.removeItem('loggedin');
+                // historyRouter.push('/login');
+                // return {response: response.statusText};
             }
             return response.json();
         })
