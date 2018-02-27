@@ -12,60 +12,57 @@ var usersModel = mongoose.model('users', UserSchema);
 
 module.exports = {
     login: (req, res) => {
-        let query = usersModel.find({ username: req.body.username, password: req.body.password }, function (err, response) {
+        usersModel.find({ username: req.body.username, password: req.body.password }, function(err, data) {
             if (err) {
                 console.log('userModel query error: ', err);
             }
+
+            let status;
+            let statusText = '';
+
+            if (data.length) {
+                status = 200;
+                statusText = 'Login successful';
+                req.session.isAuthenticated = true;
+            } else {
+                status = 401;
+                statusText = 'Wrong login credentials';
+                req.session.isAuthenticated = false;
+            }
+            res.status(status).send({ responseStatus: statusText, isAuthenticated: req.session.isAuthenticated });
+
+            // if (req.session.views) {
+            //     req.session.views++;
+            //     res.status(status).send({ data: 'views: ' + req.session.views + 'expires in: ' + (req.session.cookie.maxAge / 1000) + 's' });
+            // } else {
+            //     req.session.views = 1;
+            //     res.status(status).send({ data: 'welcome to the session demo. refresh!' });
+            // }
+
         });
-
-        return query.exec()
-            .then((data) => {
-                let status;
-                let statusText = '';
-
-                if (!!data.length) {
-                    status = 200;
-                    statusText = 'Login successful';
-                    req.session.isAuthenticated = true;
-                } else {
-                    status = 401;
-                    statusText = 'Wrong login credentials';
-                    req.session.isAuthenticated = false;
-                }
-                res.status(status).send({ responseStatus: statusText, isAuthenticated: req.session.isAuthenticated });
-
-                // if (req.session.views) {
-                //     req.session.views++;
-                //     res.status(status).send({ data: 'views: ' + req.session.views + 'expires in: ' + (req.session.cookie.maxAge / 1000) + 's' });
-                // } else {
-                //     req.session.views = 1;
-                //     res.status(status).send({ data: 'welcome to the session demo. refresh!' });
-                // }
-            })
     },
     signup: (req, res) => {
-        var filter = {}, // { username: { $exists: true, $eq: req.body.username } },
-            update = { username: req.body.username, email: req.body.email, password: req.body.password },
-            options = { upsert: true, new: true, setDefaultsOnInsert: true };
+        var filter = { $or: [{ username: req.body.username }, { email: req.body.email }] },
+            update = { username: req.body.username, email: req.body.email, password: req.body.password };
+        // options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
-        usersModel.find({ $or: [{ username: req.body.username }, { email: req.body.email }] }, function (err, response) {
+        usersModel.find(filter, function(err, data) {
             if (err) console.log('userModel query error: ', err);
-        }).exec()
-            .then((data) => {
-                if (data.length) {
-                    console.log('# Mongo - user already exist (' + req.body.username + ')');
-                    res.status(401).send({ responseStatus: 'User already exists!', isAuthenticated: false })
-                } else {
-                    let user = new usersModel(update);
-                    user.save(function (err, result) {
-                        if (err) {
-                            console.log('# Mongo insert user error: ', err)
-                        }
-                        req.session.isAuthenticated = true;
-                        res.status(200).send({ responseStatus: 'User has been created successfully', isAuthenticated: true })
-                    });
-                }
-            })
+
+            if (data.length) {
+                console.log('# Mongo - user or email already exists (' + req.body.username + ') or (' + req.body.email + ') ');
+                res.status(401).send({ responseStatus: 'User already exists!', isAuthenticated: false });
+            } else {
+                let user = new usersModel(update);
+                user.save(function(err, result) {
+                    if (err) {
+                        console.log('# Mongo insert user error: ', err);
+                    }
+                    req.session.isAuthenticated = true;
+                    res.status(200).send({ responseStatus: 'User has been created successfully', isAuthenticated: true });
+                });
+            }
+        });
 
         // usersModel.update(
         //     { username: req.body.username },
@@ -89,7 +86,7 @@ module.exports = {
                 console.log('session destroy error: ', err);
             } else {
                 // res.redirect('/');
-                res.send({ responseStatus: 'Logout successful', isAuthenticated: false })
+                res.send({ responseStatus: 'Logout successful', isAuthenticated: false });
             }
         });
     }

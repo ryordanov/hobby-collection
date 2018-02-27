@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 // let gum = require('../utilities/gum').seedGumInserts();
 let gum = require('../utilities/gum');
-let captions = require('../config/translation')['bg'];
+// let captions = require('../config/translation')['bg'];
 
 module.exports = {
     getCollections: (req, res) => {
