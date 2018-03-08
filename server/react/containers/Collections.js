@@ -7,8 +7,8 @@ import ViewCollections from '../components/ViewCollections';
 import { getRequestToAPI } from '../utils';
 
 let itemsSeed = [
-    { id: 'numbers only', value: 'ORG' },
-    { id: 'squished', value: 'CLLPS' },
+    { id: 'print view', value: 'SQUISHED' },
+    { id: 'numbers only', value: 'NUMBERS' },
     { id: 'expand', value: 'EXPND' }
 ];
 

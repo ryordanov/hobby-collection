@@ -28,9 +28,9 @@ let delimiter = ',';
 
 function typeOfResult(option, items) {
     switch (option) {
-        case 'CLLPS':
+        case 'SQUISHED':
             return squishObjToString(items);
-        case 'EXPND':
+        case 'NUMBERS':
             return Object.keys(items).join(',');
         default:
             return Object.keys(items).join(',');

@@ -21,7 +21,7 @@ module.exports = (config, app) => {
     app.use(session({
         key: 'user_sid',
         secret: 'this-is-a-secret-token',
-        cookie: { maxAge: 60000 }
+        cookie: { maxAge: null } // 60000
         // saveUninitialized: false, // don't create session until something stored
         // resave: false, //don't save session if unmodified
         // store: new MongoStore({

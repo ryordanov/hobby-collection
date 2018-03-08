@@ -9,9 +9,16 @@ export default class Logout extends Component {
 
     componentDidMount() {
         return postRequestToAPI('/api/logout')
-            // .then((response) => {
-            //     this.props.history.push('/login');
-            // })
+            .then((response) => {
+                if (!response.isAuthenticated) {
+                    sessionStorage.removeItem('loggedin');
+                    // this.props.history.push('/login');
+                    this.props.history.push({
+                        pathname: '/login',
+                        responseStatus: response.responseStatus
+                      });
+                }
+            })
             // .catch((error) => {
             //     console.error(error);
             // });
@@ -20,7 +27,7 @@ export default class Logout extends Component {
     render() {
         return (
             <div>
-                <Redirect to='/login'/>
+                {/* <Redirect to='/login'/> */}
             </div>
         );
     }

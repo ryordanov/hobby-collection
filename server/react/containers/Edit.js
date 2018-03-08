@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 import { getRequestToAPI, postRequestToAPI } from '../utils';
 
@@ -32,7 +33,7 @@ export default class Edit extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({ [event.target.name]: event.target.value });
+        this.setState({ [event.target.id]: event.target.value });
     }
 
     handleSubmit(event) {
@@ -63,26 +64,69 @@ export default class Edit extends React.Component {
             <div>
                 {JSON.stringify(this.state.records)}
                 <form id='updateForm' onSubmit={this.handleSubmit} noValidate>
-                    <label>
-                        Category:
-                        <input type="text" value={this.state.category} name='category' onChange={this.handleChange} />
-                    </label>
-                    <label>
-                        Subcategory:
-                        <input type="text" value={this.state.subCategory} name='subCategory' onChange={this.handleChange} />
-                    </label>
-                    <label>
-                        Items:
-                        <textarea value={this.state.items} name='items' onChange={this.handleChange} />
-                    </label>
-                    <input type="submit" value="Save" />
-                    <input type="button" value="Cancel" onClick={() => this.props.history.goBack()} />
+                    <FormGroup controlId="category" bsSize="large">
+                        <ControlLabel>Category:</ControlLabel>
+                        <FormControl
+                            autoFocus
+                            type="text"
+                            value={this.state.category}
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
+                    <FormGroup controlId="subCategory" bsSize="large">
+                        <ControlLabel>Subcategory:</ControlLabel>
+                        <FormControl
+                            autoFocus
+                            type="text"
+                            value={this.state.subCategory}
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
+                    <FormGroup controlId="items" bsSize="large">
+                        <ControlLabel>Items:</ControlLabel>
+                        <FormControl
+                            autoFocus
+                            // type="text"
+                            componentClass="textarea"
+                            rows={8}
+                            maxLength={4000}
+                            value={this.state.items}
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
+                    <Button
+                        block
+                        bsSize="large"
+                        type="submit"
+                    >
+                        Save
+                    </Button>
+                    <Button
+                        block
+                        bsSize="large"
+                        type="button"
+                        onClick={() => this.props.history.goBack()}
+                    >
+                        Cancel
+                    </Button>
                 </form>
             </div>
         );
     }
-
 }
+
+{/* <form>
+    <FormGroup bsSize="large">
+        <FormControl type="text" placeholder="Large text" />
+    </FormGroup>
+    <FormGroup>
+        <FormControl type="text" placeholder="Normal text" />
+    </FormGroup>
+    <FormGroup bsSize="small">
+        <FormControl type="text" placeholder="Small text" />
+    </FormGroup>
+</form>; */}
+
 
 Edit.propTypes = {
     match: PropTypes.object,

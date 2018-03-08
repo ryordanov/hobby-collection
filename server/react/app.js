@@ -21,10 +21,11 @@ const App = () => (
     <div>
         <Header />
         <Switch>
-            <Route exact path='/' component={Home} />
+            <Route exact path='/' component={Login} />
             <Route path='/login' component={Login} />
             <Route path='/signup' component={SignUp} />
             <Route path='/logout' component={Logout} />
+            <Route path='/home' component={Home} />
             <EnsureLoggedInContainer>
                 <Route path='/collections/:collectionName?/:subCollectionName?' component={Collections} />
                 <Route path='/edit/:collectionName/:subCollectionName/:option' component={Edit} />

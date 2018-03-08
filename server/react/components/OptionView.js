@@ -40,17 +40,19 @@ export default class OptionView extends React.Component {
 
     render() {
         return (
-            <form>
-                <fieldset className='radio-buttons'>
-                    <legend>Choice:</legend>
-                    {this.state.items.map((i) => {
-                        return <div key={i.id}>
-                            <input type='radio' name='choice' id={i.id} value={i.value} checked={this.state.selectedOption === i.value} onChange={this.handleChange} />
-                            <label htmlFor={i.id}>{i.id.charAt(0).toUpperCase() + i.id.slice(1)}</label>
-                        </div>;
-                    })}
-                </fieldset>
-            </form>
+            <div className="radio-group container">
+                <div className="panel panel-primary">
+                    <div className="panel-body">
+                        <h4 className="text-on-panel text-primary"><strong className="text-uppercase">Choice:</strong></h4>
+                        {this.state.items.map((i) => {
+                            return <div key={i.id}>
+                                <input type='radio' name='choice' id={i.id} value={i.value} checked={this.state.selectedOption === i.value} onChange={this.handleChange} />
+                                <label htmlFor={i.id}>{i.id.charAt(0).toUpperCase() + i.id.slice(1)}</label>
+                            </div>;
+                        })}
+                    </div>
+                </div>
+            </div>
         );
     }
 };

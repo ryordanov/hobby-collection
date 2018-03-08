@@ -1,204 +1,105 @@
-html {
-    height: 100%;
-    box-sizing: border-box;
+/* We’ll also tweak the styles of the form fields so that the mobile browser does not zoom in on them on focus. We just need them to have a minimum font size of 16px to prevent the zoom. */
+select.form-control, textarea.form-control, input.form-control {
+  font-size: 16px;
 }
-
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
+input[type=file] {
+  width: 100%;
 }
-
-body {
-  min-height: 100%;
-  position: relative;
-  /*margin: 0;*/
+/* radio buttons start */
+.text-on-panel {
+  background: #fff none repeat scroll 0 0;
+  height: auto;
+  margin-left: 20px;
+  padding: 3px 5px;
+  position: absolute;
+  margin-top: -47px;
+  border: 1px solid #337ab7;
+  border-radius: 8px;
 }
-
-h5 {
-    color: chocolate;
-    text-align: left;
+.panel {
+ /* for text on panel */
+  margin-top: 27px !important;
 }
-
-/* react */
-
-/* menu */
-header nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #f1f1f1;
+.panel-body {
+  padding-top: 30px !important;
 }
-
-header nav li {
-    float: left;
+.panel-body, h4 {
+  line-height: 1.3 !important 
 }
-
-header nav li a {
-    display: block;
-    color: #000;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+.radio-group {
+  width: 250px !important;
+  margin-left: unset !important;
 }
-
-header nav li a:hover {
-    background-color: #555;
-    color: white;
-}
-
-footer {
-    position: absolute;
-    text-align: center;
-    bottom: 0;
-    right: 2%;
-    left: 2%;
-}
-
-footer nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #555;
-}
-footer nav li {
-    float: none
-}
-footer nav li a {
-    display: block;
-    color: #000;
-    text-align: center;
-    padding: 2px 16px;
-    text-decoration: none;
-}
-footer nav li a:hover {
-    background-color: #555;
-    color: white;
-}
-/* menu ^^^ */
-
-
-#app {
-    padding-left: 2%;
-    padding-right: 2%;
-}
-a{
-    color: #795548
-}
-div.nl {
-    border-bottom: 1px solid saddlebrown;
-    background-color: lightgoldenrodyellow;
-    word-wrap: break-word;
-    overflow: hidden;
-}
-div.nl a {
-    text-decoration: none
-}
-.collection-link {
-    padding-left: 5px;
-    font-weight: bolder
-}
-span.delimiter {
-    /*cursor: no-drop;*/
-    padding-left: 5px;
-    padding-right: 5px;
-}
-div.input-wrapper {
-	display: inline;
-    width: 80%;
-	float: right;
-}
-div.display-in-cell {
-    font-size: smaller
-}
-fieldset{
-    /* width: 100px; */
-    display: inline-block;
-}
-
-/*input[type=radio] {
-    display: block;
-    padding-left: 10px
-}
-input[type=checkbox]  {
-    display: block
-}*/
-
-#updateForm label, #loginForm label, #signupForm label {
-    display: block;
-    margin-top: 10px
-}
-#updateForm textarea, #loginForm textarea, #signupForm textarea {
-    width: 100%;
-    height: 100px
-}
-
-/* react ^^^*/
-
-
-
-
-
-/*.menu {
-    list-style-type: none;
-    padding-left: 0;
-    background: coral;
-}
-
-.menu li {
-    display: inline-block;
-    margin: 10px
-}
-
-.menu li:after {
-    content: "\00a0";
-}
-div.rowTitle {
-    display: inline;
-    width: 20%
-}
-.rowTitle:before {
-    content: "\2713"
-}
-.rowTitle:after {
-    content: ":"
-}
-
-input.editableItems {
-    width: 85%
-}
-
-button.btnPendingSaveGreen {
-    color: green
-}
-
-button.btnPendingSaveYellow {
-    color: darkorange
-}
-
-span {
-    float: none;
-    clear: both;
-}
-p.caption{
-    font-weight: bolder;
-    font-style: italic
-}
-
-
-}*/
-
-
+/* login form */
 @media all and (min-width: 480px) {
-    .Login, .SignUp {
+  .Login, .SignUp {
       padding: 60px 0;
-      background-color: rgb(206, 206, 194)
-    }
-  
-    .Login form, .SignUp form {
+ }
+  .Login form, .SignUp form {
       margin: 0 auto;
       max-width: 320px;
-    }
-  }
+ }
+}
+.alert {
+ /* max-width: 320px;
+  */
+  margin: 15px auto;
+}
+/* sign up form */
+@media all and (min-width: 480px) {
+  .Signup {
+      padding: 60px 0;
+ }
+  .Signup form {
+      margin: 0 auto;
+      max-width: 320px;
+ }
+}
+.Signup form span.help-block {
+  font-size: 14px;
+  padding-bottom: 10px;
+  color: #999;
+}
+/* grid */
+/* div.col-xs-7, div.col-xs-1{
+  border-right:1px solid black;
+}
+div.row{
+  border-bottom: 1px solid black;
+}
+*/
+.table {
+  display:table;
+  border-collapse: collapse;
+  padding-left:0px;
+  padding-right:0px;
+}
+.row {
+  display:table-row;
+}
+.cell {
+  display:table-cell;
+  border: 1px solid #000;
+  float:none !important;
+ /* border: 1px solid red;
+  border-radius: 5px;
+  */
+  white-space: pre-wrap;
+ /* CSS3 */
+  white-space: -moz-pre-wrap;
+ /* Firefox */
+  white-space: -pre-wrap;
+ /* Opera <7 */
+  white-space: -o-pre-wrap;
+ /* Opera 7 */
+  word-wrap: break-word;
+ /* IE */
+}
+.cell, .col-xs-8 {
+  max-width: 200px;
+}
+
+/* menu */
+.navbar-right {
+  margin-right: 0px !important;
+}

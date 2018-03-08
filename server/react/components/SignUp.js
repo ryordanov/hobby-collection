@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import { Button, FormGroup, FormControl, ControlLabel, Alert } from 'react-bootstrap';
 
 import { postRequestToAPI } from '../utils';
 
@@ -8,18 +9,28 @@ export default class SignUp extends Component {
         super(props);
 
         this.state = {
-            resp: '',
-            email: '',
-            password: ''
+            responseStatus: '',
+            username: '',
+            password: '',
+            confirmPassword: '',
+            email: ''
         };
 
+        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     validateForm() {
-        return this.theUsername.value.length > 0 &&
-            this.thePassword.value.length > 0 &&
-            (this.thePassword.value === this.thePasswordConfirm.value);
+        return this.state.username.length > 0 &&
+            this.state.email.length > 0 &&
+            this.state.password.length > 0 &&
+            (this.state.password === this.state.confirmPassword);
+    }
+
+    handleChange(event) {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
     }
 
     handleSubmit(event) {
@@ -27,9 +38,9 @@ export default class SignUp extends Component {
 
         if (this.validateForm()) {
             return postRequestToAPI('/api/signup', {
-                username: this.theUsername.value || '',
-                password: this.thePassword.value || '',
-                email: this.theEmail.value || '',
+                username: this.state.username,
+                password: this.state.password,
+                email: this.state.email,
             }, this.props.history)
                 .then((response) => {
                     this.setState({ responseStatus: response.responseStatus, isAuthenticated: response.isAuthenticated });
@@ -43,27 +54,54 @@ export default class SignUp extends Component {
 
     render() {
         return (
-            <div className='SignUp'>
-                <form id='signupForm' method='POST' onSubmit={this.handleSubmit} >
-                    <label>
-                        Username:
-                        <input type='text' name='username' ref={(r) => { this.theUsername = r; }} />
-                    </label>
-                    <label>
-                        Email:
-                        <input type='text' name='email' ref={(r) => { this.theEmail = r; }} />
-                    </label>
-                    <label>
-                        Password:
-                        <input type='password' name='password' ref={(r) => { this.thePassword = r; }} />
-                    </label>
-                    <label>
-                        Confirm Password:
-                        <input type='password' name='passwordConfirm' ref={(r) => { this.thePasswordConfirm = r; }} />
-                    </label>
-                    <input type='submit' value='Submit' />
+            <div className="SignUp">
+                <form onSubmit={this.handleSubmit}>
+                    <FormGroup controlId="username" bsSize="large">
+                        <ControlLabel>Username</ControlLabel>
+                        <FormControl
+                            autoFocus
+                            type="username"
+                            value={this.state.username}
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
+                    <FormGroup controlId="password" bsSize="large">
+                        <ControlLabel>Password</ControlLabel>
+                        <FormControl
+                            value={this.state.password}
+                            onChange={this.handleChange}
+                            type="password"
+                        />
+                    </FormGroup>
+                    <FormGroup controlId="confirmPassword" bsSize="large">
+                        <ControlLabel>Confirm Password</ControlLabel>
+                        <FormControl
+                            value={this.state.confirmPassword}
+                            onChange={this.handleChange}
+                            type="password"
+                        />
+                    </FormGroup>
+                    <FormGroup controlId="email" bsSize="large">
+                        <ControlLabel>E-mail</ControlLabel>
+                        <FormControl
+                            value={this.state.email}
+                            onChange={this.handleChange}
+                            type="email"
+                        />
+                    </FormGroup>
+                    <Button
+                        block
+                        bsSize="large"
+                        disabled={!this.validateForm()}
+                        type="submit"
+                    >
+                        Sign Up
+                    </Button>
                 </form>
-                {'Server says:' + (this.state.responseStatus || '')}
+                <Alert bsStyle="info">
+                    <strong>Server says: </strong>
+                    {this.state.responseStatus}
+                </Alert>
                 {this.state.isAuthenticated && <Redirect to='/collections' />}
             </div>
         );
