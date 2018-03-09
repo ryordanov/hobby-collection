@@ -17,9 +17,10 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     {
-                        loader: 'babel-loader?cacheDirectory=true',
+                        loader: 'babel-loader', // ?cacheDirectory=true
                         options: {
-                            presets: [/*'es2015'*/ 'env', 'react'/* ,'babel-preset-stage-1' */]
+                            presets: [/*'es2015'*/ 'env', 'react'/* ,'babel-preset-stage-1' */],
+                            cacheDirectory: true
                         }
                     }
                 ]

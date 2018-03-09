@@ -66,21 +66,29 @@ export default class Edit extends React.Component {
                 <form id='updateForm' onSubmit={this.handleSubmit} noValidate>
                     <FormGroup controlId="category" bsSize="large">
                         <ControlLabel>Category:</ControlLabel>
-                        <FormControl
+                        {/* <FormControl
                             autoFocus
                             type="text"
                             value={this.state.category}
                             onChange={this.handleChange}
-                        />
+                        /> */}
+                        <FormControl componentClass="select" placeholder="select" defaultValue={this.state.category} disabled>
+                            <option value="_">Please choose</option>
+                            <option value={this.state.category}>{this.state.category}</option>
+                        </FormControl>
                     </FormGroup>
                     <FormGroup controlId="subCategory" bsSize="large">
                         <ControlLabel>Subcategory:</ControlLabel>
-                        <FormControl
+                        {/* <FormControl
                             autoFocus
                             type="text"
                             value={this.state.subCategory}
                             onChange={this.handleChange}
-                        />
+                        /> */}
+                        <FormControl componentClass="select" placeholder="select" defaultValue={this.state.subCategory} disabled>
+                            <option value="_">Please choose</option>
+                            <option value={this.state.subCategory}>{this.state.subCategory}</option>
+                        </FormControl>
                     </FormGroup>
                     <FormGroup controlId="items" bsSize="large">
                         <ControlLabel>Items:</ControlLabel>

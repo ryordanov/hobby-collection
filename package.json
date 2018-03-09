@@ -7,7 +7,7 @@
     "_start": "npm-run-all --parallel webpack:build index",
     "start-vscode": "npm-run-all --parallel webpack:build server-vscode",
     "start-vscode_node8": "npm-run-all --parallel webpack:build server-vscode_node8",
-    "webpack:build": "webpack -w",
+    "webpack:build": "webpack --mode development --watch",
     "_server": "node server.js",
     "server-vscode": "node --nolazy --debug-brk=5858 index.js",
     "server-vscode_node8": "node --nolazy --inspect-brk=5858 index.js",
@@ -39,13 +39,14 @@
     "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
-    "webpack": "^3.10.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.9",
-    "style-loader": "^0.20.1"
+    "style-loader": "^0.20.1",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.10"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

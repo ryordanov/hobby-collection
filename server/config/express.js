@@ -19,23 +19,26 @@ module.exports = (config, app) => {
     // app.use(express.compress());
 
     app.use(session({
+        name: 'hobbycollection_cookie',
         key: 'user_sid',
         secret: 'this-is-a-secret-token',
-        cookie: { maxAge: null } // 60000
+        cookie: { maxAge: null }, // 60000
         // saveUninitialized: false, // don't create session until something stored
         // resave: false, //don't save session if unmodified
         // store: new MongoStore({
         //     url: 'mongodb://localhost/test-app',
         //     touchAfter: 24 * 3600 // time period in seconds
         // })
+        resave: true,
+        saveUninitialized: true
     }));
 
     // I’m using connect-mongo (since it was super easy/quick to set up), and by default it automatically removes expired sessions for you. Expired sessions are those without any activity for 14 days – which is configurable.
     // https://github.com/jdesboeufs/connect-mongo
 
-    
+
     // Logging
-    app.use('*', function(req, res, next) {
+    app.use('*', function (req, res, next) {
         // req.session.someAttribute = 'foo' + new Date();
         console.log('request: ', req.method, ' ', req.protocol, ' ', req.host, ' ', decodeURIComponent(req.originalUrl));
         next();
