@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Grid, Row, Col } from 'react-bootstrap';
+// import { Grid, Row, Col } from 'react-bootstrap';
 
 // const Button = withRouter(({ history }) => (
 //     <button type='button' onClick={() => { history.push('/new-location') }}>Search missing!</button>
@@ -29,15 +29,15 @@ const ViewCollections = (props) => (
                 // <div className="container TableStyle">
                 props.collectionRecords &&
                 props.collectionRecords.map((element, index) => (
-                        <div className="row" key={index}>
-                            <div className="cell col-xs-1"><Link className='collection-link' to={`/collections/${encodeURIComponent(element.make)}`}>{element.make}</Link></div>
-                            <div className="cell col-xs-2"><Link className='subcollection-link' to={`/collections/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}`}>{element.serie}</Link></div>
-                            <div className="cell col-xs-9"><Link to={`/edit/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}/${props.opt}`}>
-                                <div className='display-in-cell'>
-                                    {element.items}
-                                </div>
-                            </Link></div>
-                        </div>
+                    <div className="row" key={index}>
+                        <div className="cell col-xs-1"><Link className='collection-link' to={`/collections/${encodeURIComponent(element.make)}`}>{element.make}</Link></div>
+                        <div className="cell col-xs-2"><Link className='subcollection-link' to={`/collections/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}`}>{element.serie}</Link></div>
+                        <div className="cell col-xs-9"><Link to={`/edit/${encodeURIComponent(element.make)}/${encodeURIComponent(element.serie)}/${props.opt}`}>
+                            <div className='display-in-cell'>
+                                {element.items}
+                            </div>
+                        </Link></div>
+                    </div>
                     // </div>
                 ))
             }

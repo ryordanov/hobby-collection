@@ -38,9 +38,9 @@ module.exports = (config, app) => {
 
 
     // Logging
-    app.use('*', function (req, res, next) {
+    app.use('*', function(req, res, next) {
         // req.session.someAttribute = 'foo' + new Date();
-        console.log('request: ', req.method, ' ', req.protocol, ' ', req.host, ' ', decodeURIComponent(req.originalUrl));
+        console.log('request: ', req.method, ' ', req.protocol, ' ', req.hostname, ' ', decodeURIComponent(req.originalUrl));
         next();
     });
 };

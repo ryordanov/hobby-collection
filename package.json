@@ -4,11 +4,13 @@
   "description": "Collection of gum wrappers and magazines",
   "main": "index.js",
   "scripts": {
-    "_start": "npm-run-all --parallel webpack:build index",
+    "start": "node ./index.js",
+    "heroku-prebuild": "echo This runs before Heroku installs your dependencies.",
+    "heroku-postbuild": "webpack --mode production --config ./webpack.config.js --progress",
+
     "start-vscode": "npm-run-all --parallel webpack:build server-vscode",
     "start-vscode_node8": "npm-run-all --parallel webpack:build server-vscode_node8",
     "webpack:build": "webpack --mode development --watch",
-    "_server": "node server.js",
     "server-vscode": "node --nolazy --debug-brk=5858 index.js",
     "server-vscode_node8": "node --nolazy --inspect-brk=5858 index.js",
     "_test": "echo \"Error: no test specified\" && exit 1",
