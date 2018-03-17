@@ -1,7 +1,7 @@
 {
   "name": "hobby-collection",
   "version": "1.0.0",
-  "description": "Collection of wrappers and magazines",
+  "description": "Collection of gum wrappers and magazines",
   "main": "index.js",
   "scripts": {
     "_start": "npm-run-all --parallel webpack:build index",
