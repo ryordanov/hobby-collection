@@ -10,15 +10,24 @@ module.exports = {
         publicPath: '/',
         filename: 'bundle.js'
     },
+    devtool: 'eval-source-map',
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader?cacheDirectory=true',
-                options: {
-                    presets: ['es2015', 'react']
-                }
+                use: [
+                    {
+                        loader: 'babel-loader', // ?cacheDirectory=true
+                        options: {
+                            presets: [/*'es2015'*/ 'env', 'react'/* ,'babel-preset-stage-1' */],
+                            cacheDirectory: true
+                        }
+                    }
+                ]
+            }, {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
             }
         ]
     }

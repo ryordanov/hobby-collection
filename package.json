@@ -1,17 +1,17 @@
 {
   "name": "hobby-collection",
   "version": "1.0.0",
-  "description": "Collection of wrappers and magazines",
+  "description": "Collection of gum wrappers and magazines",
   "main": "index.js",
   "scripts": {
-    "start": "npm-run-all --parallel webpack:build index",
+    "_start": "npm-run-all --parallel webpack:build index",
     "start-vscode": "npm-run-all --parallel webpack:build server-vscode",
     "start-vscode_node8": "npm-run-all --parallel webpack:build server-vscode_node8",
-    "webpack:build": "webpack -w",
-    "server": "node server.js",
+    "webpack:build": "webpack --mode development --watch",
+    "_server": "node server.js",
     "server-vscode": "node --nolazy --debug-brk=5858 index.js",
     "server-vscode_node8": "node --nolazy --inspect-brk=5858 index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "_test": "echo \"Error: no test specified\" && exit 1",
     "__start": "node --use_strict ./index.js"
   },
   "repository": {
@@ -25,36 +25,54 @@
   },
   "homepage": "https://github.com/ryordanov/hobby-collection#readme",
   "dependencies": {
-    "body-parser": "^1.17.2",
-    "compression": "^1.6.2",
-    "express": "^4.15.3",
-    "mongoose": "^4.10.8",
-    "npm-run-all": "^4.0.2",
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.2",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "mongoose": "^5.0.9",
+    "npm-run-all": "^4.1.2",
     "os": "^0.1.1",
     "path": "^0.12.7",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-router-dom": "^4.1.1"
+    "react": "^16.2.0",
+    "react-bootstrap": "^0.32.1",
+    "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.1",
-    "babel-preset-es2015": "^6.24.1",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
-    "webpack": "^3.0.0"
+    "css-loader": "^0.28.10",
+    "style-loader": "^0.20.3",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.10"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   },
   "engines": {
-    "node": "6.10.3"
+    "node": "8.1.3"
   },
-  "_dependenciesTMP": {
+  "_TMPdependencies": {
     "history": "^4.6.3",
-    "react-router": "^4.1.1"
+    "react-router": "^4.1.1",
+    "react-bootstrap": "^0.32.1",
+    "bootstrap": "^4.0.0",
+    "reactstrap": "^5.0.0-beta",
+    "save": "^2.3.2"
   },
-  "_devDependenciesTMP": {
+  "_TMPdevDependencies": {
     "babel-preset-stage-1": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
     "babel-cli": "^6.22.2",
     "css-loader": "^0.26.1",
     "style-loader": "^0.13.1",
-    "pug": "2.0.0-beta6"
+    "eslint-plugin-react": "^7.6.1",
+    "eslint-plugin-require-path-exists": "1.1.7",
+    "pug": "2.0.0-beta6",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "file-loader": "^1.1.6",
+    "url-loader": "^0.6.2"
   }
 }
