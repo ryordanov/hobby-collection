@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 let requredValidationMessage = '{PATH} is required';
 let generalCollectionsSchema = new mongoose.Schema({
     id: { type: Number, required: requredValidationMessage, unique: true },
+    ownerId: { type: String, required: requredValidationMessage },
     make: { type: String, required: requredValidationMessage },
     serie: { type: String },
     margins: { type: String },
@@ -36,9 +37,9 @@ function typeOfResult(option, items) {
             return Object.keys(items).join(',');
     }
 }
-
+// var self = 
 module.exports = {
-    getCollections: (criteria) => {
+    getCollections: (criteria/*, authenticatedUser*/) => {
         return DBFetchData(criteria)
             .then(collection => {
                 collection.forEach(function(item, index) {
@@ -47,6 +48,9 @@ module.exports = {
                     // console.log(tmpCompare(item.items, formattedItemObj, item), item.make + '---'+item.serie);
 
                     collection[index]['items'] = typeOfResult(criteria.option || '', item.items || {});
+
+                    // collection[index]['ownerId'] = authenticatedUser.id || '';
+                    // self.updateById(collection[index]['oid'], collection[index]);
                 }, this);
 
                 return collection;
@@ -57,7 +61,7 @@ module.exports = {
 
         return generalCollectionsModel.findByIdAndUpdate(oid, {
             items: expandStringToObj(updatedData.items)
-            //to edit category or not?!
+            // ownerId: updatedData.ownerId
         }, { new: true }).exec()
             .then((updatedData) => {
                 if (updatedData) {
@@ -69,6 +73,9 @@ module.exports = {
                         oid: updatedData._id.toString()
                     };
                 }
+            })
+            .catch((err) => {
+                console.log('Mongo error (updateById)', err);
             });
     }
 };
@@ -76,7 +83,8 @@ module.exports = {
 // helper functions
 function DBFetchData(criteria) {
     console.log('DBFetchData - criteria', criteria);
-    let dbCriteria = {};
+    let dbCriteria = { ownerId: criteria.ownerId };
+
     if (criteria.collectionName) {
         dbCriteria.make = criteria.collectionName;
     }

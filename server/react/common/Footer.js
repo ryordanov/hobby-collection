@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => (
     <footer>
-        <nav>
+        {/* <nav>
             <ul>
                 <li><Link to='/'>Copyrights</Link></li>
             </ul>
-        </nav>
+        </nav> */}
     </footer>
 );
 

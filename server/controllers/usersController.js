@@ -12,7 +12,7 @@ var usersModel = mongoose.model('users', UserSchema);
 
 module.exports = {
     login: (req, res) => {
-        usersModel.find({ username: req.body.username, password: req.body.password }, function(err, data) {
+        usersModel.findOne({ username: req.body.username, password: req.body.password }, 'id email username', function(err, data) {
             if (err) {
                 console.log('userModel query error: ', err);
             }
@@ -20,16 +20,22 @@ module.exports = {
             let status;
             let statusText = '';
 
-            if (data.length) {
+            if (data) {
                 status = 200;
                 statusText = 'Login successful';
-                req.session.isAuthenticated = true;
+                // req.session.isAuthenticated = true;
+                req.session.loggedUser = {
+                    id: data.id,
+                    username: data.username,
+                    email: data.email
+                };
             } else {
                 status = 401;
                 statusText = 'Wrong login credentials';
-                req.session.isAuthenticated = false;
+                // req.session.isAuthenticated = false;
+                delete req.session.loggedUser;
             }
-            res.status(status).send({ responseStatus: statusText, isAuthenticated: req.session.isAuthenticated });
+            res.status(status).send({ responseStatus: statusText, isAuthenticated: !!req.session.loggedUser });
 
             // if (req.session.views) {
             //     req.session.views++;
@@ -58,7 +64,12 @@ module.exports = {
                     if (err) {
                         console.log('# Mongo insert user error: ', err);
                     }
-                    req.session.isAuthenticated = true;
+                    // req.session.isAuthenticated = true;
+                    req.session.loggedUser = {
+                        id: result.id,
+                        username: result.username,
+                        email: result.email
+                    };
                     res.status(200).send({ responseStatus: 'User has been created successfully', isAuthenticated: true });
                 });
             }
