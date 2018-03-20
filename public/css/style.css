@@ -79,7 +79,7 @@ div.row{
 }
 .cell {
   display:table-cell;
-  border: 1px solid #000;
+  border: 1px solid #337ab7;
   float:none !important;
  /* border: 1px solid red;
   border-radius: 5px;
@@ -103,3 +103,20 @@ div.row{
 .navbar-right {
   margin-right: 0px !important;
 }
+
+a.pull-right {
+  margin-bottom: 10px;
+}
+
+.table a {
+  color: black !important;
+}
+
+/* border radius main table */
+/* .table .row:last-child .cell:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.table .row:last-child .cell:last-child {
+  border-bottom-right-radius: 10px;
+} */

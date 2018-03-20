@@ -12,21 +12,6 @@ let generalCollectionsSchema = new mongoose.Schema({
 var generalCollectionsModel = mongoose.model('generalCollections', generalCollectionsSchema);
 let delimiter = ',';
 
-// function tmpCompare(original, modified, item) {
-//     let eq = true;
-//     for (const key in original) {
-//         if (/* key && */ original.hasOwnProperty(key)) {
-//             eq = eq //&& original[key] === modified[key]
-//                 && modified.hasOwnProperty(key)
-//                 && original[key]['cnt'] === modified[key]['cnt']
-//                 && original[key]['note'] === modified[key]['note'];
-//         } else {
-//             console.log('wrong', original, modified, item);
-//         }
-//     }
-//     return eq;
-// }
-
 function typeOfResult(option, items) {
     switch (option) {
         case 'SQUISHED':
@@ -43,12 +28,14 @@ module.exports = {
         return DBFetchData(criteria)
             .then(collection => {
                 collection.forEach(function(item, index) {
+                    // check if convert functions works correct
                     // let formattedItemsStr = squishObjToString(item.items);
                     // let formattedItemObj = expandStringToObj(formattedItemsStr);
                     // console.log(tmpCompare(item.items, formattedItemObj, item), item.make + '---'+item.serie);
 
                     collection[index]['items'] = typeOfResult(criteria.option || '', item.items || {});
 
+                    // insert owner to collection
                     // collection[index]['ownerId'] = authenticatedUser.id || '';
                     // self.updateById(collection[index]['oid'], collection[index]);
                 }, this);
@@ -80,6 +67,7 @@ module.exports = {
     }
 };
 
+// ----------------------------------------------------------------------------------
 // helper functions
 function DBFetchData(criteria) {
     console.log('DBFetchData - criteria', criteria);
@@ -160,7 +148,7 @@ function squishObjToString(itemsObj) {
         if ((itemsObj[identifiersArr[i + j - 1]].note ||
             itemsObj[identifiersArr[i + j - 1]].cnt > 1) &&
             j > 1) {
-            j--;// item with note to be outside x-y, but separated
+            j--;// item with note have to be outside x-y
         }
 
         if (j > 2) res += identifiersArr[i] + '-' + identifiersArr[i + j - 1];
@@ -312,3 +300,18 @@ function splitItemToComponents(item) {
     }
     return { 'number': number, 'counts': counts, 'text': text };
 }
+
+// function tmpCompare(original, modified, item) {
+//     let eq = true;
+//     for (const key in original) {
+//         if (/* key && */ original.hasOwnProperty(key)) {
+//             eq = eq //&& original[key] === modified[key]
+//                 && modified.hasOwnProperty(key)
+//                 && original[key]['cnt'] === modified[key]['cnt']
+//                 && original[key]['note'] === modified[key]['note'];
+//         } else {
+//             console.log('wrong', original, modified, item);
+//         }
+//     }
+//     return eq;
+// }

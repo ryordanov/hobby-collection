@@ -7,6 +7,17 @@ import PropTypes from 'prop-types';
 //     <button type='button' onClick={() => { history.push('/new-location') }}>Search missing!</button>
 // ))
 
+function makeLink(props) {
+    let url = '/add';
+    if (props.currentCollection) {
+        url += `/${props.currentCollection}`;
+    }
+    if (props.currentSubCollection) {
+        url += `/${props.currentSubCollection}`;
+    }
+
+    return url;
+}
 
 const ViewCollections = (props) => (
     <div>
@@ -24,6 +35,7 @@ const ViewCollections = (props) => (
             <h5>Details</h5>
         }
         {/* <Button /> */}
+        <Link to={makeLink(props)} className='btn btn-primary btn pull-right'>Add</Link>
         <div className='container table'>
             {
                 // <div className="container TableStyle">
