@@ -8,8 +8,8 @@ export default class Login extends Component {
         super(props);
         this.state = {
             responseStatus: props.location.responseStatus || '',
-            username: '',
-            password: ''
+            username: 'user',
+            password: '1234'
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -43,23 +43,6 @@ export default class Login extends Component {
 
     render() {
         return (
-            // <div className='Login'>
-            //     <form id='loginForm' method='POST' onSubmit={this.handleSubmit} >
-            //         <label>
-            //             Username:
-            //             <input type='text' name='username' ref={(r) => { this.theUsername = r; }} />
-            //         </label>
-            //         <label>
-            //             Password:
-            //             <input type='password' name='password' ref={(r) => { this.thePassword = r; }} />
-            //         </label>
-            //         <input type='submit' value='Submit' />
-            //     </form>
-            //     {'Server says:' + (this.state.responseStatus || '')}
-            //     {this.state.isAuthenticated && <Redirect to='/collections' />}
-            // </div>
-
-
             <div className="Login">
                 <form onSubmit={this.handleSubmit}>
                     <FormGroup controlId="username" bsSize="large">

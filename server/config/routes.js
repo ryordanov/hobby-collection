@@ -16,8 +16,16 @@ module.exports = (config, app) => {
 
     // handle every other route with index.html, which will hold a React application
     app.all('*', function(req, res) {
+        const options = {
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true,
+                'general-collection-data': 'alabala'
+            }
+          };
+
         console.log('* redirect to React: ', req.originalUrl);
-        res.sendFile(path.resolve(config.rootPath, 'public/index.html'));
+        res.sendFile(path.resolve(config.rootPath, 'public/index.html'), options);
     });
 
     // app.all('*', (req, res) => {

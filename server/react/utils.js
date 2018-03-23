@@ -42,3 +42,27 @@ export const postRequestToAPI = (url, data, historyRouter) => {
             console.error(error);
         });
 };
+
+export const buildUrl = (rootUrl, props, queryParams) => {
+    // let rootUrl = '/add';
+    if (rootUrl[0] !== '/') {
+        rootUrl = '/' + rootUrl;
+    }
+
+    if (props && Array.isArray(props)) {
+        props.forEach(element => {
+            rootUrl += `/${encodeURIComponent(element)}`;
+        });
+    }
+
+    if (queryParams && typeof queryParams === 'object') {
+        rootUrl += '?';
+        for (var key in queryParams) {
+            rootUrl += `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`;
+        }
+        if (queryParams.length > 1) {
+            rootUrl += '&';
+        }
+    }
+    return rootUrl;
+}

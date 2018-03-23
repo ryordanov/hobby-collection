@@ -70,7 +70,7 @@ module.exports = {
 // ----------------------------------------------------------------------------------
 // helper functions
 function DBFetchData(criteria) {
-    console.log('DBFetchData - criteria', criteria);
+    // console.log('DBFetchData - criteria', criteria);
     let dbCriteria = { ownerId: criteria.ownerId };
 
     if (criteria.collectionName) {

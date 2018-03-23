@@ -4,6 +4,9 @@ import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 import { getRequestToAPI, postRequestToAPI } from '../utils';
 
+function buildUrl(params) {
+    return `/api/collections/${params.collectionName}/${params.subCollectionName}?option=${params.option}`;
+}
 
 export default class Add extends React.Component {
     constructor(props) {
@@ -20,7 +23,7 @@ export default class Add extends React.Component {
     }
 
     componentDidMount() {
-        return getRequestToAPI(`/api/collections/${this.props.match.params.collectionName}/${this.props.match.params.subCollectionName}?option=${this.props.match.params.option}`, this.props.history)
+        return getRequestToAPI(buildUrl(this.props.match.params), this.props.history)
             .then((resData) => {
                 this.setState({
                     oid: resData[0].oid,
@@ -38,15 +41,7 @@ export default class Add extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        // const data = new FormData(event.target);
 
-        // const form = event.target;
-        // const data = {}
-        // for (let element of form.elements) {
-        //     if (element.name) {
-        //         data[element.name] = element.value;
-        //     }
-        // }
         let { oid, id, category, subCategory, items } = this.state;
 
         return postRequestToAPI(`/api/save/${oid}`, { oid, id, category, subCategory, items }, this.props.history)
@@ -66,12 +61,6 @@ export default class Add extends React.Component {
                 <form id='updateForm' onSubmit={this.handleSubmit} noValidate>
                     <FormGroup controlId="category" bsSize="large">
                         <ControlLabel>Category:</ControlLabel>
-                        {/* <FormControl
-                            autoFocus
-                            type="text"
-                            value={this.state.category}
-                            onChange={this.handleChange}
-                        /> */}
                         <FormControl componentClass="select" placeholder="select" defaultValue={this.state.category} disabled>
                             <option value="_">Please choose</option>
                             <option value={this.state.category}>{this.state.category}</option>
@@ -79,12 +68,6 @@ export default class Add extends React.Component {
                     </FormGroup>
                     <FormGroup controlId="subCategory" bsSize="large">
                         <ControlLabel>Subcategory:</ControlLabel>
-                        {/* <FormControl
-                            autoFocus
-                            type="text"
-                            value={this.state.subCategory}
-                            onChange={this.handleChange}
-                        /> */}
                         <FormControl componentClass="select" placeholder="select" defaultValue={this.state.subCategory} disabled>
                             <option value="_">Please choose</option>
                             <option value={this.state.subCategory}>{this.state.subCategory}</option>
@@ -122,19 +105,6 @@ export default class Add extends React.Component {
         );
     }
 }
-
-{/* <form>
-    <FormGroup bsSize="large">
-        <FormControl type="text" placeholder="Large text" />
-    </FormGroup>
-    <FormGroup>
-        <FormControl type="text" placeholder="Normal text" />
-    </FormGroup>
-    <FormGroup bsSize="small">
-        <FormControl type="text" placeholder="Small text" />
-    </FormGroup>
-</form>; */}
-
 
 Add.propTypes = {
     match: PropTypes.object,
