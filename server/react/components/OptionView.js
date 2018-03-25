@@ -55,7 +55,7 @@ export default class OptionView extends React.Component {
             </div>
         );
     }
-};
+}
 
 OptionView.propTypes = {
     selectedOption: PropTypes.func,

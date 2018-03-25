@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link /*, withRouter */ } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { buildUrl } from '../utils';
@@ -16,17 +16,26 @@ const ViewCollections = (props) => (
         {/* ViewCollections: {props.opt} */}
         {
             props.currentCollection && !props.currentSubCollection &&
-            <h5>Details of `{props.currentCollection}`: </h5>
+            <div>
+                <h5>Details of `{props.currentCollection}`: </h5>
+                <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
+            </div>
         }
         {
             props.currentCollection && props.currentSubCollection &&
-            <h5>Details of `{props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}`: </h5>
+            <div>
+                <h5>Details of `{props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}`: </h5> &&
+                <Link to={buildUrl('/edit', [props.currentCollection, props.currentSubCollection], {option: props.opt})} className='btn btn-primary btn pull-right'>Edit</Link>
+            </div>
         }
         {
             !(props.currentCollection || props.currentSubCollection) &&
-            <h5>Details</h5>
+            <div>
+                <h5>Details</h5>
+                <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
+            </div>
         }
-        <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
+        {/* <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link> */}
         <div className='container table'>
             <div className="row head">
                 <div className="cell col-xs-1">Category</div>
@@ -34,20 +43,20 @@ const ViewCollections = (props) => (
                 <div className="cell col-xs-9">Items</div>
             </div>
             {/* <div className="container TableStyle"> */}
-                {
-                    props.collectionRecords &&
+            {
+                props.collectionRecords &&
                     props.collectionRecords.map((element, index) => (
                         <div className="row" key={index}>
                             <div className="cell col-xs-1"><Link className='collection-link' to={buildUrl('/collections', [element.make])}>{element.make}</Link></div>
                             <div className="cell col-xs-2"><Link className='subcollection-link' to={buildUrl('/collections', [element.make, element.serie])}>{element.serie}</Link></div>
-                            <div className="cell col-xs-9"><Link to={buildUrl('/edit', [element.make, element.serie, props.opt])}>
+                            <div className="cell col-xs-9"><Link to={buildUrl('/edit', [element.make, element.serie], {option: props.opt})}>
                                 <div className='display-in-cell'>
                                     {element.items}
                                 </div>
                             </Link></div>
                         </div>
                     ))
-                }
+            }
             {/* </div> */}
         </div>
     </div>
@@ -58,6 +67,13 @@ ViewCollections.propTypes = {
     collectionRecords: PropTypes.array,
     currentCollection: PropTypes.string,
     currentSubCollection: PropTypes.string
+};
+
+ViewCollections.defaultProps = {
+    opt: '',
+    collectionRecords: [],
+    currentCollection: '',
+    currentSubCollection: ''
 };
 
 export default ViewCollections;

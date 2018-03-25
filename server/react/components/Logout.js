@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
+// import { Redirect } from 'react-router-dom';
 import { postRequestToAPI } from '../utils';
 
 export default class Logout extends Component {
@@ -16,12 +17,12 @@ export default class Logout extends Component {
                     this.props.history.push({
                         pathname: '/login',
                         responseStatus: response.responseStatus
-                      });
+                    });
                 }
-            })
-            // .catch((error) => {
-            //     console.error(error);
-            // });
+            });
+        // .catch((error) => {
+        //     console.error(error);
+        // });
     }
 
     render() {
@@ -32,3 +33,7 @@ export default class Logout extends Component {
         );
     }
 }
+
+Logout.propTypes = {
+    history:PropTypes.object
+};

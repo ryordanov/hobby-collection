@@ -1,16 +1,31 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-let requredValidationMessage = '{PATH} is required';
-let generalCollectionsSchema = new mongoose.Schema({
-    id: { type: Number, required: requredValidationMessage, unique: true },
+const requredValidationMessage = '{PATH} is required';
+const generalCollectionsSchema = new mongoose.Schema({
+    id: { type: Number, required: requredValidationMessage, unique: true, default: 0 },
     ownerId: { type: String, required: requredValidationMessage },
     make: { type: String, required: requredValidationMessage },
     serie: { type: String },
     margins: { type: String },
     items: { type: Object }
 });
-var generalCollectionsModel = mongoose.model('generalCollections', generalCollectionsSchema);
-let delimiter = ',';
+const generalCollectionsModel = mongoose.model('generalCollections', generalCollectionsSchema);
+
+
+// generalCollectionsSchema.pre('save', function(next) {
+//     var doc = this;
+//     counter.findByIdAndUpdate(
+//         { '_id': 'userID' },
+//         { '$inc': { 'seq': 1 } }
+//         , function(error, counter)   {
+//             if(error) return next(error);
+//             doc.userID = counter.seq.toString();
+//             next();
+//         });
+// });
+
+
+const delimiter = ',';
 
 function typeOfResult(option, items) {
     switch (option) {
@@ -43,26 +58,77 @@ module.exports = {
                 return collection;
             });
     },
-    updateById: (id, updatedData) => {
-        var oid = mongoose.Types.ObjectId(id);
+    updateById: (id, payload, queryOptions) => {
+        const oid = mongoose.Types.ObjectId(id);
 
+        // TODO: update make, serie, margins, items
         return generalCollectionsModel.findByIdAndUpdate(oid, {
-            items: expandStringToObj(updatedData.items)
+            items: expandStringToObj(payload.items)
             // ownerId: updatedData.ownerId
-        }, { new: true }).exec()
+        }, { new: true })
+            .exec()
             .then((updatedData) => {
                 if (updatedData) {
                     return {
-                        items: squishObjToString(updatedData.items),
                         make: updatedData.make,
                         serie: updatedData.serie,
+                        margins: updatedData.margins,
+                        items: typeOfResult(queryOptions.option || '', updatedData.items || {}),
                         id: updatedData.id,
                         oid: updatedData._id.toString()
                     };
                 }
             })
             .catch((err) => {
-                console.log('Mongo error (updateById)', err);
+                console.log('# Mongo error (updateById)', err);
+            });
+    },
+    createNewItem: (ownerId, payload, queryOptions) => {
+        let filter = { $and: [{ make: payload.collection }, { serie: payload.subCollection }] };
+
+        return generalCollectionsModel.find(filter)
+            .exec()
+            .then((dbRes) => {
+                if (dbRes && dbRes.length) {
+                    return { error: 'The Item in this Category and Subcategory already exists.', errorCode: 2 };
+                } else {
+                    // return generalCollectionsModel.count({})
+                    return generalCollectionsModel.findOne({}).sort({id : -1})//.limit(1)
+                        .exec()
+                        .then(lastInsertedObject => {
+                            let createObj = {
+                                ownerId: ownerId,
+                                make: payload.collection,
+                                serie: payload.subCollection,
+                                margins: payload.margins,
+                                items: expandStringToObj(payload.items),
+                                id: lastInsertedObject && lastInsertedObject.id + 1
+                            };
+                            let newItem = new generalCollectionsModel(createObj);
+
+                            return newItem.save()
+                                // .exec()
+                                .then(createdData => {
+                                    if (createdData) {
+                                        return {
+                                            ownerId: ownerId,
+                                            make: createdData.make,
+                                            serie: createdData.serie,
+                                            margins: createdData.margins,
+                                            items: typeOfResult(queryOptions.option || 'SQUISHED', createdData.items || {}),
+                                            id: createdData.id
+                                            // oid: createdData._id.toString()
+                                        };
+                                    }
+                                })
+                                .catch(err =>{
+                                    console.log('err', err);
+                                });
+                        });
+                }
+            })
+            .catch((err) => {
+                console.log('# Mongo error (createNewItem)', err);
             });
     }
 };
@@ -74,10 +140,10 @@ function DBFetchData(criteria) {
     let dbCriteria = { ownerId: criteria.ownerId };
 
     if (criteria.collectionName) {
-        dbCriteria.make = criteria.collectionName;
+        dbCriteria.make = decodeURIComponent(criteria.collectionName);
     }
     if (criteria.subCollectionName) {
-        dbCriteria.serie = criteria.subCollectionName;
+        dbCriteria.serie = decodeURIComponent(criteria.subCollectionName);
     }
 
     let query = generalCollectionsModel.find(dbCriteria, function(err, gums) {
@@ -113,7 +179,7 @@ function DBFetchData(criteria) {
 function encodeItem(itemsObject) {
     let encodeditemsObject = {};
 
-    for (var key in itemsObject) {
+    for (let key in itemsObject) {
         if (itemsObject.hasOwnProperty(key)) {
             let encodedKey = key;
             if (key.includes('[_dot_]')) {

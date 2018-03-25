@@ -1,39 +1,56 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, ControlLabel, Alert } from 'react-bootstrap';
 
-import { getRequestToAPI, postRequestToAPI } from '../utils';
-
+import { getRequestToAPI, postRequestToAPI, buildUrl, concatQueryParams, setNestedValue } from '../utils';
 
 export default class Edit extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            oid: '',
-            id: '',
-            category: '',
-            subCategory: '',
-            items: ''
+            record: {
+                oid: '',
+                id: '',
+                collection: '',
+                subCollection: '',
+                margins: '',
+                items: ''
+            },
+            responseStatus: ''
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
-        return getRequestToAPI(`/api/collections/${this.props.match.params.collectionName}/${this.props.match.params.subCollectionName}?option=${this.props.match.params.option}`, this.props.history)
+        // return getRequestToAPI(`/api/collections/${this.props.match.params.collectionName}/${this.props.match.params.subCollectionName}?option=${this.props.match.params.option}`, this.props.history)
+        let queryParams = concatQueryParams(this.props.location.search);
+        return getRequestToAPI(buildUrl('/api/collections', this.props.match.params, queryParams), this.props.history)
             .then((resData) => {
                 this.setState({
-                    oid: resData[0].oid,
-                    id: resData[0].id,
-                    category: resData[0].make,
-                    subCategory: resData[0].serie,
-                    items: resData[0].items
+                    record: {
+                        oid: resData[0].oid,
+                        id: resData[0].id,
+                        collection: resData[0].make,
+                        subCollection: resData[0].serie,
+                        margins: resData[0].margins,
+                        items: resData[0].items
+                    }
                 });
             });
     }
 
     handleChange(event) {
-        this.setState({ [event.target.id]: event.target.value });
+        let path = event.target.id; // dot separated route
+        let value = event.target.value;
+
+        this.setState((prevState) => {
+            let tmpState = Object.assign({}, prevState); // do not mutate previous State object
+            setNestedValue(tmpState, path, value);
+            tmpState.responseStatus = '';
+            return tmpState;
+        });
+        // this.setState({ [event.target.id]: event.target.value });
     }
 
     handleSubmit(event) {
@@ -47,50 +64,62 @@ export default class Edit extends React.Component {
         //         data[element.name] = element.value;
         //     }
         // }
-        let { oid, id, category, subCategory, items } = this.state;
-
-        return postRequestToAPI(`/api/save/${oid}`, { oid, id, category, subCategory, items }, this.props.history)
+        let { oid, id, collection, subCollection, items } = this.state.record;
+        let queryParams = concatQueryParams(this.props.location.search);
+        return postRequestToAPI(buildUrl('/api/save', [oid], queryParams), { oid, id, collection, subCollection, items }, this.props.history)
             .then(data => this.setState({
-                oid: data.oid,
-                id: data.data,
-                category: data.make,
-                subCategory: data.serie,
-                items: data.items
+                record: {
+                    oid: data.oid,
+                    id: data.data,
+                    collection: data.make,
+                    subCollection: data.serie,
+                    margins: data.margins,
+                    items: data.items
+                },
+                responseStatus: 'Success'
             }));
     }
 
     render() {
         return (
             <div>
-                {JSON.stringify(this.state.records)}
                 <form id='updateForm' onSubmit={this.handleSubmit} noValidate>
-                    <FormGroup controlId="category" bsSize="large">
+                    <FormGroup controlId="record.collection" bsSize="large">
                         <ControlLabel>Category:</ControlLabel>
                         {/* <FormControl
                             autoFocus
                             type="text"
-                            value={this.state.category}
+                            value={this.state.record.collection}
                             onChange={this.handleChange}
                         /> */}
-                        <FormControl componentClass="select" placeholder="select" defaultValue={this.state.category} disabled>
+                        <FormControl componentClass="select" placeholder="select" defaultValue={this.state.record.collection} disabled>
                             <option value="_">Please choose</option>
-                            <option value={this.state.category}>{this.state.category}</option>
+                            <option value={this.state.record.collection}>{this.state.record.collection}</option>
                         </FormControl>
                     </FormGroup>
-                    <FormGroup controlId="subCategory" bsSize="large">
+                    <FormGroup controlId="record.subCollection" bsSize="large">
                         <ControlLabel>Subcategory:</ControlLabel>
                         {/* <FormControl
                             autoFocus
                             type="text"
-                            value={this.state.subCategory}
+                            value={this.state.record.subCollection}
                             onChange={this.handleChange}
                         /> */}
-                        <FormControl componentClass="select" placeholder="select" defaultValue={this.state.subCategory} disabled>
+                        <FormControl componentClass="select" placeholder="select" defaultValue={this.state.record.subCollection} disabled>
                             <option value="_">Please choose</option>
-                            <option value={this.state.subCategory}>{this.state.subCategory}</option>
+                            <option value={this.state.record.subCollection}>{this.state.record.subCollection}</option>
                         </FormControl>
                     </FormGroup>
-                    <FormGroup controlId="items" bsSize="large">
+                    <FormGroup controlId="record.margins" bsSize="large">
+                        <ControlLabel>Margins:</ControlLabel>
+                        <FormControl
+                            autoFocus
+                            type="text"
+                            value={this.state.record.margins}
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
+                    <FormGroup controlId="record.items" bsSize="large">
                         <ControlLabel>Items:</ControlLabel>
                         <FormControl
                             autoFocus
@@ -98,7 +127,7 @@ export default class Edit extends React.Component {
                             componentClass="textarea"
                             rows={8}
                             maxLength={4000}
-                            value={this.state.items}
+                            value={this.state.record.items}
                             onChange={this.handleChange}
                         />
                     </FormGroup>
@@ -118,6 +147,12 @@ export default class Edit extends React.Component {
                         Cancel
                     </Button>
                 </form>
+                {this.state.responseStatus &&
+                    <Alert bsStyle="info">
+                        <strong>Save status: </strong>
+                        {this.state.responseStatus}
+                    </Alert>}
+
             </div>
         );
     }
@@ -125,12 +160,12 @@ export default class Edit extends React.Component {
 
 {/* <form>
     <FormGroup bsSize="large">
-        <FormControl type="text" placeholder="Large text" />
+        <FormControl type="text" placeholder="small text" />
     </FormGroup>
     <FormGroup>
         <FormControl type="text" placeholder="Normal text" />
     </FormGroup>
-    <FormGroup bsSize="small">
+    <FormGroup bsSize="large">
         <FormControl type="text" placeholder="Small text" />
     </FormGroup>
 </form>; */}
@@ -138,7 +173,8 @@ export default class Edit extends React.Component {
 
 Edit.propTypes = {
     match: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
+    location: PropTypes.object
 };
 Edit.defaultProps = {
     match: {

@@ -55,7 +55,7 @@ module.exports = {
         usersModel.find(filter, function(err, data) {
             if (err) console.log('userModel query error: ', err);
 
-            if (data.length) {
+            if (data && data.length) {
                 console.log('# Mongo - user or email already exists (' + req.body.username + ') or (' + req.body.email + ') ');
                 res.status(401).send({ responseStatus: 'User already exists!', isAuthenticated: false });
             } else {

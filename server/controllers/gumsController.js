@@ -5,8 +5,9 @@ let gum = require('../utilities/gum');
 
 module.exports = {
     getCollections: (req, res) => {
-        if (req.session.loggedUser) {
-            let constraints = {ownerId: req.session.loggedUser.id, /*...req.query, */option: req.query.option, collectionName: req.params.name, subCollectionName: req.params.subcollection };
+        let loggedUser = (req.session && req.session.loggedUser) || null;
+        if (loggedUser) {
+            let constraints = { ownerId: loggedUser.id, /*...req.query, */option: req.query.option, collectionName: req.params.name, subCollectionName: req.params.subcollection };
             gum.getCollections(constraints/*, req.session.loggedUser*/)
                 .then(data => {
                     return res.send(data);
@@ -24,12 +25,26 @@ module.exports = {
 
     },
     update: (req, res) => {
-        gum.updateById(req.params.id, req.body)
-            .then(data => res.send(data))
+        gum.updateById(req.params.id, req.body, req.query)
+            .then(data => res.status(200).send(data))
             .catch((err) => {
-                console.log('err (update)', err);
+                console.log('gumsController error (update)', err);
                 return res.send(err);
             });
+    },
+    create: (req, res) => {
+        let loggedUser = (req.session && req.session.loggedUser && req.session.loggedUser.id) || null;
+        if (loggedUser) {
+            gum.createNewItem(loggedUser, req.body, req.query)
+                .then(data => res.status(200).send(data))
+                .catch((err) => {
+                    console.log('gumsController error (create)', err);
+                    return res.send(err);
+                });
+        } else {
+            res.send({responseStatus: 'Access forbiden for unauthorized users!', isAuthenticated: false});
+        }
+
     }
 
     //pug

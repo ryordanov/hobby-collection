@@ -1,3 +1,4 @@
+/*eslint no-restricted-modules: [2, ""]*/
 const bodyParser = require('body-parser');
 const express = require('express');
 const compression = require('compression');

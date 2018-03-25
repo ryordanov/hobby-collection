@@ -9,6 +9,7 @@ module.exports = (config, app) => {
 
     app.get('/api/collections/:name?/:subcollection?', controllers.gums.getCollections);
     app.post('/api/save/:id', controllers.gums.update);
+    app.post('/api/create', controllers.gums.create);
 
     app.get('/notFound', function(req, res) {
         res.send({ notFound: 'ERROR 404 - Not found [' + new Date() + ']' });
@@ -22,7 +23,7 @@ module.exports = (config, app) => {
                 'x-sent': true,
                 'general-collection-data': 'alabala'
             }
-          };
+        };
 
         console.log('* redirect to React: ', req.originalUrl);
         res.sendFile(path.resolve(config.rootPath, 'public/index.html'), options);

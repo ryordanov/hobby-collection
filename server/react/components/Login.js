@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import { Button, FormGroup, FormControl, ControlLabel, Alert } from 'react-bootstrap';
 import { postRequestToAPI } from '../utils';
@@ -8,7 +9,7 @@ export default class Login extends Component {
         super(props);
         this.state = {
             responseStatus: props.location.responseStatus || '',
-            username: 'user',
+            username: 'dimitrichka',
             password: '1234'
         };
 
@@ -82,3 +83,8 @@ export default class Login extends Component {
         );
     }
 }
+
+Login.propTypes = {
+    history: PropTypes.object,
+    location: PropTypes.object
+};

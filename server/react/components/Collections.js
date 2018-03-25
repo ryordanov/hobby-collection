@@ -76,7 +76,9 @@ export default class Collections extends React.Component {
 }
 
 Collections.propTypes = {
-    match: PropTypes.object
+    match: PropTypes.object,
+    location: PropTypes.object,
+    history: PropTypes.object
 };
 Collections.defaultProps = {
     match: {
