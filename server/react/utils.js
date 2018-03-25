@@ -16,10 +16,12 @@ export const getRequestToAPI = (url, historyRouter) => {
         })
         .catch((error) => {
             console.error(error);
+            sessionStorage.removeItem('loggedin');
+            historyRouter.push('/login');
         });
 };
 
-export const postRequestToAPI = (url, data /*, historyRouter */) => {
+export const postRequestToAPI = (url, data , historyRouter) => {
     return fetch(url, {
         credentials: 'same-origin',
         headers: {
@@ -40,6 +42,8 @@ export const postRequestToAPI = (url, data /*, historyRouter */) => {
         })
         .catch((error) => {
             console.error(error);
+            sessionStorage.removeItem('loggedin');
+            historyRouter.push('/login');
         });
 };
 

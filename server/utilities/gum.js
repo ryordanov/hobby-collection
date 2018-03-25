@@ -123,6 +123,7 @@ module.exports = {
                                 })
                                 .catch(err =>{
                                     console.log('err', err);
+                                    return {name: err.name, error: err.message, errorCode: 1};
                                 });
                         });
                 }
