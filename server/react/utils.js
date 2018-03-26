@@ -10,14 +10,14 @@ export const getRequestToAPI = (url, historyRouter) => {
         .then((response) => {
             if (response.status === 401) {
                 sessionStorage.removeItem('loggedin');
-                historyRouter.push('/login');
+                if (historyRouter) historyRouter.push('/login');
             }
             return response.json();
         })
         .catch((error) => {
             console.error(error);
             sessionStorage.removeItem('loggedin');
-            historyRouter.push('/login');
+            if (historyRouter) historyRouter.push('/login');
         });
 };
 
@@ -35,7 +35,7 @@ export const postRequestToAPI = (url, data , historyRouter) => {
                 sessionStorage.setItem('loggedin', 'true');
             } else if (response.status === 401 || response.url.indexOf('api/logout') > -1) {
                 sessionStorage.removeItem('loggedin');
-                // historyRouter.push('/login');
+                // if (historyRouter) historyRouter.push('/login');
                 // return {response: response.statusText};
             }
             return response.json();
@@ -43,7 +43,7 @@ export const postRequestToAPI = (url, data , historyRouter) => {
         .catch((error) => {
             console.error(error);
             sessionStorage.removeItem('loggedin');
-            historyRouter.push('/login');
+            if (historyRouter) historyRouter.push('/login');
         });
 };
 

@@ -8,7 +8,8 @@ const generalCollectionsSchema = new mongoose.Schema({
     serie: { type: String },
     margins: { type: String },
     items: { type: Object }
-});
+},
+{ strict: false, strictQuery: true }); // TODO: add new scehema for deleted items
 const generalCollectionsModel = mongoose.model('generalCollections', generalCollectionsSchema);
 
 
@@ -58,8 +59,8 @@ module.exports = {
                 return collection;
             });
     },
-    updateById: (id, payload, queryOptions) => {
-        const oid = mongoose.Types.ObjectId(id);
+    updateById: (itemId, payload, queryOptions) => {
+        const oid = mongoose.Types.ObjectId(itemId);
 
         // TODO: update make, serie, margins, items
         return generalCollectionsModel.findByIdAndUpdate(oid, {
@@ -131,7 +132,33 @@ module.exports = {
             .catch((err) => {
                 console.log('# Mongo error (createNewItem)', err);
             });
-    }
+    },
+    deleteItem: (ownerId, itemId, payload, queryOptions) => {
+        const oid = mongoose.Types.ObjectId(itemId);
+        // TOOD: remove from this document and move to another [deleted items] document
+        return generalCollectionsModel.findByIdAndUpdate(oid, {
+            deletedBy: ownerId,
+            deletedOn: new Date()
+        }, { new: true })
+            .exec()
+            .then((updatedData) => {
+                if (updatedData) {
+                    return {
+                        make: updatedData.make,
+                        serie: updatedData.serie,
+                        margins: updatedData.margins,
+                        items: typeOfResult(queryOptions.option || '', updatedData.items || {}),
+                        id: updatedData.id,
+                        oid: updatedData._id.toString(),
+                        deletedBy: updatedData.deletedBy,
+                        deletedOn: updatedData.deletedOn
+                    };
+                }
+            })
+            .catch((err) => {
+                console.log('# Mongo error (updateById)', err);
+            });
+    },
 };
 
 // ----------------------------------------------------------------------------------

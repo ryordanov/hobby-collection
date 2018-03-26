@@ -25,12 +25,15 @@ module.exports = {
 
     },
     update: (req, res) => {
-        gum.updateById(req.params.id, req.body, req.query)
-            .then(data => res.status(200).send(data))
-            .catch((err) => {
-                console.log('gumsController error (update)', err);
-                return res.send(err);
-            });
+        let loggedUser = (req.session && req.session.loggedUser && req.session.loggedUser.id) || null;
+        if (loggedUser) {
+            gum.updateById(req.params.id, req.body, req.query)
+                .then(data => res.status(200).send(data))
+                .catch((err) => {
+                    console.log('gumsController error (update)', err);
+                    return res.send(err);
+                });
+        }
     },
     create: (req, res) => {
         let loggedUser = (req.session && req.session.loggedUser && req.session.loggedUser.id) || null;
@@ -42,9 +45,19 @@ module.exports = {
                     return res.send(err);
                 });
         } else {
-            res.send({responseStatus: 'Access forbiden for unauthorized users!', isAuthenticated: false});
+            res.send({ responseStatus: 'Access forbiden for unauthorized users!', isAuthenticated: false });
         }
-
+    },
+    delete: (req, res) => {
+        let loggedUser = (req.session && req.session.loggedUser && req.session.loggedUser.id) || null;
+        if (loggedUser) {
+            gum.deleteItem(loggedUser, req.params.id, req.body, req.query)
+                .then(data => res.status(200).send(data))
+                .catch((err) => {
+                    console.log('gumsController error (create)', err);
+                    return res.send(err);
+                });
+        }
     }
 
     //pug

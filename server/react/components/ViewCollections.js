@@ -2,7 +2,7 @@ import React from 'react';
 import { Link /*, withRouter */ } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import { buildUrl } from '../utils';
+import { buildUrl, postRequestToAPI } from '../utils';
 
 
 // import { Grid, Row, Col } from 'react-bootstrap';
@@ -11,40 +11,50 @@ import { buildUrl } from '../utils';
 //     <button type='button' onClick={() => { history.push('/new-location') }}>Search missing!</button>
 // ))
 
-const ViewCollections = (props) => (
-    <div>
-        {/* ViewCollections: {props.opt} */}
-        {
-            props.currentCollection && !props.currentSubCollection &&
-            <div>
-                <h5>Details of `{props.currentCollection}`: </h5>
-                <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
-            </div>
-        }
-        {
-            props.currentCollection && props.currentSubCollection &&
-            <div>
-                <h5>Details of `{props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}`: </h5> &&
-                <Link to={buildUrl('/edit', [props.currentCollection, props.currentSubCollection], {option: props.opt})} className='btn btn-primary btn pull-right'>Edit</Link>
-            </div>
-        }
-        {
-            !(props.currentCollection || props.currentSubCollection) &&
-            <div>
-                <h5>Details</h5>
-                <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
-            </div>
-        }
-        {/* <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link> */}
-        <div className='container table'>
-            <div className="row head">
-                <div className="cell col-xs-1">Category</div>
-                <div className="cell col-xs-2">Subcategory</div>
-                <div className="cell col-xs-9">Items</div>
-            </div>
-            {/* <div className="container TableStyle"> */}
+const ViewCollections = (props) => {
+    function handleClick(e, make, serie, oid) {
+        e.preventDefault();
+        // console.log(e.target.attributes[0].value);
+        return postRequestToAPI(buildUrl('/api/delete', [oid]), {make, serie, oid})
+            .then(data => {
+                console.log('data', data);
+            });
+    }
+
+    return (
+        <div>
+            {/* ViewCollections: {props.opt} */}
             {
-                props.collectionRecords &&
+                props.currentCollection && !props.currentSubCollection &&
+                <div>
+                    <h5>Details of `{props.currentCollection}`: </h5>
+                    <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
+                </div>
+            }
+            {
+                props.currentCollection && props.currentSubCollection &&
+                <div>
+                    <h5>Details of `{props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}`: </h5> &&
+                    <Link to={buildUrl('/edit', [props.currentCollection, props.currentSubCollection], { option: props.opt })} className='btn btn-primary btn pull-right'>Edit</Link>
+                </div>
+            }
+            {
+                !(props.currentCollection || props.currentSubCollection) &&
+                <div>
+                    <h5>Details</h5>
+                    <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
+                </div>
+            }
+            {/* <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link> */}
+            <div className='container table'>
+                <div className="row head">
+                    <div className="cell col-xs-1">Category</div>
+                    <div className="cell col-xs-2">Subcategory</div>
+                    <div className="cell col-xs-9">Items</div>
+                </div>
+                {/* <div className="container TableStyle"> */}
+                {
+                    props.collectionRecords &&
                     props.collectionRecords.map((element, index) => (
                         <div className="row" key={index}>
                             <div className="cell col-xs-1"><Link className='collection-link' to={buildUrl('/collections', [element.make])}>{element.make}</Link></div>
@@ -54,13 +64,15 @@ const ViewCollections = (props) => (
                                     {element.items}
                                 </div>
                             </Link></div>
+                            <div className="cell col-xs-1"><Link to={buildUrl('/delete', [element.id])} onClick={(e)=>handleClick(e, element.make, element.serie, element.oid)}>DELETE</Link></div>
                         </div>
                     ))
-            }
-            {/* </div> */}
+                }
+                {/* </div> */}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 ViewCollections.propTypes = {
     opt: PropTypes.string,
