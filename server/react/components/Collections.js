@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import OptionView from '../components/OptionView';
 import ViewCollections from '../components/ViewCollections';
 
-import { getRequestToAPI } from '../utils';
+import { getRequestToAPI, buildUrl } from '../utils';
 
 let itemsSeed = [
     { id: 'print view', value: 'SQUISHED' },
@@ -17,11 +17,12 @@ export default class Collections extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            url: '',
+            // url: '',
             dataFromBackend: [],
             selectedOption: itemsSeed[0].value
         };
         this.selectOption = this.selectOption.bind(this);
+        this.reloadAfterDelete = this.reloadAfterDelete.bind(this);
     }
 
     componentDidMount() {
@@ -38,22 +39,15 @@ export default class Collections extends React.Component {
         this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, rbData);
     }
 
+    reloadAfterDelete() {
+        this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, this.state.selectedOption);
+    }
+
     loadNewData(collectionName, subCollectionName, selectedOption) {
-        let url = '/api/collections';
-        selectedOption = selectedOption || this.state.selectedOption || '';
-
-        if (collectionName) {
-            url += `/${collectionName}`;
-        }
-        if (subCollectionName) {
-            url += `/${subCollectionName}`;
-        }
-        this.setState({ dataFromBackend: [] }); // loader...
-
-        return getRequestToAPI(url + `?option=${selectedOption}`, this.props.history)
+        return getRequestToAPI(buildUrl('/api/collections', [collectionName, subCollectionName], {option: selectedOption || this.state.selectedOption || ''}), this.props.history)
             .then((resData) => {
                 if (resData) {
-                    this.setState({ url, selectedOption, dataFromBackend: resData });
+                    this.setState({ /* url, */ selectedOption, dataFromBackend: resData });
                 }
             });
     }
@@ -69,7 +63,8 @@ export default class Collections extends React.Component {
                     opt={this.state.selectedOption}
                     collectionRecords={this.state.dataFromBackend}
                     currentCollection={this.props.match.params.collectionName}
-                    currentSubCollection={this.props.match.params.subCollectionName} />
+                    currentSubCollection={this.props.match.params.subCollectionName}
+                    reloadAfterDelete={this.reloadAfterDelete} />
             </div>
         );
     }

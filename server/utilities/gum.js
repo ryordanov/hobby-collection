@@ -9,7 +9,7 @@ const generalCollectionsSchema = new mongoose.Schema({
     margins: { type: String },
     items: { type: Object }
 },
-{ strict: false, strictQuery: true }); // TODO: add new scehema for deleted items
+    { strict: false, strictQuery: true }); // TODO: add new scehema for deleted items
 const generalCollectionsModel = mongoose.model('generalCollections', generalCollectionsSchema);
 
 
@@ -25,6 +25,18 @@ const generalCollectionsModel = mongoose.model('generalCollections', generalColl
 //         });
 // });
 
+const deletedCollectionsSchema = new mongoose.Schema({
+    id: { type: Number, required: requredValidationMessage, unique: true, default: 0 },
+    ownerId: { type: String, required: requredValidationMessage },
+    make: { type: String, required: requredValidationMessage },
+    serie: { type: String },
+    margins: { type: String },
+    items: { type: Object },
+    deletedBy: { type: String },
+    deletedOn: { type: Date }
+
+}/*,{ strict: false, strictQuery: true }*/); // TODO: add new scehema for deleted items
+const deletedCollectionsModel = mongoose.model('deletedCollections', deletedCollectionsSchema);
 
 const delimiter = ',';
 
@@ -43,7 +55,7 @@ module.exports = {
     getCollections: (criteria/*, authenticatedUser*/) => {
         return DBFetchData(criteria)
             .then(collection => {
-                collection.forEach(function(item, index) {
+                collection.forEach(function (item, index) {
                     // check if convert functions works correct
                     // let formattedItemsStr = squishObjToString(item.items);
                     // let formattedItemObj = expandStringToObj(formattedItemsStr);
@@ -85,7 +97,7 @@ module.exports = {
             });
     },
     createNewItem: (ownerId, payload, queryOptions) => {
-        let filter = { $and: [{ make: payload.collection }, { serie: payload.subCollection }] };
+        const filter = { $and: [{ make: payload.collection }, { serie: payload.subCollection }] };
 
         return generalCollectionsModel.find(filter)
             .exec()
@@ -94,10 +106,10 @@ module.exports = {
                     return { error: 'The Item in this Category and Subcategory already exists.', errorCode: 2 };
                 } else {
                     // return generalCollectionsModel.count({})
-                    return generalCollectionsModel.findOne({}).sort({id : -1})//.limit(1)
+                    return generalCollectionsModel.findOne({}).sort({ id: -1 })//.limit(1)
                         .exec()
                         .then(lastInsertedObject => {
-                            let createObj = {
+                            const createObj = {
                                 ownerId: ownerId,
                                 make: payload.collection,
                                 serie: payload.subCollection,
@@ -122,9 +134,9 @@ module.exports = {
                                         };
                                     }
                                 })
-                                .catch(err =>{
+                                .catch(err => {
                                     console.log('err', err);
-                                    return {name: err.name, error: err.message, errorCode: 1};
+                                    return { name: err.name, error: err.message, errorCode: 1 };
                                 });
                         });
                 }
@@ -136,27 +148,40 @@ module.exports = {
     deleteItem: (ownerId, itemId, payload, queryOptions) => {
         const oid = mongoose.Types.ObjectId(itemId);
         // TOOD: remove from this document and move to another [deleted items] document
-        return generalCollectionsModel.findByIdAndUpdate(oid, {
-            deletedBy: ownerId,
-            deletedOn: new Date()
-        }, { new: true })
+        return generalCollectionsModel.findByIdAndRemove(oid)
             .exec()
-            .then((updatedData) => {
-                if (updatedData) {
-                    return {
-                        make: updatedData.make,
-                        serie: updatedData.serie,
-                        margins: updatedData.margins,
-                        items: typeOfResult(queryOptions.option || '', updatedData.items || {}),
-                        id: updatedData.id,
-                        oid: updatedData._id.toString(),
-                        deletedBy: updatedData.deletedBy,
-                        deletedOn: updatedData.deletedOn
-                    };
+            .then((deletedData) => {
+                if (deletedData) {
+                    let newItem = new deletedCollectionsModel(
+                        {
+                            id: deletedData.id,
+                            ownerId: deletedData.ownerId,
+                            make: deletedData.make,
+                            serie: deletedData.serie,
+                            margins: deletedData.margins,
+                            items: deletedData.items,
+                            deletedBy: ownerId,
+                            deletedOn: new Date() // the same as object id in deleted items, probably will be removed
+                        });
+                    return newItem.save()
+                        .then(doc => {
+                            return {
+                                make: doc.make,
+                                serie: doc.serie,
+                                // margins: doc.margins,
+                                // items: typeOfResult(queryOptions.option || '', doc.items || {}),
+                                // id: doc.id,
+                                // oid: doc._id.toString(),
+                                // deletedBy: doc.deletedBy,
+                                deletedOn: doc.deletedOn
+                            };
+                        });
+                } else {
+                    return { error: 'Delete did not return any data.', errorCode: 3 };
                 }
             })
             .catch((err) => {
-                console.log('# Mongo error (updateById)', err);
+                console.log('# Mongo error (findByIdAndRemove)', err);
             });
     },
 };
@@ -174,7 +199,7 @@ function DBFetchData(criteria) {
         dbCriteria.serie = decodeURIComponent(criteria.subCollectionName);
     }
 
-    let query = generalCollectionsModel.find(dbCriteria, function(err, gums) {
+    let query = generalCollectionsModel.find(dbCriteria, function (err, gums) {
         if (err) {
             console.log('DBFetchData query error: ', err);
         } else
@@ -185,7 +210,7 @@ function DBFetchData(criteria) {
     return query.exec()
         .then((data) => {
             let details = [];
-            data.forEach(function(singleCollection) {
+            data.forEach(function (singleCollection) {
                 details.push({
                     'oid': singleCollection._id.toString(),
                     'id': singleCollection.id,
@@ -323,10 +348,10 @@ function expandStringToObj(items) {
                     addItemToObject(itemsCountText, j, 1, null);
                 }
             } else // ако има (text) след числото - се вади в нов асоциативен масив/обект
-            if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
-                let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
-                addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
-            }
+                if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
+                    let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+                    addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+                }
         }
     } else {
         for (let i = 0; i < items.length; i++) {
