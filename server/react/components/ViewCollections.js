@@ -70,7 +70,7 @@ const ViewCollections = (props) => {
                                     {element.items}
                                 </div>
                             </Link></div>
-                            <div className="c icon"><Link to={buildUrl('/delete', [element.id])} onClick={(e) => handleClick(e, element.make, element.serie, element.oid)}><span class="glyphicon glyphicon-trash"></span></Link></div>
+                            <div className="c icon"><Link to={buildUrl('/delete', [element.id])} onClick={(e) => handleClick(e, element.make, element.serie, element.oid)}><span className="glyphicon glyphicon-trash"></span></Link></div>
                         </div>
                     ))
                 }

@@ -8,8 +8,8 @@ import { getRequestToAPI, buildUrl } from '../utils';
 
 let itemsSeed = [
     { id: 'print view', value: 'SQUISHED' },
-    { id: 'numbers only', value: 'NUMBERS' },
-    { id: 'expand', value: 'EXPND' }
+    { id: 'numbers only', value: 'NUMBERS' }
+    // { id: 'expand', value: 'EXPND' }
 ];
 
 // some kind of View-Controller

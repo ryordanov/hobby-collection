@@ -9,10 +9,10 @@ const generalCollectionsSchema = new mongoose.Schema({
     margins: { type: String },
     items: { type: Object }
 },
-    { strict: false, strictQuery: true }); // TODO: add new scehema for deleted items
+    { strict: false, strictQuery: true });
 const generalCollectionsModel = mongoose.model('generalCollections', generalCollectionsSchema);
 
-
+// autoincrement value
 // generalCollectionsSchema.pre('save', function(next) {
 //     var doc = this;
 //     counter.findByIdAndUpdate(
@@ -25,6 +25,7 @@ const generalCollectionsModel = mongoose.model('generalCollections', generalColl
 //         });
 // });
 
+ // new scehema for deleted items
 const deletedCollectionsSchema = new mongoose.Schema({
     id: { type: Number, required: requredValidationMessage, unique: true, default: 0 },
     ownerId: { type: String, required: requredValidationMessage },
@@ -35,7 +36,7 @@ const deletedCollectionsSchema = new mongoose.Schema({
     deletedBy: { type: String },
     deletedOn: { type: Date }
 
-}/*,{ strict: false, strictQuery: true }*/); // TODO: add new scehema for deleted items
+}/*,{ strict: false, strictQuery: true }*/); // items not included in schema will not be found if strictQuery=false; strict=true means it's not possible to insert them
 const deletedCollectionsModel = mongoose.model('deletedCollections', deletedCollectionsSchema);
 
 const delimiter = ',';
@@ -147,7 +148,7 @@ module.exports = {
     },
     deleteItem: (ownerId, itemId, payload, queryOptions) => {
         const oid = mongoose.Types.ObjectId(itemId);
-        // TOOD: remove from this document and move to another [deleted items] document
+        // remove from this document and move to another [deleted items] document
         return generalCollectionsModel.findByIdAndRemove(oid)
             .exec()
             .then((deletedData) => {
