@@ -64,7 +64,7 @@ export default class Edit extends React.Component {
         //         data[element.name] = element.value;
         //     }
         // }
-        let { oid, id, collection, subCollection, items } = this.state.record;
+        let { oid, id, collection, subCollection, margins, items } = this.state.record;
         let queryParams = concatQueryParams(this.props.location.search);
         return postRequestToAPI(buildUrl('/api/save', [oid], queryParams), { oid, id, collection, subCollection, margins, items }, this.props.history)
             .then(data => this.setState({
@@ -183,6 +183,7 @@ Edit.defaultProps = {
         params: {
             collectionName: '',
             subCollectionName: '',
+            margins: '',
             option: ''
         }
     }

@@ -191,7 +191,6 @@ export default class Add extends React.Component {
                             this.state.responseStatus
                         }
                     </Alert>}
-
             </div>
         );
     }
