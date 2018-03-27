@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 const Header = () => (
     <header>
-        <div className="container-fluid">
+        {/* <div className="container-fluid"> */}
             <nav className="navbar navbar-default navbar-inverse">
                 <div className="collapse navbar-collapse">
                     <ul className="nav navbar-nav">
@@ -20,7 +20,7 @@ const Header = () => (
                     </ul>
                 </div>
             </nav>
-        </div>
+        {/* </div> */}
     </header>
 );
 

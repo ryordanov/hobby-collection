@@ -52,6 +52,7 @@ const ViewCollections = (props) => {
                 <div className="r head">
                     <div className="c">Category</div>
                     <div className="c">Subcategory</div>
+                    <div className="c">Margins</div>
                     <div className="c">Items</div>
                     <div className="c icon">Action</div>
                 </div>
@@ -61,6 +62,7 @@ const ViewCollections = (props) => {
                         <div className="r" key={index}>
                             <div className="c"><Link className='collection-link' to={buildUrl('/collections', [element.make])}>{element.make}</Link></div>
                             <div className="c"><Link className='subcollection-link' to={buildUrl('/collections', [element.make, element.serie])}>{element.serie}</Link></div>
+                            <div className="c">{element.margins}</div>
                             <div className="c"><Link to={buildUrl('/edit', [element.make, element.serie], { option: props.opt })}>
                                 <div className='display-in-cell'>
                                     {element.items}

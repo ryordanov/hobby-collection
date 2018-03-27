@@ -189,7 +189,11 @@ a.pull-right {
 }
 
 .c:nth-child(2) {
-  max-width: 15%;
+  max-width: 10%;
+}
+
+.c:nth-child(3) {
+  max-width: 7%;
 }
 
 .c:not(:last-of-type) {
