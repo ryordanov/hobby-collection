@@ -25,7 +25,7 @@ const generalCollectionsModel = mongoose.model('generalCollections', generalColl
 //         });
 // });
 
- // new scehema for deleted items
+// new scehema for deleted items
 const deletedCollectionsSchema = new mongoose.Schema({
     id: { type: Number, required: requredValidationMessage, unique: true, default: 0 },
     ownerId: { type: String, required: requredValidationMessage },
@@ -34,7 +34,7 @@ const deletedCollectionsSchema = new mongoose.Schema({
     margins: { type: String },
     items: { type: Object },
     deletedBy: { type: String },
-    deletedOn: { type: Date }
+    deletedOn: { type: Date } // the same as object id, probably will be removed
 
 }/*,{ strict: false, strictQuery: true }*/); // items not included in schema will not be found if strictQuery=false; strict=true means it's not possible to insert them
 const deletedCollectionsModel = mongoose.model('deletedCollections', deletedCollectionsSchema);
@@ -70,31 +70,6 @@ module.exports = {
                 }, this);
 
                 return collection;
-            });
-    },
-    updateById: (itemId, payload, queryOptions) => {
-        const oid = mongoose.Types.ObjectId(itemId);
-
-        // TODO: update make, serie, margins, items
-        return generalCollectionsModel.findByIdAndUpdate(oid, {
-            items: expandStringToObj(payload.items)
-            // ownerId: updatedData.ownerId
-        }, { new: true })
-            .exec()
-            .then((updatedData) => {
-                if (updatedData) {
-                    return {
-                        make: updatedData.make,
-                        serie: updatedData.serie,
-                        margins: updatedData.margins,
-                        items: typeOfResult(queryOptions.option || '', updatedData.items || {}),
-                        id: updatedData.id,
-                        oid: updatedData._id.toString()
-                    };
-                }
-            })
-            .catch((err) => {
-                console.log('# Mongo error (updateById)', err);
             });
     },
     createNewItem: (ownerId, payload, queryOptions) => {
@@ -146,6 +121,40 @@ module.exports = {
                 console.log('# Mongo error (createNewItem)', err);
             });
     },
+    updateById: (itemId, payload, queryOptions) => {
+        const oid = mongoose.Types.ObjectId(itemId);
+
+        // update make, serie, margins, items
+        let updateDetails = {
+            items: expandStringToObj(payload.items)
+        };
+        if (payload.collection) {
+            updateDetails.make = payload.collection
+        };
+        if (payload.subCollection) {
+            updateDetails.serie = payload.subCollection
+        };
+        if (payload.subCollection) {
+            updateDetails.margins = payload.margins
+        };
+        return generalCollectionsModel.findByIdAndUpdate(oid, updateDetails, { new: true })
+            .exec()
+            .then((updatedData) => {
+                if (updatedData) {
+                    return {
+                        make: updatedData.make,
+                        margins: updatedData.serie,
+                        margins: updatedData.margins,
+                        items: typeOfResult(queryOptions.option || '', updatedData.items || {}),
+                        id: updatedData.id,
+                        oid: updatedData._id.toString()
+                    };
+                }
+            })
+            .catch((err) => {
+                console.log('# Mongo error (updateById)', err);
+            });
+    },
     deleteItem: (ownerId, itemId, payload, queryOptions) => {
         const oid = mongoose.Types.ObjectId(itemId);
         // remove from this document and move to another [deleted items] document
@@ -162,7 +171,7 @@ module.exports = {
                             margins: deletedData.margins,
                             items: deletedData.items,
                             deletedBy: ownerId,
-                            deletedOn: new Date() // the same as object id in deleted items, probably will be removed
+                            deletedOn: new Date()
                         });
                     return newItem.save()
                         .then(doc => {

@@ -9,8 +9,8 @@ export default class Login extends Component {
         super(props);
         this.state = {
             responseStatus: props.location.responseStatus || '',
-            username: 'user',
-            password: '1234'
+            username: '',
+            password: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -38,7 +38,8 @@ export default class Login extends Component {
                 this.setState({ responseStatus: response.responseStatus, isAuthenticated: response.isAuthenticated });
             })
             .catch((error) => {
-                console.error(error);
+                // console.error(error);
+                this.setState({responseStatus: 'No connection'})
             });
     }
 

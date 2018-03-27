@@ -15,7 +15,7 @@ export const getRequestToAPI = (url, historyRouter) => {
             return response.json();
         })
         .catch((error) => {
-            console.error(error);
+            // console.error(error);
             sessionStorage.removeItem('loggedin');
             if (historyRouter) historyRouter.push('/login');
         });
@@ -41,7 +41,7 @@ export const postRequestToAPI = (url, data , historyRouter) => {
             return response.json();
         })
         .catch((error) => {
-            console.error(error);
+            // console.error(error);
             sessionStorage.removeItem('loggedin');
             if (historyRouter) historyRouter.push('/login');
         });

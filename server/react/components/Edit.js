@@ -66,7 +66,7 @@ export default class Edit extends React.Component {
         // }
         let { oid, id, collection, subCollection, items } = this.state.record;
         let queryParams = concatQueryParams(this.props.location.search);
-        return postRequestToAPI(buildUrl('/api/save', [oid], queryParams), { oid, id, collection, subCollection, items }, this.props.history)
+        return postRequestToAPI(buildUrl('/api/save', [oid], queryParams), { oid, id, collection, subCollection, margins, items }, this.props.history)
             .then(data => this.setState({
                 record: {
                     oid: data.oid,
@@ -86,29 +86,31 @@ export default class Edit extends React.Component {
                 <form id='updateForm' onSubmit={this.handleSubmit} noValidate>
                     <FormGroup controlId="record.collection" bsSize="large">
                         <ControlLabel>Category:</ControlLabel>
-                        {/* <FormControl
+                        <FormControl
                             autoFocus
                             type="text"
                             value={this.state.record.collection}
                             onChange={this.handleChange}
-                        /> */}
-                        <FormControl componentClass="select" placeholder="select" defaultValue={this.state.record.collection} disabled>
+                            placeholder="Example: Turbo"
+                        />
+                        {/* <FormControl componentClass="select" placeholder="select" defaultValue={this.state.record.collection} disabled>
                             <option value="_">Please choose</option>
                             <option value={this.state.record.collection}>{this.state.record.collection}</option>
-                        </FormControl>
+                        </FormControl> */}
                     </FormGroup>
                     <FormGroup controlId="record.subCollection" bsSize="large">
                         <ControlLabel>Subcategory:</ControlLabel>
-                        {/* <FormControl
+                        <FormControl
                             autoFocus
                             type="text"
                             value={this.state.record.subCollection}
                             onChange={this.handleChange}
-                        /> */}
-                        <FormControl componentClass="select" placeholder="select" defaultValue={this.state.record.subCollection} disabled>
+                            placeholder="Example: blue serie"
+                        />
+                        {/* <FormControl componentClass="select" placeholder="select" defaultValue={this.state.record.subCollection} disabled>
                             <option value="_">Please choose</option>
                             <option value={this.state.record.subCollection}>{this.state.record.subCollection}</option>
-                        </FormControl>
+                        </FormControl> */}
                     </FormGroup>
                     <FormGroup controlId="record.margins" bsSize="large">
                         <ControlLabel>Margins:</ControlLabel>

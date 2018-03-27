@@ -4,7 +4,7 @@ import { Button, FormGroup, FormControl, ControlLabel, Alert } from 'react-boots
 import { Link /*, withRouter */ } from 'react-router-dom';
 import { /* getRequestToAPI, */postRequestToAPI, buildUrl, concatQueryParams, setNestedValue } from '../utils';
 
-// import { Typeahead } from 'react-bootstrap-typeahead'; // ES2015
+// import { Typeahead } from 'react-bootstrap-typeahead';
 
 export default class Add extends React.Component {
     constructor(props) {
@@ -18,7 +18,7 @@ export default class Add extends React.Component {
                 margins: '',
                 items: ''
             },
-            categoryOptions: [{ name: 'Alaska', population: 710249, capital: 'Juneau', region: 'West' }, { name: 'Arizona', population: 6392307, capital: 'Phoenix', region: 'West' }],
+            // categoryOptions: [{ name: 'Alaska', population: 710249, capital: 'Juneau', region: 'West' }, { name: 'Arizona', population: 6392307, capital: 'Phoenix', region: 'West' }],
             responseStatus: '',
             errorCode: 0
         };

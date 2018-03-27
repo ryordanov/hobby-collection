@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 import { buildUrl, postRequestToAPI } from '../utils';
 
-
 // import { Grid, Row, Col } from 'react-bootstrap';
 
 // const Button = withRouter(({ history }) => (
@@ -28,29 +27,27 @@ const ViewCollections = (props) => {
 
     return (
         <div>
-            {/* ViewCollections: {props.opt} */}
             {
                 props.currentCollection && !props.currentSubCollection &&
                 <div className='clearafter'>
-                    <h5 className='float-left'>Details of `<Link to='/collections'>/ </Link>{props.currentCollection}`: </h5>
+                    <h5 className='float-left'><Link to='/collections'>Collection</Link> / {props.currentCollection}</h5>
                     <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
                 </div>
             }
             {
                 props.currentCollection && props.currentSubCollection &&
                 <div className='clearafter'>
-                    <h5 className='float-left'>Details of `<Link to='/collections'>/ </Link>{props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}`: </h5>
+                    <h5 className='float-left'><Link to='/collections'>Collection</Link> / {props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}</h5>
                     <Link to={buildUrl('/edit', [props.currentCollection, props.currentSubCollection], { option: props.opt })} className='btn btn-primary btn pull-right'>Edit</Link>
                 </div>
             }
             {
                 !(props.currentCollection || props.currentSubCollection) &&
                 <div className='clearafter'>
-                    <h5 className='float-left'>Details<Link to='/collections'> / </Link></h5>
+                    <h5 className='float-left'><Link to='/collections'>Collection</Link></h5>
                     <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
                 </div>
             }
-            {/* <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link> */}
             <div className='cont'>
                 <div className="r head">
                     <div className="c">Category</div>
@@ -58,7 +55,6 @@ const ViewCollections = (props) => {
                     <div className="c">Items</div>
                     <div className="c icon">Action</div>
                 </div>
-                {/* <div className="container TableStyle"> */}
                 {
                     props.collectionRecords &&
                     props.collectionRecords.map((element, index) => (
@@ -74,7 +70,6 @@ const ViewCollections = (props) => {
                         </div>
                     ))
                 }
-                {/* </div> */}
             </div>
         </div>
     );

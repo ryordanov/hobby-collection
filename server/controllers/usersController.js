@@ -12,7 +12,7 @@ var usersModel = mongoose.model('users', UserSchema);
 
 module.exports = {
     login: (req, res) => {
-        usersModel.findOne({ username: req.body.username, password: req.body.password }, 'id email username', function(err, data) {
+        usersModel.findOne({ username: req.body.username.toLocaleLowerCase(), password: req.body.password }, 'id email username', function(err, data) {
             if (err) {
                 console.log('userModel query error: ', err);
             }
