@@ -48,6 +48,7 @@ export default class Edit extends React.Component {
             let tmpState = Object.assign({}, prevState); // do not mutate previous State object
             setNestedValue(tmpState, path, value);
             tmpState.responseStatus = '';
+            tmpState.errorCode = 0;
             return tmpState;
         });
         // this.setState({ [event.target.id]: event.target.value });

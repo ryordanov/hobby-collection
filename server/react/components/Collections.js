@@ -6,8 +6,9 @@ import ViewCollections from '../components/ViewCollections';
 import { getRequestToAPI, buildUrl } from '../utils';
 
 let itemsSeed = [
-    { id: 'print view', value: 'SQUISHED' },
-    { id: 'numbers only', value: 'NUMBERS' }
+    {id: 'SQUISHED', value: 'print view' },
+    {id: 'NUMBERS', value: 'numbers only' },
+    {id: 'MISSING', value: 'missing' }
     // { id: 'expand', value: 'EXPND' }
 ];
 
@@ -18,7 +19,7 @@ export default class Collections extends React.Component {
         this.state = {
             // url: '',
             dataFromBackend: [],
-            selectedOption: itemsSeed[0].value
+            selectedOption: itemsSeed[0].id
         };
         this.selectOption = this.selectOption.bind(this);
         this.reloadAfterDelete = this.reloadAfterDelete.bind(this);

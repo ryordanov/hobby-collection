@@ -9,8 +9,8 @@ import Header from './common/Header.js';
 import Footer from './common/Footer.js';
 
 import Home from './components/Home';
-import Add from './components/Add';
-import Edit from './components/Edit';
+import AddEdit from './components/AddEdit';
+// import Edit from './components/Edit';
 import Collections from './components/Collections';
 import NotFound from './components/NotFound';
 import Login from './components/Login';
@@ -29,8 +29,8 @@ const App = () => (
             <Route path='/home' component={Home} />
             <EnsureLoggedInContainer>
                 <Route path='/collections/:collectionName?/:subCollectionName?' component={Collections} />
-                <Route path='/edit/:collectionName/:subCollectionName' component={Edit} />
-                <Route path='/add/:collectionName?/:subCollectionName?' component={Add} />
+                <Route path='/edit/:collectionName/:subCollectionName' component={AddEdit} />
+                <Route path='/add/:collectionName?/:subCollectionName?' component={AddEdit} />
             </EnsureLoggedInContainer>
             <Route component={NotFound} />
         </Switch>

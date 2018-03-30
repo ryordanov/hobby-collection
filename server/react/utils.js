@@ -100,3 +100,7 @@ export function setNestedValue(obj, pathKeys, value) {
         obj[pathKeys[0]] = value;
     }
 }
+
+export function formatLabel(value) {
+    return value.charAt(0).toUpperCase() + value.slice(1)
+}

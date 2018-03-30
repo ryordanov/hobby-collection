@@ -27,7 +27,7 @@ const generalCollectionsModel = mongoose.model('generalCollections', generalColl
 
 // new scehema for deleted items
 const deletedCollectionsSchema = new mongoose.Schema({
-    id: { type: Number, required: requredValidationMessage, unique: true, default: 0 },
+    id: { type: Number, default: 0 },
     ownerId: { type: String, required: requredValidationMessage },
     make: { type: String, required: requredValidationMessage },
     serie: { type: String },
@@ -41,14 +41,21 @@ const deletedCollectionsModel = mongoose.model('deletedCollections', deletedColl
 
 const delimiter = ',';
 
-function typeOfResult(option, items) {
+function typeOfResult(option, items, margin) {
     switch (option) {
         case 'SQUISHED':
             return squishObjToString(items);
         case 'NUMBERS':
             return Object.keys(items).join(',');
+        case 'MISSING':
+            if (margin.match(/^(\d+)[-](\d+)$/)) { // 1-55
+                return findMissing(margin, items);
+            } else {
+                return 'No valid margins data';
+            }
+            
         default:
-            return Object.keys(items).join(',');
+            return Object.keys(obj.items).join(',');
     }
 }
 // var self = 
@@ -62,7 +69,7 @@ module.exports = {
                     // let formattedItemObj = expandStringToObj(formattedItemsStr);
                     // console.log(tmpCompare(item.items, formattedItemObj, item), item.make + '---'+item.serie);
 
-                    collection[index]['items'] = typeOfResult(criteria.option || '', item.items || {});
+                    collection[index]['items'] = typeOfResult(criteria.option || '', item.items || {}, item.margins);
 
                     // insert owner to collection
                     // collection[index]['ownerId'] = authenticatedUser.id || '';
@@ -173,6 +180,7 @@ module.exports = {
                             deletedBy: ownerId,
                             deletedOn: new Date()
                         });
+                    console.log('newItem', newItem);
                     return newItem.save()
                         .then(doc => {
                             return {
@@ -295,6 +303,17 @@ function squishObjToString(itemsObj) {
         i += j;
     }
     return res.slice(0, -delimiter.length);// remove last ','
+}
+
+function findMissing(margin, items) {
+    const borderMargin = expandStringToObj(margin);
+    let result = '';
+    for (let key in borderMargin) {
+        if (!items[key]) {
+            result += key + ',';
+        }
+    }
+    return result.slice(0, -1);
 }
 
 //convert string representation of items to object with key=item name (v)

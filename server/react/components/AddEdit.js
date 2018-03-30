@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, FormGroup, FormControl, ControlLabel, Alert } from 'react-bootstrap';
 import { Link /*, withRouter */ } from 'react-router-dom';
-import { /* getRequestToAPI, */postRequestToAPI, buildUrl, concatQueryParams, setNestedValue } from '../utils';
+import { getRequestToAPI, postRequestToAPI, buildUrl, concatQueryParams, setNestedValue } from '../utils';
 
 // import { Typeahead } from 'react-bootstrap-typeahead';
 
@@ -24,6 +24,27 @@ export default class Add extends React.Component {
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.match.params.collectionName) {
+            let queryParams = concatQueryParams(this.props.location.search);
+            return getRequestToAPI(buildUrl('/api/collections', this.props.match.params, queryParams), this.props.history)
+                .then((resData) => {
+                    if (resData) {
+                        this.setState({
+                            record: {
+                                oid: resData[0].oid,
+                                id: resData[0].id,
+                                collection: resData[0].make,
+                                subCollection: resData[0].serie,
+                                margins: resData[0].margins,
+                                items: resData[0].items
+                            }
+                        });
+                    }
+                });
+        }
     }
 
     // componentDidMount() {
@@ -72,7 +93,13 @@ export default class Add extends React.Component {
         // }
         let { oid, id, collection, subCollection, margins, items } = this.state.record;
         let queryParams = concatQueryParams(this.props.location.search);
-        return postRequestToAPI(buildUrl('/api/create', [], queryParams), { oid, id, collection, subCollection, margins, items }, this.props.history)
+        let url = '';
+        if (this.state.record && this.state.record.oid) {
+            url = buildUrl('/api/save', [oid], queryParams);
+        } else {
+            url = buildUrl('/api/create', [], queryParams);
+        }
+        return postRequestToAPI(url, { oid, id, collection, subCollection, margins, items }, this.props.history)
             .then(data => {
                 if (data) {
                     if (data.error) {

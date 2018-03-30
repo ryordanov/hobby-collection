@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { formatLabel } from '../utils'
 
 // ---------- FIELDSET ---------------------------------------------
 export default class OptionView extends React.Component {
@@ -7,8 +8,8 @@ export default class OptionView extends React.Component {
         // console.log('props', props);
         super(props);
         this.state = {
-            selectedOption: props.items[0].value || 'ONE',
-            items: props.items || [{ id: 'one', value: 'ONE' }, { id: 'two', value: 'TWO' }, { id: 'three', value: 'THREE' }]
+            selectedOption: props.items[0].id || 'ONE',
+            items: props.items || [{ id: 'ONE', value: 'one' }, { id: 'TWO', value: 'two' }, { id: 'THREE', value: 'three' }]
         };
         this.handleChange = this.handleChange.bind(this);
     }
@@ -22,13 +23,15 @@ export default class OptionView extends React.Component {
     // }
 
     handleChange(e) {
-        // const { id, value } = e.target;
-        this.setState({
-            selectedOption: e.target.value
-        });
+        if (e.target.type === 'radio') {
+            // const { id, value } = e.target;
+            this.setState({
+                selectedOption: e.target.id
+            });
 
-        if (this.props.selectedOption) {
-            this.props.selectedOption(e.target.value);
+            if (this.props.selectedOption) {
+                this.props.selectedOption(e.target.id);
+            }
         }
     }
 
@@ -46,10 +49,12 @@ export default class OptionView extends React.Component {
                         <h4 className="text-on-panel text-primary"><strong className="text-uppercase">Choice:</strong></h4>
                         {this.state.items.map((i) => {
                             return <div key={i.id}>
-                                <input type='radio' name='choice' id={i.id} value={i.value} checked={this.state.selectedOption === i.value} onChange={this.handleChange} />
-                                <label htmlFor={i.id}>{i.id.charAt(0).toUpperCase() + i.id.slice(1)}</label>
+                                <input type='radio' name='choice' id={i.id} value={i.value} checked={this.state.selectedOption === i.id} onChange={this.handleChange} />
+                                <label htmlFor={i.id}>{formatLabel(i.value)}</label>
                             </div>;
                         })}
+                        {/* <input type='checkbox' name='ccc' id='iid' value={false} onChange={this.handleChange} />
+                        <label htmlFor='iid'>Missing</label> */}
                     </div>
                 </div>
             </div>
