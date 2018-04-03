@@ -192,6 +192,7 @@ export default class Add extends React.Component {
                         block
                         bsSize="large"
                         type="submit"
+                        disabled={!!this.state.responseStatus}
                     >
                         Save
                     </Button>

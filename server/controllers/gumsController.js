@@ -7,7 +7,7 @@ module.exports = {
     getCollections: (req, res) => {
         let loggedUser = (req.session && req.session.loggedUser) || null;
         if (loggedUser) {
-            let constraints = { ownerId: loggedUser.id, /*...req.query, */option: req.query.option, collectionName: req.params.name, subCollectionName: req.params.subcollection };
+            let constraints = { ownerId: loggedUser.id, /*...req.query, */options: req.query, collectionName: req.params.name, subCollectionName: req.params.subcollection };
             gum.getCollections(constraints/*, req.session.loggedUser*/)
                 .then(data => {
                     return res.send(data);

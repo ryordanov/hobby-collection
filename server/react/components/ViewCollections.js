@@ -38,7 +38,7 @@ const ViewCollections = (props) => {
                 props.currentCollection && props.currentSubCollection &&
                 <div className='clearafter'>
                     <h5 className='float-left'><Link to='/collections'>Collection</Link> / {props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}</h5>
-                    <Link to={buildUrl('/edit', [props.currentCollection, props.currentSubCollection], { option: props.opt })} className='btn btn-primary btn pull-right'>Edit</Link>
+                    <Link to={buildUrl('/edit', [props.currentCollection, props.currentSubCollection], { [props.opt]: true })} className='btn btn-primary btn pull-right'>Edit</Link>
                 </div>
             }
             {
@@ -63,7 +63,7 @@ const ViewCollections = (props) => {
                             <div className="c"><Link className='collection-link' to={buildUrl('/collections', [element.make])}>{element.make}</Link></div>
                             <div className="c"><Link className='subcollection-link' to={buildUrl('/collections', [element.make, element.serie])}>{element.serie}</Link></div>
                             <div className="c">{element.margins}</div>
-                            <div className="c"><Link to={buildUrl('/edit', [element.make, element.serie], { option: props.opt })}>
+                            <div className="c"><Link to={buildUrl('/edit', [element.make, element.serie], { [props.opt]: true })}>
                                 <div className='display-in-cell'>
                                     {element.items}
                                 </div>

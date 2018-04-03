@@ -41,23 +41,28 @@ const deletedCollectionsModel = mongoose.model('deletedCollections', deletedColl
 
 const delimiter = ',';
 
-function typeOfResult(option, items, margin) {
-    switch (option) {
-        case 'SQUISHED':
-            return squishObjToString(items);
-        case 'NUMBERS':
-            return Object.keys(items).join(',');
-        case 'MISSING':
-            if (margin.match(/^(\d+)[-](\d+)$/)) { // 1-55
-                return findMissing(margin, items);
-            } else {
-                return 'No valid margins data';
-            }
-            
-        default:
-            return Object.keys(obj.items).join(',');
+function typeOfResult(options, items, margin) {
+    let tmpItems = '';
+    if (options['missing']) {
+        tmpItems = (margin.match(/^(\d+)[-](\d+)$/)) ? findMissing(margin, items) : ''; // 'No valid margins data';
+        if (Object.keys(tmpItems).length === 0 && tmpItems.constructor === Object) {
+            return 'There are no missing items in this collection';
+        } else if (!tmpItems) {
+            return 'No valid margins data';
+        }
+    } else {
+        tmpItems = items;
+    }
+
+    if (options['squished']) {
+        return squishObjToString(tmpItems)
+    } else if (options['numbers']) {
+        return Object.keys(tmpItems).join(',')
+    } else {
+        return Object.keys(tmpItems).join(',')
     }
 }
+
 // var self = 
 module.exports = {
     getCollections: (criteria/*, authenticatedUser*/) => {
@@ -69,7 +74,7 @@ module.exports = {
                     // let formattedItemObj = expandStringToObj(formattedItemsStr);
                     // console.log(tmpCompare(item.items, formattedItemObj, item), item.make + '---'+item.serie);
 
-                    collection[index]['items'] = typeOfResult(criteria.option || '', item.items || {}, item.margins);
+                    collection[index]['items'] = typeOfResult(criteria.options || {}, item.items || {}, item.margins);
 
                     // insert owner to collection
                     // collection[index]['ownerId'] = authenticatedUser.id || '';
@@ -111,7 +116,7 @@ module.exports = {
                                             make: createdData.make,
                                             serie: createdData.serie,
                                             margins: createdData.margins,
-                                            items: typeOfResult(queryOptions.option || 'SQUISHED', createdData.items || {}),
+                                            items: typeOfResult(queryOptions || { squished: true }, createdData.items || {}),
                                             id: createdData.id
                                             // oid: createdData._id.toString()
                                         };
@@ -150,9 +155,9 @@ module.exports = {
                 if (updatedData) {
                     return {
                         make: updatedData.make,
-                        margins: updatedData.serie,
+                        serie: updatedData.serie,
                         margins: updatedData.margins,
-                        items: typeOfResult(queryOptions.option || '', updatedData.items || {}),
+                        items: typeOfResult(queryOptions || {}, updatedData.items || {}),
                         id: updatedData.id,
                         oid: updatedData._id.toString()
                     };
@@ -187,7 +192,7 @@ module.exports = {
                                 make: doc.make,
                                 serie: doc.serie,
                                 // margins: doc.margins,
-                                // items: typeOfResult(queryOptions.option || '', doc.items || {}),
+                                // items: typeOfResult(queryOptions || {}, doc.items || {}),
                                 // id: doc.id,
                                 // oid: doc._id.toString(),
                                 // deletedBy: doc.deletedBy,
@@ -307,14 +312,24 @@ function squishObjToString(itemsObj) {
 
 function findMissing(margin, items) {
     const borderMargin = expandStringToObj(margin);
-    let result = '';
+    let result = {};
     for (let key in borderMargin) {
         if (!items[key]) {
-            result += key + ',';
+            result[key] = {cnt: 1};
         }
     }
-    return result.slice(0, -1);
+    return result;
 }
+// function findMissing(margin, items) {
+//     const borderMargin = expandStringToObj(margin);
+//     let result = '';
+//     for (let key in borderMargin) {
+//         if (!items[key]) {
+//             result += key + ',';
+//         }
+//     }
+//     return result.slice(0, -1);
+// }
 
 //convert string representation of items to object with key=item name (v)
 // function expandStringToObj2(items) {

@@ -5,51 +5,91 @@ import ViewCollections from '../components/ViewCollections';
 
 import { getRequestToAPI, buildUrl } from '../utils';
 
-let itemsSeed = [
-    {id: 'SQUISHED', value: 'print view' },
-    {id: 'NUMBERS', value: 'numbers only' },
-    {id: 'MISSING', value: 'missing' }
-    // { id: 'expand', value: 'EXPND' }
-];
-
 // some kind of View-Controller
 export default class Collections extends React.Component {
     constructor(props) {
         super(props);
+
+        const radioItemsSeed = [
+            { id: 'squished', value: 'print view', checked: true },
+            { id: 'numbers', value: 'numbers only', checked: false }
+        ];
+
+        const checkItemsSeed = [ // or object with key = id and nested properties...
+            { id: 'missing', name: 'missing only', value: true, checked: false }
+        ];
+
+
         this.state = {
             // url: '',
             dataFromBackend: [],
-            selectedOption: itemsSeed[0].id
+            // selectedOption: radioItemsSeed[0].id,
+            radioItems: radioItemsSeed,
+            checkItems: checkItemsSeed
         };
         this.selectOption = this.selectOption.bind(this);
         this.reloadAfterDelete = this.reloadAfterDelete.bind(this);
+        this.getChosenRadioOption = this.getChosenRadioOption.bind(this);
     }
 
     componentDidMount() {
-        this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, this.state.selectedOption);
+        this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName);
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.location.pathname !== nextProps.location.pathname) {
-            this.loadNewData(nextProps.match.params.collectionName, nextProps.match.params.subCollectionName, this.state.selectedOption);
+            this.loadNewData(nextProps.match.params.collectionName, nextProps.match.params.subCollectionName);
         }
     }
 
-    selectOption(rbData) {
-        this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, rbData);
+    selectOption(inputType, inputId) {
+        const actionOption = { radio: 'radioItems', checkbox: 'checkItems' }[inputType];
+
+        this.setState((prevState) => {
+            let tmpArray = prevState[actionOption];
+            if (inputType === 'radio') {
+                for (let i = 0; i < tmpArray.length; i++) {
+                    tmpArray[i].checked = tmpArray[i].id === inputId;
+                }
+            } else {
+                for (let i = 0; i < tmpArray.length; i++) {
+                    if (tmpArray[i].id === inputId) {
+                        tmpArray[i].checked = !tmpArray[i].checked;
+                    }
+                }
+            }
+            return { [actionOption]: tmpArray };
+        }, this.loadNewData);
     }
 
     reloadAfterDelete() {
-        this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, this.state.selectedOption);
+        this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName);
     }
 
-    loadNewData(collectionName, subCollectionName, selectedOption) {
-        return getRequestToAPI(buildUrl('/api/collections', [collectionName, subCollectionName], {option: selectedOption || this.state.selectedOption || ''}), this.props.history)
+    loadNewData(collectionName, subCollectionName) {
+        const selectedRadioButton = this.state.radioItems.filter(e => e.checked);
+        let additionalOptions = {};
+
+        if (selectedRadioButton && selectedRadioButton[0] && selectedRadioButton[0].id) {
+            additionalOptions[selectedRadioButton[0].id] = true;
+        }
+
+        this.state.checkItems.forEach(element => {
+            if (element.checked) {
+                additionalOptions[element.id] = element.value;
+            }
+        });
+
+        return getRequestToAPI(buildUrl('/api/collections', [collectionName, subCollectionName], additionalOptions), this.props.history)
             .then((resData) => {
                 if (resData) {
-                    this.setState({ /* url, */ selectedOption, dataFromBackend: resData });
+                    this.setState({ /* url, selectedOption, */ dataFromBackend: resData });
                 }
             });
+    }
+    getChosenRadioOption(radioItems) {
+        let opt = radioItems.filter(el => el.checked);
+        return (opt.length && opt[0] && opt[0]['id']) ? opt[0]['id'] : '';
     }
 
     render() {
@@ -58,9 +98,10 @@ export default class Collections extends React.Component {
                 <OptionView
                     // selectedOption={(rbData) => this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, rbData)}
                     selectedOption={this.selectOption}
-                    items={itemsSeed} />
+                    radioItems={this.state.radioItems}
+                    checkItems={this.state.checkItems} />
                 <ViewCollections
-                    opt={this.state.selectedOption}
+                    opt={this.getChosenRadioOption(this.state.radioItems)}
                     collectionRecords={this.state.dataFromBackend}
                     currentCollection={this.props.match.params.collectionName}
                     currentSubCollection={this.props.match.params.subCollectionName}

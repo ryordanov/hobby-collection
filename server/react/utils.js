@@ -102,5 +102,5 @@ export function setNestedValue(obj, pathKeys, value) {
 }
 
 export function formatLabel(value) {
-    return value.charAt(0).toUpperCase() + value.slice(1)
+    return value.split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }

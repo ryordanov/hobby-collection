@@ -31,7 +31,7 @@ input[type=file] {
   padding-left: 5px;
 }
 .radio-group {
-  width: 250px !important;
+  width: 200px !important;
   margin-left: unset !important;
 }
 /* login form */

@@ -2,67 +2,43 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { formatLabel } from '../utils'
 
-// ---------- FIELDSET ---------------------------------------------
-export default class OptionView extends React.Component {
-    constructor(props) {
-        // console.log('props', props);
-        super(props);
-        this.state = {
-            selectedOption: props.items[0].id || 'ONE',
-            items: props.items || [{ id: 'ONE', value: 'one' }, { id: 'TWO', value: 'two' }, { id: 'THREE', value: 'three' }]
-        };
-        this.handleChange = this.handleChange.bind(this);
+const OptionView = (props) => {
+    function handleChange(e) {
+        props.selectedOption(e.target.type, e.target.id)
     }
 
-    // npm install --save-dev babel-preset-stage-1
-    // handleChange = (e) => {
-    //     const { name, value } = e.target;
-    //     this.setState({
-    //         [name]: value
-    //     });
-    // }
-
-    handleChange(e) {
-        if (e.target.type === 'radio') {
-            // const { id, value } = e.target;
-            this.setState({
-                selectedOption: e.target.id
-            });
-
-            if (this.props.selectedOption) {
-                this.props.selectedOption(e.target.id);
-            }
-        }
-    }
-
-    // componentDidMount() {
-    //     if (this.props.selectedOption) {
-    //         this.props.selectedOption(this.state.selectedOption);
-    //     }
-    // }
-
-    render() {
-        return (
-            <div className="radio-group container">
-                <div className="panel panel-primary">
-                    <div className="panel-body">
-                        <h4 className="text-on-panel text-primary"><strong className="text-uppercase">Choice:</strong></h4>
-                        {this.state.items.map((i) => {
-                            return <div key={i.id}>
-                                <input type='radio' name='choice' id={i.id} value={i.value} checked={this.state.selectedOption === i.id} onChange={this.handleChange} />
-                                <label htmlFor={i.id}>{formatLabel(i.value)}</label>
-                            </div>;
-                        })}
-                        {/* <input type='checkbox' name='ccc' id='iid' value={false} onChange={this.handleChange} />
-                        <label htmlFor='iid'>Missing</label> */}
-                    </div>
+    return (
+        <div className="radio-group container">
+            <div className="panel panel-primary">
+                <div className="panel-body">
+                    <h4 className="text-on-panel text-primary"><strong className="text-uppercase">Choice:</strong></h4>
+                    {props.radioItems.map((i) => {
+                        return <div key={i.id}>
+                            <input type='radio' name='choice' id={i.id} value={i.value} onChange={handleChange} checked={i.checked ? 'checked' : ''} />
+                            <label htmlFor={i.id}>{formatLabel(i.value)}</label>
+                        </div>;
+                    })}
+                    {props.checkItems.map((i) => {
+                        return <div key={i.id}>
+                            <input type='checkbox' name={i.name} id={i.id} value={i.value} onChange={handleChange} checked={i.checked ? 'checked' : ''} />
+                            <label htmlFor={i.id}>{formatLabel(i.name)}</label>
+                        </div>;
+                    })}
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 OptionView.propTypes = {
     selectedOption: PropTypes.func,
-    items: PropTypes.array
+    radioItems: PropTypes.array,
+    checkItems: PropTypes.array
 };
+
+OptionView.defaultProps = {
+    radioItems: [], //[{ id: 'r1', value: 'one', checked: true }, { id: 'r2', value: 'two', checked: false }, { id: 'r3', value: 'three', checked: false }],
+    checkItems: [] // [{ id: 'c1', name: 'uno', value: 'one', checked: true }, { id: 'c2', name: 'dos', value: 'two', checked: false }]
+}
+
+export default OptionView;
