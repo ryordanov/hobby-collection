@@ -9,8 +9,7 @@
     "plugin:react/recommended"
   ],
   "plugins": [
-    "react",
-    "require-path-exists"
+    "react"
   ],
   "parserOptions": {
     "sourceType": "module",
@@ -62,10 +61,7 @@
       2,
       "never"
     ],
-    "react/jsx-indent": 0,
-    "require-path-exists/notEmpty": 2,
-    "require-path-exists/tooManyArguments": 2,
-    "require-path-exists/exists": 0
+    "react/jsx-indent": 0
   },
   "globals": {
     "isc": true
