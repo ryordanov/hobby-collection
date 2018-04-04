@@ -11,7 +11,7 @@ const OptionView = (props) => {
         <div className="radio-group container">
             <div className="panel panel-primary">
                 <div className="panel-body">
-                    <h4 className="text-on-panel text-primary"><strong className="text-uppercase">Choice:</strong></h4>
+                    <h4 className="text-on-panel text-primary"><strong className="text-uppercase">Choice</strong></h4>
                     {props.radioItems.map((i) => {
                         return <div key={i.id}>
                             <input type='radio' name='choice' id={i.id} value={i.value} onChange={handleChange} checked={i.checked ? 'checked' : ''} />

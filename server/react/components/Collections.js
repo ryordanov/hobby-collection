@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import OptionView from '../components/OptionView';
 import ViewCollections from '../components/ViewCollections';
+import InfoBox from '../components/InfoBox';
 
 import { getRequestToAPI, buildUrl } from '../utils';
 
@@ -25,7 +26,11 @@ export default class Collections extends React.Component {
             dataFromBackend: [],
             // selectedOption: radioItemsSeed[0].id,
             radioItems: radioItemsSeed,
-            checkItems: checkItemsSeed
+            checkItems: checkItemsSeed,
+            statistic: {
+                allItems: 0,
+                unique: 0
+            }
         };
         this.selectOption = this.selectOption.bind(this);
         this.reloadAfterDelete = this.reloadAfterDelete.bind(this);
@@ -59,7 +64,7 @@ export default class Collections extends React.Component {
                 }
             }
             return { [actionOption]: tmpArray };
-        }, this.loadNewData);
+        }, () => this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName));
     }
 
     reloadAfterDelete() {
@@ -83,7 +88,7 @@ export default class Collections extends React.Component {
         return getRequestToAPI(buildUrl('/api/collections', [collectionName, subCollectionName], additionalOptions), this.props.history)
             .then((resData) => {
                 if (resData) {
-                    this.setState({ /* url, selectedOption, */ dataFromBackend: resData });
+                    this.setState({ /* url, selectedOption, */ dataFromBackend: resData.collection, statistic: resData.statistic });
                 }
             });
     }
@@ -95,11 +100,14 @@ export default class Collections extends React.Component {
     render() {
         return (
             <div>
-                <OptionView
-                    // selectedOption={(rbData) => this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, rbData)}
-                    selectedOption={this.selectOption}
-                    radioItems={this.state.radioItems}
-                    checkItems={this.state.checkItems} />
+                <div className='flex-row'>
+                    <OptionView
+                        // selectedOption={(rbData) => this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, rbData)}
+                        selectedOption={this.selectOption}
+                        radioItems={this.state.radioItems}
+                        checkItems={this.state.checkItems} />
+                    <InfoBox statisticInfo={this.state.statistic} showMissing={!this.state.checkItems.filter(e=> e.id ==='missing' && e.checked).length} />
+                </div>
                 <ViewCollections
                     opt={this.getChosenRadioOption(this.state.radioItems)}
                     collectionRecords={this.state.dataFromBackend}

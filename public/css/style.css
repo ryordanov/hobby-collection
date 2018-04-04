@@ -33,6 +33,7 @@ input[type=file] {
 .radio-group {
   width: 200px !important;
   margin-left: unset !important;
+  margin-right: unset !important;
 }
 /* login form */
 @media all and (min-width: 480px) {
@@ -217,4 +218,29 @@ a.pull-right {
 
 .container-fluid {
   padding-bottom: 15px;
+}
+
+/* InfoBox */
+
+.flex-row {
+  display: flex;
+  flex-direction: row ltr;
+}
+
+/* .info-box-content {
+} */
+
+.info-box-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.info-box-col {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+}
+
+.info-box-col.nums {
+  flex: 1;
 }

@@ -41,31 +41,42 @@ const deletedCollectionsModel = mongoose.model('deletedCollections', deletedColl
 
 const delimiter = ',';
 
-function typeOfResult(options, items, margin) {
-    let tmpItems = '';
-    if (options['missing']) {
-        tmpItems = (margin.match(/^(\d+)[-](\d+)$/)) ? findMissing(margin, items) : ''; // 'No valid margins data';
-        if (Object.keys(tmpItems).length === 0 && tmpItems.constructor === Object) {
-            return 'There are no missing items in this collection';
-        } else if (!tmpItems) {
-            return 'No valid margins data';
-        }
-    } else {
-        tmpItems = items;
-    }
-
+function typeOfResult(options, items) {
     if (options['squished']) {
-        return squishObjToString(tmpItems)
+        return squishObjToString(items)
     } else if (options['numbers']) {
-        return Object.keys(tmpItems).join(',')
+        return Object.keys(items).join(',')
     } else {
-        return Object.keys(tmpItems).join(',')
+        return Object.keys(items).join(',')
     }
 }
 
 // var self = 
 module.exports = {
     getCollections: (criteria/*, authenticatedUser*/) => {
+        let statisticInfo = (function () {
+            let allItems = 0;
+            let unique = 0;
+            let countAllItems = (o) => {
+                let count = 0;
+                for (let key in o) {
+                    count += o[key].cnt || 0;
+                }
+                return count;
+            }
+
+            return {
+                getInfo: function () {
+                    return { allItems, unique };
+                },
+                update: function (obj) {
+                    allItems += countAllItems(obj);
+                    unique += Object.keys(obj).length;
+                    return { allItems, unique };
+                }
+            }
+        })();
+
         return DBFetchData(criteria)
             .then(collection => {
                 collection.forEach(function (item, index) {
@@ -73,15 +84,28 @@ module.exports = {
                     // let formattedItemsStr = squishObjToString(item.items);
                     // let formattedItemObj = expandStringToObj(formattedItemsStr);
                     // console.log(tmpCompare(item.items, formattedItemObj, item), item.make + '---'+item.serie);
-
-                    collection[index]['items'] = typeOfResult(criteria.options || {}, item.items || {}, item.margins);
+                    
+                    if (criteria.options && criteria.options['missing']) {
+                        let missingItems = (item.margins.match(/^(\d+)[-](\d+)$/)) ? findMissing(item.margins, item.items) : ''; // 'No valid margins data';
+                        if (Object.keys(missingItems).length === 0 && missingItems.constructor === Object) {
+                            collection[index]['items'] = 'There are no missing items in this collection';
+                        } else if (!missingItems) {
+                            collection[index]['items'] = 'No valid margins data';
+                        } else {
+                            statisticInfo.update(missingItems);
+                            collection[index]['items'] = typeOfResult(criteria.options || {}, missingItems || {});
+                        }
+                    } else {
+                        statisticInfo.update(item.items);
+                        collection[index]['items'] = typeOfResult(criteria.options || {}, item.items || {});
+                    }
 
                     // insert owner to collection
                     // collection[index]['ownerId'] = authenticatedUser.id || '';
                     // self.updateById(collection[index]['oid'], collection[index]);
                 }, this);
 
-                return collection;
+                return { collection, statistic: statisticInfo.getInfo() };
             });
     },
     createNewItem: (ownerId, payload, queryOptions) => {
@@ -212,7 +236,6 @@ module.exports = {
 // ----------------------------------------------------------------------------------
 // helper functions
 function DBFetchData(criteria) {
-    // console.log('DBFetchData - criteria', criteria);
     let dbCriteria = { ownerId: criteria.ownerId };
 
     if (criteria.collectionName) {
@@ -315,7 +338,7 @@ function findMissing(margin, items) {
     let result = {};
     for (let key in borderMargin) {
         if (!items[key]) {
-            result[key] = {cnt: 1};
+            result[key] = { cnt: 1 };
         }
     }
     return result;

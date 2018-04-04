@@ -31,15 +31,15 @@ export default class Add extends React.Component {
             let queryParams = concatQueryParams(this.props.location.search);
             return getRequestToAPI(buildUrl('/api/collections', this.props.match.params, queryParams), this.props.history)
                 .then((resData) => {
-                    if (resData) {
+                    if (resData && resData.collection) {
                         this.setState({
                             record: {
-                                oid: resData[0].oid,
-                                id: resData[0].id,
-                                collection: resData[0].make,
-                                subCollection: resData[0].serie,
-                                margins: resData[0].margins,
-                                items: resData[0].items
+                                oid: resData.collection[0].oid,
+                                id: resData.collection[0].id,
+                                collection: resData.collection[0].make,
+                                subCollection: resData.collection[0].serie,
+                                margins: resData.collection[0].margins,
+                                items: resData.collection[0].items
                             }
                         });
                     }
