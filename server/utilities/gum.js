@@ -9,7 +9,7 @@ const generalCollectionsSchema = new mongoose.Schema({
     margins: { type: String },
     items: { type: Object }
 },
-    { strict: false, strictQuery: true });
+{ strict: false, strictQuery: true });
 const generalCollectionsModel = mongoose.model('generalCollections', generalCollectionsSchema);
 
 // autoincrement value
@@ -43,18 +43,19 @@ const delimiter = ',';
 
 function typeOfResult(options, items) {
     if (options['squished']) {
-        return squishObjToString(items)
+        return squishObjToString(items);
     } else if (options['numbers']) {
-        return Object.keys(items).join(',')
+        return Object.keys(items).join(',');
     } else {
-        return Object.keys(items).join(',')
+        return Object.keys(items).join(',');
     }
 }
 
-// var self = 
+// var self =
 module.exports = {
     getCollections: (criteria/*, authenticatedUser*/) => {
-        let statisticInfo = (function () {
+        let statisticInfo = (function() {
+            let collectionsCount = 0;
             let allItems = 0;
             let unique = 0;
             let countAllItems = (o) => {
@@ -63,47 +64,52 @@ module.exports = {
                     count += o[key].cnt || 0;
                 }
                 return count;
-            }
+            };
 
             return {
-                getInfo: function () {
-                    return { allItems, unique };
+                getInfo: function() {
+                    return { collectionsCount, allItems, unique };
                 },
-                update: function (obj) {
+                update: function(obj) {
                     allItems += countAllItems(obj);
                     unique += Object.keys(obj).length;
-                    return { allItems, unique };
+                    collectionsCount ++;
+                    return { collectionsCount, allItems, unique };
                 }
-            }
+            };
         })();
 
         return DBFetchData(criteria)
             .then(collection => {
-                collection.forEach(function (item, index) {
-                    // check if convert functions works correct
-                    // let formattedItemsStr = squishObjToString(item.items);
-                    // let formattedItemObj = expandStringToObj(formattedItemsStr);
-                    // console.log(tmpCompare(item.items, formattedItemObj, item), item.make + '---'+item.serie);
-                    
-                    if (criteria.options && criteria.options['missing']) {
+                if (criteria.options && criteria.options['missing']) {
+                    collection.forEach(function(item, index) {
                         let missingItems = (item.margins.match(/^(\d+)[-](\d+)$/)) ? findMissing(item.margins, item.items) : ''; // 'No valid margins data';
                         if (Object.keys(missingItems).length === 0 && missingItems.constructor === Object) {
                             collection[index]['items'] = 'There are no missing items in this collection';
                         } else if (!missingItems) {
+                            statisticInfo.update({});
                             collection[index]['items'] = 'No valid margins data';
                         } else {
                             statisticInfo.update(missingItems);
                             collection[index]['items'] = typeOfResult(criteria.options || {}, missingItems || {});
                         }
-                    } else {
+                    }, this);
+
+                } else {
+                    collection.forEach(function(item, index) {
+                        // check if convert functions works correctly
+                        // let formattedItemsStr = squishObjToString(item.items);
+                        // let formattedItemObj = expandStringToObj(formattedItemsStr);
+                        // console.log(tmpCompare(item.items, formattedItemObj, item), item.make + '---'+item.serie);
+
                         statisticInfo.update(item.items);
                         collection[index]['items'] = typeOfResult(criteria.options || {}, item.items || {});
-                    }
 
-                    // insert owner to collection
-                    // collection[index]['ownerId'] = authenticatedUser.id || '';
-                    // self.updateById(collection[index]['oid'], collection[index]);
-                }, this);
+                        // insert owner to collection
+                        // collection[index]['ownerId'] = authenticatedUser.id || '';
+                        // self.updateById(collection[index]['oid'], collection[index]);
+                    }, this);
+                }
 
                 return { collection, statistic: statisticInfo.getInfo() };
             });
@@ -147,14 +153,14 @@ module.exports = {
                                     }
                                 })
                                 .catch(err => {
-                                    console.log('err', err);
+                                    console.error('err', err);
                                     return { name: err.name, error: err.message, errorCode: 1 };
                                 });
                         });
                 }
             })
             .catch((err) => {
-                console.log('# Mongo error (createNewItem)', err);
+                console.error('# Mongo error (createNewItem)', err);
             });
     },
     updateById: (itemId, payload, queryOptions) => {
@@ -165,14 +171,14 @@ module.exports = {
             items: expandStringToObj(payload.items)
         };
         if (payload.collection) {
-            updateDetails.make = payload.collection
-        };
+            updateDetails.make = payload.collection;
+        }
         if (payload.subCollection) {
-            updateDetails.serie = payload.subCollection
-        };
+            updateDetails.serie = payload.subCollection;
+        }
         if (payload.subCollection) {
-            updateDetails.margins = payload.margins
-        };
+            updateDetails.margins = payload.margins;
+        }
         return generalCollectionsModel.findByIdAndUpdate(oid, updateDetails, { new: true })
             .exec()
             .then((updatedData) => {
@@ -188,10 +194,10 @@ module.exports = {
                 }
             })
             .catch((err) => {
-                console.log('# Mongo error (updateById)', err);
+                console.error('# Mongo error (updateById)', err);
             });
     },
-    deleteItem: (ownerId, itemId, payload, queryOptions) => {
+    deleteItem: (ownerId, itemId) => {
         const oid = mongoose.Types.ObjectId(itemId);
         // remove from this document and move to another [deleted items] document
         return generalCollectionsModel.findByIdAndRemove(oid)
@@ -228,7 +234,7 @@ module.exports = {
                 }
             })
             .catch((err) => {
-                console.log('# Mongo error (findByIdAndRemove)', err);
+                console.error('# Mongo error (findByIdAndRemove)', err);
             });
     },
 };
@@ -245,7 +251,7 @@ function DBFetchData(criteria) {
         dbCriteria.serie = decodeURIComponent(criteria.subCollectionName);
     }
 
-    let query = generalCollectionsModel.find(dbCriteria, function (err, gums) {
+    let query = generalCollectionsModel.find(dbCriteria, function(err, gums) {
         if (err) {
             console.log('DBFetchData query error: ', err);
         } else
@@ -256,7 +262,7 @@ function DBFetchData(criteria) {
     return query.exec()
         .then((data) => {
             let details = [];
-            data.forEach(function (singleCollection) {
+            data.forEach(function(singleCollection) {
                 details.push({
                     'oid': singleCollection._id.toString(),
                     'id': singleCollection.id,
@@ -269,7 +275,7 @@ function DBFetchData(criteria) {
             return details;
         })
         .catch((err) => {
-            console.log('DBFetchData catch error: ', err);
+            console.error('DBFetchData catch error: ', err);
             return err;
         });
 }
@@ -415,10 +421,10 @@ function expandStringToObj(items) {
                     addItemToObject(itemsCountText, j, 1, null);
                 }
             } else // ако има (text) след числото - се вади в нов асоциативен масив/обект
-                if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
-                    let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
-                    addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
-                }
+            if (item.length) {                   // ако няма тире между запетайките, но има все пак нещо
+                let itemComponents = splitItemToComponents(item);   // [number=51, counts=1, text=""]   "" or null
+                addItemToObject(itemsCountText, itemComponents.number, itemComponents.counts, itemComponents.text);
+            }
         }
     } else {
         for (let i = 0; i < items.length; i++) {

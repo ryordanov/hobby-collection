@@ -38,8 +38,8 @@ export default class Login extends Component {
                 this.setState({ responseStatus: response.responseStatus, isAuthenticated: response.isAuthenticated });
             })
             .catch((error) => {
-                // console.error(error);
-                this.setState({responseStatus: 'No connection'})
+                console.error(error);
+                this.setState({responseStatus: 'No connection'});
             });
     }
 

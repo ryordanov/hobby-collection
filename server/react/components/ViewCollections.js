@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+
 import React from 'react';
 import { Link /*, withRouter */ } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -18,8 +20,10 @@ const ViewCollections = (props) => {
         if (dialog == true) {
             return postRequestToAPI(buildUrl('/api/delete', [oid]), { make, serie, oid })
                 .then(data => {
-                    if (props.reloadAfterDelete) {
+                    if (data && data.deletedOn && props.reloadAfterDelete) {
                         props.reloadAfterDelete();
+                    } else {
+                        console.log('ViewCollection (delete error)', data); // make, serie
                     }
                 });
         }

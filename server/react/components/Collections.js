@@ -29,7 +29,8 @@ export default class Collections extends React.Component {
             checkItems: checkItemsSeed,
             statistic: {
                 allItems: 0,
-                unique: 0
+                unique: 0,
+                allCount: 0
             }
         };
         this.selectOption = this.selectOption.bind(this);

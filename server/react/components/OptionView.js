@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { formatLabel } from '../utils'
+import { formatLabel } from '../utils';
 
 const OptionView = (props) => {
     function handleChange(e) {

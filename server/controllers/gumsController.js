@@ -51,7 +51,7 @@ module.exports = {
     delete: (req, res) => {
         let loggedUser = (req.session && req.session.loggedUser && req.session.loggedUser.id) || null;
         if (loggedUser) {
-            gum.deleteItem(loggedUser, req.params.id, req.body, req.query)
+            gum.deleteItem(loggedUser, req.params.id)
                 .then(data => res.status(200).send(data))
                 .catch((err) => {
                     console.log('gumsController error (create)', err);

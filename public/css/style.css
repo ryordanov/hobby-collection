@@ -31,7 +31,7 @@ input[type=file] {
   padding-left: 5px;
 }
 .radio-group {
-  width: 200px !important;
+  width: 280px !important;
   margin-left: unset !important;
   margin-right: unset !important;
 }
@@ -238,7 +238,7 @@ a.pull-right {
 .info-box-col {
   display: flex;
   flex-direction: column;
-  flex: 2;
+  flex: 6;
 }
 
 .info-box-col.nums {

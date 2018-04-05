@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InfoBox = (props) => {
+    if (!props.statisticInfo) {
+        return null;
+    }
     return (
         <div className="container radio-group">
             <div className="panel panel-primary">
@@ -10,20 +13,28 @@ const InfoBox = (props) => {
                     {/* <div className='info-box-content'> */}
                     <div className='info-box-row'>
                         <div className='info-box-col'>
-                            {props.showMissing ? 'All items:' : 'Missing items:'}
+                            {props.showMissing ? 'All Items:' : 'Missing Items:'}
                         </div>
                         <div className='info-box-col nums'>
-                            {props.statisticInfo && props.statisticInfo.allItems}
+                            {props.statisticInfo.allItems}
                         </div>
                     </div>
                     {props.showMissing && <div className='info-box-row'>
                         <div className='info-box-col'>
-                                Unique:
+                            Unique:
                         </div>
                         <div className='info-box-col nums'>
-                            {props.statisticInfo && props.statisticInfo.unique}
+                            {props.statisticInfo.unique}
                         </div>
                     </div>}
+                    <div className='info-box-row'>
+                        <div className='info-box-col'>
+                            {props.showMissing ? 'All Collections:' : 'Incomplete collections:'}
+                        </div>
+                        <div className='info-box-col nums'>
+                            {props.statisticInfo.collectionsCount}
+                        </div>
+                    </div>
                     {/* </div> */}
                 </div>
             </div>
