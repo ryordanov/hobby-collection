@@ -1,16 +1,24 @@
 const mongoose = require('mongoose');
 
 const requredValidationMessage = '{PATH} is required';
-const generalCollectionsSchema = new mongoose.Schema({
+// const generalCollectionsSchema = new mongoose.Schema({
+//     id: { type: Number, required: requredValidationMessage, unique: true, default: 0 },
+//     ownerId: { type: String, required: requredValidationMessage },
+//     make: { type: String, required: requredValidationMessage },
+//     serie: { type: String },
+//     margins: { type: String },
+//     items: { type: Object }
+// },
+// { strict: false, strictQuery: true });
+// const generalCollectionsModel = mongoose.model('generalCollections', generalCollectionsSchema);
+const collectionsSchema = new mongoose.Schema({
     id: { type: Number, required: requredValidationMessage, unique: true, default: 0 },
     ownerId: { type: String, required: requredValidationMessage },
-    make: { type: String, required: requredValidationMessage },
-    serie: { type: String },
+    path: { type: Array, required: requredValidationMessage },
     margins: { type: String },
     items: { type: Object }
-},
-{ strict: false, strictQuery: true });
-const generalCollectionsModel = mongoose.model('generalCollections', generalCollectionsSchema);
+});
+const generalCollectionsModel = mongoose.model('collections', collectionsSchema);
 
 // autoincrement value
 // generalCollectionsSchema.pre('save', function(next) {
@@ -87,7 +95,7 @@ module.exports = {
                         if (Object.keys(missingItems).length === 0 && missingItems.constructor === Object) {
                             collection[index]['items'] = 'There are no missing items in this collection';
                         } else if (!missingItems) {
-                            statisticInfo.update({});
+                            statisticInfo.update({}); // items without valid margins to be included in Inconsistent collections count
                             collection[index]['items'] = 'No valid margins data';
                         } else {
                             statisticInfo.update(missingItems);
@@ -244,11 +252,8 @@ module.exports = {
 function DBFetchData(criteria) {
     let dbCriteria = { ownerId: criteria.ownerId };
 
-    if (criteria.collectionName) {
-        dbCriteria.make = decodeURIComponent(criteria.collectionName);
-    }
-    if (criteria.subCollectionName) {
-        dbCriteria.serie = decodeURIComponent(criteria.subCollectionName);
+    if (criteria.collectionPath) {
+        dbCriteria.path = { $all: criteria.collectionPath.split('/').filter(el=>el).map(el => decodeURIComponent(el))};
     }
 
     let query = generalCollectionsModel.find(dbCriteria, function(err, gums) {
@@ -266,8 +271,7 @@ function DBFetchData(criteria) {
                 details.push({
                     'oid': singleCollection._id.toString(),
                     'id': singleCollection.id,
-                    'make': singleCollection.make,
-                    'serie': singleCollection.serie,
+                    'path': singleCollection.path,
                     'margins': singleCollection.margins,
                     'items': encodeItem(singleCollection.items)
                 });

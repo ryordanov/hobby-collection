@@ -15,7 +15,7 @@ export const getRequestToAPI = (url, historyRouter) => {
             return response.json();
         })
         .catch((error) => {
-            // console.error(error);
+            console.error(error);
             sessionStorage.removeItem('loggedin');
             if (historyRouter) historyRouter.push('/login');
         });
@@ -41,7 +41,7 @@ export const postRequestToAPI = (url, data , historyRouter) => {
             return response.json();
         })
         .catch((error) => {
-            // console.error(error);
+            console.error(error);
             sessionStorage.removeItem('loggedin');
             if (historyRouter) historyRouter.push('/login');
         });
@@ -61,7 +61,7 @@ export const buildUrl = (rootUrl, uri, queryParams) => {
             }
         });
     } else if (uri && typeof uri === 'object') {
-        for (var key in uri) {
+        for (let key in uri) {
             if (uri.hasOwnProperty(key)) {
                 rootUrl += `/${encodeURIComponent(uri[key])}`;
             }

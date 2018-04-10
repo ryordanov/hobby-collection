@@ -207,6 +207,7 @@ a.pull-right {
 
 .c.items {
   flex: 10;
+  cursor: pointer;
 }
 
 .c.icon {

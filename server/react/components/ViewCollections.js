@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 
 import React from 'react';
-import { Link /*, withRouter */ } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { buildUrl, postRequestToAPI } from '../utils';
@@ -12,8 +12,19 @@ import { buildUrl, postRequestToAPI } from '../utils';
 //     <button type='button' onClick={() => { history.push('/new-location') }}>Search missing!</button>
 // ))
 
+
+
 const ViewCollections = (props) => {
-    function handleClick(e, make, serie, oid) {
+
+    const ItemsDisplayRedirect = withRouter(({ history, element }) => (
+        <div className="c items" onClick={(e) => handleRedirect(e, history, buildUrl('/edit', element.path, { [props.opt]: true }))}>
+            <div className='display-in-cell'>
+                {element.items}
+            </div>
+        </div>
+    ));
+
+    function handleDelete(e, make, serie, oid) {
         e.preventDefault();
         // console.log(e.target.attributes[0].value);
         let dialog = confirm('Are you sure you want to delete "' + make + '/' + serie + '"');
@@ -29,29 +40,25 @@ const ViewCollections = (props) => {
         }
     }
 
+    function handleRedirect(e, history, url) {
+        history.push(url);
+    }
+
+    const collectionPathArr = (props.collectionPath ? props.collectionPath.split('/') : []);
+
     return (
         <div>
-            {
-                props.currentCollection && !props.currentSubCollection &&
-                <div className='clearafter'>
-                    <h5 className='float-left'><Link to='/collections'>Collection</Link> / {props.currentCollection}</h5>
-                    <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
-                </div>
-            }
-            {
-                props.currentCollection && props.currentSubCollection &&
-                <div className='clearafter'>
-                    <h5 className='float-left'><Link to='/collections'>Collection</Link> / {props.currentCollection} / {decodeURIComponent(props.currentSubCollection)}</h5>
-                    <Link to={buildUrl('/edit', [props.currentCollection, props.currentSubCollection], { [props.opt]: true })} className='btn btn-primary btn pull-right'>Edit</Link>
-                </div>
-            }
-            {
-                !(props.currentCollection || props.currentSubCollection) &&
-                <div className='clearafter'>
-                    <h5 className='float-left'><Link to='/collections'>Collection</Link></h5>
-                    <Link to={buildUrl('/add', [props.currentCollection, props.currentSubCollection])} className='btn btn-primary btn pull-right'>Add</Link>
-                </div>
-            }
+            <div className='clearafter'>
+                <h5 className='float-left'><Link to='/collections'>Collection</Link>
+                    {
+                        collectionPathArr.length ?
+                            collectionPathArr.map((el, index) =>
+                                // <span key={index}> / <Link to={'/collections/' + encodeURIComponent(el)}>{decodeURIComponent(el)}</Link></span>
+                                <span key={index}> / {decodeURIComponent(el)}</span>
+                            ) : ''
+                    }</h5>
+                < Link to={buildUrl('/add', collectionPathArr, { [props.opt]: true })} className='btn btn-primary btn pull-right'>Add</Link>
+            </div>
             <div className='cont'>
                 <div className="r head">
                     <div className="c">Category</div>
@@ -64,37 +71,31 @@ const ViewCollections = (props) => {
                     props.collectionRecords &&
                     props.collectionRecords.map((element, index) => (
                         <div className="r" key={index}>
-                            <div className="c"><Link className='collection-link' to={buildUrl('/collections', [element.make])}>{element.make}</Link></div>
-                            <div className="c"><Link className='subcollection-link' to={buildUrl('/collections', [element.make, element.serie])}>{element.serie}</Link></div>
+                            <div className="c"><Link className='collection-link' to={buildUrl('/collections', [element.path[0]])}>{element.path[0]}</Link></div>
+                            <div className="c"><Link className='subcollection-link' to={buildUrl('/collections', [element.path[0], element.path[1] || ''])}>{element.path[1] || ''}</Link></div>
                             <div className="c">{element.margins}</div>
-                            <div className="c"><Link to={buildUrl('/edit', [element.make, element.serie], { [props.opt]: true })}>
-                                <div className='display-in-cell'>
-                                    {element.items}
-                                </div>
-                            </Link></div>
-                            <div className="c icon"><Link to={buildUrl('/delete', [element.id])} onClick={(e) => handleClick(e, element.make, element.serie, element.oid)}><span className="glyphicon glyphicon-trash"></span></Link></div>
+                            <ItemsDisplayRedirect element={element} />
+                            <div className="c icon"><Link to={buildUrl('/delete', [element.id])} onClick={(e) => handleDelete(e, element.make, element.serie, element.oid)}><span className="glyphicon glyphicon-trash"></span></Link></div>
                         </div>
                     ))
                 }
             </div>
-        </div>
+        </div >
     );
 };
 
 ViewCollections.propTypes = {
     opt: PropTypes.string,
     collectionRecords: PropTypes.array,
-    currentCollection: PropTypes.string,
-    currentSubCollection: PropTypes.string,
+    collectionPath: PropTypes.string,
     reloadAfterDelete: PropTypes.func
 };
 
 ViewCollections.defaultProps = {
     opt: '',
     collectionRecords: [],
-    currentCollection: '',
-    currentSubCollection: '',
-    reloadAfterDelete: () => {}
+    collectionPath: '',
+    reloadAfterDelete: () => { }
 };
 
 export default ViewCollections;

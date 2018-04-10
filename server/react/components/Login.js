@@ -9,8 +9,8 @@ export default class Login extends Component {
         super(props);
         this.state = {
             responseStatus: props.location.responseStatus || '',
-            username: '',
-            password: ''
+            username: 'user',
+            password: '1234'
         };
 
         this.handleChange = this.handleChange.bind(this);

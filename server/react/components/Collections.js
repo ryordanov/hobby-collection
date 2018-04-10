@@ -39,12 +39,12 @@ export default class Collections extends React.Component {
     }
 
     componentDidMount() {
-        this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName);
+        this.loadNewData(this.props.match.params.collectionPath);
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.location.pathname !== nextProps.location.pathname) {
-            this.loadNewData(nextProps.match.params.collectionName, nextProps.match.params.subCollectionName);
+            this.loadNewData(nextProps.match.params.collectionPath);
         }
     }
 
@@ -65,14 +65,15 @@ export default class Collections extends React.Component {
                 }
             }
             return { [actionOption]: tmpArray };
-        }, () => this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName));
+        }, () => this.loadNewData(this.props.match.params.collectionPath));
     }
 
     reloadAfterDelete() {
-        this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName);
+        this.loadNewData(this.props.match.params.collectionPath);
     }
 
-    loadNewData(collectionName, subCollectionName) {
+    loadNewData(collectionPath) {
+        const collectionPathArr = (collectionPath ? collectionPath.split('/') : []);
         const selectedRadioButton = this.state.radioItems.filter(e => e.checked);
         let additionalOptions = {};
 
@@ -86,7 +87,7 @@ export default class Collections extends React.Component {
             }
         });
 
-        return getRequestToAPI(buildUrl('/api/collections', [collectionName, subCollectionName], additionalOptions), this.props.history)
+        return getRequestToAPI(buildUrl('/api/collections', collectionPathArr, additionalOptions), this.props.history)
             .then((resData) => {
                 if (resData) {
                     this.setState({ /* url, selectedOption, */ dataFromBackend: resData.collection, statistic: resData.statistic });
@@ -103,7 +104,6 @@ export default class Collections extends React.Component {
             <div>
                 <div className='flex-row'>
                     <OptionView
-                        // selectedOption={(rbData) => this.loadNewData(this.props.match.params.collectionName, this.props.match.params.subCollectionName, rbData)}
                         selectedOption={this.selectOption}
                         radioItems={this.state.radioItems}
                         checkItems={this.state.checkItems} />
@@ -112,8 +112,7 @@ export default class Collections extends React.Component {
                 <ViewCollections
                     opt={this.getChosenRadioOption(this.state.radioItems)}
                     collectionRecords={this.state.dataFromBackend}
-                    currentCollection={this.props.match.params.collectionName}
-                    currentSubCollection={this.props.match.params.subCollectionName}
+                    collectionPath={this.props.match.params.collectionPath}
                     reloadAfterDelete={this.reloadAfterDelete} />
             </div>
         );

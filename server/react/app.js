@@ -28,7 +28,7 @@ const App = () => (
             <Route path='/logout' component={Logout} />
             <Route path='/home' component={Home} />
             <EnsureLoggedInContainer>
-                <Route path='/collections/:collectionName?/:subCollectionName?' component={Collections} />
+                <Route path='/collections/:collectionPath*' component={Collections} />
                 <Route path='/edit/:collectionName/:subCollectionName' component={AddEdit} />
                 <Route path='/add/:collectionName?/:subCollectionName?' component={AddEdit} />
             </EnsureLoggedInContainer>
