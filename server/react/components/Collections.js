@@ -20,7 +20,6 @@ export default class Collections extends React.Component {
             { id: 'missing', name: 'missing only', value: true, checked: false }
         ];
 
-
         this.state = {
             // url: '',
             dataFromBackend: [],

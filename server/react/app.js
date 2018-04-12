@@ -29,8 +29,9 @@ const App = () => (
             <Route path='/home' component={Home} />
             <EnsureLoggedInContainer>
                 <Route path='/collections/:collectionPath*' component={Collections} />
-                <Route path='/edit/:collectionName/:subCollectionName' component={AddEdit} />
+                {/* <Route path='/edit/:collectionName/:subCollectionName' component={AddEdit} /> */}
                 <Route path='/add/:collectionName?/:subCollectionName?' component={AddEdit} />
+                <Route path='/edit/:itemOid' component={AddEdit} />
             </EnsureLoggedInContainer>
             <Route component={NotFound} />
         </Switch>

@@ -6,7 +6,7 @@ let gum = require('../utilities/gum');
 module.exports = {
     getCollections: (req, res) => {
         let loggedUser = (req.session && req.session.loggedUser) || null;
-        if (loggedUser) {
+        if (loggedUser && loggedUser.id) {
             const constraints = { ownerId: loggedUser.id, /*...req.query, */options: req.query, collectionPath: req.params[0] };
             gum.getCollections(constraints/*, req.session.loggedUser*/)
                 .then(data => {
@@ -23,6 +23,20 @@ module.exports = {
         // res.send(gum.getCollections());
         // let constraints = req.query || req.body;
 
+    },
+    getItem: (req, res) => {
+        let loggedUser = (req.session && req.session.loggedUser && req.session.loggedUser.id) || null;
+        if (loggedUser) {
+            gum.getItem(req.params.oid, req.body, req.query)
+                .then(data => res.status(200).send(data))
+                .catch((err) => {
+                    console.log('gumsController error (getItem)', err);
+                    return res.send(err);
+                });
+        } else {
+            console.log('redirect to index.html / login page');
+            res.status(401).send();
+        }
     },
     update: (req, res) => {
         let loggedUser = (req.session && req.session.loggedUser && req.session.loggedUser.id) || null;
@@ -51,7 +65,7 @@ module.exports = {
     delete: (req, res) => {
         let loggedUser = (req.session && req.session.loggedUser && req.session.loggedUser.id) || null;
         if (loggedUser) {
-            gum.deleteItem(loggedUser, req.params.id)
+            gum.deleteItem(loggedUser, req.params.id /*, req.body, req.query*/ )
                 .then(data => res.status(200).send(data))
                 .catch((err) => {
                     console.log('gumsController error (create)', err);

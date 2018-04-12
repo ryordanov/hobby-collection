@@ -17,19 +17,21 @@ import { buildUrl, postRequestToAPI } from '../utils';
 const ViewCollections = (props) => {
 
     const ItemsDisplayRedirect = withRouter(({ history, element }) => (
-        <div className="c items" onClick={(e) => handleRedirect(e, history, buildUrl('/edit', element.path, { [props.opt]: true }))}>
+        <div className="c items" onClick={(e) => history.push({ pathname: buildUrl('/edit', [element.id], { [props.opt]: true }), itemEditOid: element.oid, search: props.opt + '=true' }) }>
             <div className='display-in-cell'>
                 {element.items}
             </div>
         </div>
     ));
 
-    function handleDelete(e, make, serie, oid) {
+    function handleDelete(e, element) {
+        let { path, oid } = element;
         e.preventDefault();
         // console.log(e.target.attributes[0].value);
-        let dialog = confirm('Are you sure you want to delete "' + make + '/' + serie + '"');
+        let dialog = confirm('Are you sure you want to delete this item');
+
         if (dialog == true) {
-            return postRequestToAPI(buildUrl('/api/delete', [oid]), { make, serie, oid })
+            return postRequestToAPI(buildUrl('/api/delete', [oid]), { path, oid })
                 .then(data => {
                     if (data && data.deletedOn && props.reloadAfterDelete) {
                         props.reloadAfterDelete();
@@ -40,9 +42,10 @@ const ViewCollections = (props) => {
         }
     }
 
-    function handleRedirect(e, history, url) {
-        history.push(url);
-    }
+    // function handleRedirect(e, history, element, props) {
+    //     // history.push(url);
+    //     history.push({pathname: buildUrl('/edit', [element.id], { [props.opt]: true }), itemEditOid: element.oid});
+    // }
 
     const collectionPathArr = (props.collectionPath ? props.collectionPath.split('/') : []);
 
@@ -75,7 +78,7 @@ const ViewCollections = (props) => {
                             <div className="c"><Link className='subcollection-link' to={buildUrl('/collections', [element.path[0], element.path[1] || ''])}>{element.path[1] || ''}</Link></div>
                             <div className="c">{element.margins}</div>
                             <ItemsDisplayRedirect element={element} />
-                            <div className="c icon"><Link to={buildUrl('/delete', [element.id])} onClick={(e) => handleDelete(e, element.make, element.serie, element.oid)}><span className="glyphicon glyphicon-trash"></span></Link></div>
+                            <div className="c icon"><Link to={buildUrl('/delete', [element.id])} onClick={(e) => handleDelete(e, element)}><span className="glyphicon glyphicon-trash"></span></Link></div>
                         </div>
                     ))
                 }

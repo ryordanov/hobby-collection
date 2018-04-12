@@ -56,7 +56,7 @@ export const buildUrl = (rootUrl, uri, queryParams) => {
 
     if (uri && Array.isArray(uri)) {
         uri.forEach(element => {
-            if (element) {
+            if (element !== undefined && element !== null) {
                 rootUrl += `/${encodeURIComponent(element)}`;
             }
         });

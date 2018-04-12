@@ -122,8 +122,31 @@ module.exports = {
                 return { collection, statistic: statisticInfo.getInfo() };
             });
     },
+    getItem: (itemId, payload, queryOptions) => {
+        const oid = mongoose.Types.ObjectId(itemId);
+
+        return generalCollectionsModel.findById(oid)
+            .exec()
+            .then((data) => {
+                if (data) {
+                    return {
+                        id: data.id,
+                        oid: data._id.toString(),
+                        path: data.path,
+                        margins: data.margins,
+                        items: typeOfResult(queryOptions || {}, data.items || {})
+                    };
+                }
+            })
+            .catch((err) => {
+                console.error('# Mongo error (updateById)', err);
+            });
+    },
     createNewItem: (ownerId, payload, queryOptions) => {
-        const filter = { $and: [{ make: payload.collection }, { serie: payload.subCollection }] };
+        // const filter = { $and: [{ make: payload.collection }, { serie: payload.subCollection }] };
+        const filter = { path: [] };
+        if (payload.collection) filter.path.push(payload.collection);
+        if (payload.subCollection) filter.path.push(payload.subCollection);
 
         return generalCollectionsModel.find(filter)
             .exec()
@@ -137,8 +160,7 @@ module.exports = {
                         .then(lastInsertedObject => {
                             const createObj = {
                                 ownerId: ownerId,
-                                make: payload.collection,
-                                serie: payload.subCollection,
+                                path: [payload.collection, payload.subCollection], // payload.path from react..
                                 margins: payload.margins,
                                 items: expandStringToObj(payload.items),
                                 id: lastInsertedObject && lastInsertedObject.id + 1
@@ -152,8 +174,7 @@ module.exports = {
                                         return {
                                             ownerId: ownerId,
                                             make: createdData.make,
-                                            serie: createdData.serie,
-                                            margins: createdData.margins,
+                                            path: createdData.path,
                                             items: typeOfResult(queryOptions || { squished: true }, createdData.items || {}),
                                             id: createdData.id
                                             // oid: createdData._id.toString()
@@ -176,28 +197,25 @@ module.exports = {
 
         // update make, serie, margins, items
         let updateDetails = {
+            path: [],
             items: expandStringToObj(payload.items)
         };
-        if (payload.collection) {
-            updateDetails.make = payload.collection;
+        if (payload.path) {
+            updateDetails.path = payload.path;
         }
-        if (payload.subCollection) {
-            updateDetails.serie = payload.subCollection;
-        }
-        if (payload.subCollection) {
+        if (payload.margins) {
             updateDetails.margins = payload.margins;
         }
         return generalCollectionsModel.findByIdAndUpdate(oid, updateDetails, { new: true })
             .exec()
             .then((updatedData) => {
-                if (updatedData) {
+                if (!updatedData.errors) {
                     return {
-                        make: updatedData.make,
-                        serie: updatedData.serie,
-                        margins: updatedData.margins,
-                        items: typeOfResult(queryOptions || {}, updatedData.items || {}),
+                        oid: updatedData._id.toString(),
                         id: updatedData.id,
-                        oid: updatedData._id.toString()
+                        path: updatedData.path,
+                        items: typeOfResult(queryOptions || {}, updatedData.items || {}),
+                        margins: updatedData.margins
                     };
                 }
             })
@@ -205,7 +223,7 @@ module.exports = {
                 console.error('# Mongo error (updateById)', err);
             });
     },
-    deleteItem: (ownerId, itemId) => {
+    deleteItem: (ownerId, itemId /*, payload, queryOptions*/ ) => {
         const oid = mongoose.Types.ObjectId(itemId);
         // remove from this document and move to another [deleted items] document
         return generalCollectionsModel.findByIdAndRemove(oid)
@@ -216,8 +234,7 @@ module.exports = {
                         {
                             id: deletedData.id,
                             ownerId: deletedData.ownerId,
-                            make: deletedData.make,
-                            serie: deletedData.serie,
+                            path: deletedData.path,
                             margins: deletedData.margins,
                             items: deletedData.items,
                             deletedBy: ownerId,
@@ -228,7 +245,7 @@ module.exports = {
                         .then(doc => {
                             return {
                                 make: doc.make,
-                                serie: doc.serie,
+                                path: doc.path,
                                 // margins: doc.margins,
                                 // items: typeOfResult(queryOptions || {}, doc.items || {}),
                                 // id: doc.id,
