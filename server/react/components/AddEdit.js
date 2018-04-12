@@ -127,7 +127,7 @@ export default class Add extends React.Component {
         return (
             <div>
                 <form id='updateForm' onSubmit={this.handleSubmit} noValidate>
-                    <FormGroup controlId="record.path" bsSize="large">
+                    <FormGroup controlId="record.path[0]" bsSize="large">
                         <ControlLabel>Category:</ControlLabel>
                         <FormControl
                             autoFocus
@@ -150,7 +150,7 @@ export default class Add extends React.Component {
                             <option value={this.state.record.collection}>{this.state.record.collection}</option>
                         </FormControl> */}
                     </FormGroup>
-                    <FormGroup controlId="record.path" bsSize="large">
+                    <FormGroup controlId="record.path[1]" bsSize="large">
                         <ControlLabel>Subcategory:</ControlLabel>
                         <FormControl
                             autoFocus

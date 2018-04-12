@@ -145,8 +145,15 @@ module.exports = {
     createNewItem: (ownerId, payload, queryOptions) => {
         // const filter = { $and: [{ make: payload.collection }, { serie: payload.subCollection }] };
         const filter = { path: [] };
-        if (payload.collection) filter.path.push(payload.collection);
-        if (payload.subCollection) filter.path.push(payload.subCollection);
+        // if (payload.collection) filter.path.push(payload.collection);
+        // if (payload.subCollection) filter.path.push(payload.subCollection);
+
+        if (payload.path) {
+            filter.path = payload.path;
+        }
+        if (payload.margins) {
+            filter.margins = payload.margins;
+        }
 
         return generalCollectionsModel.find(filter)
             .exec()
@@ -160,7 +167,7 @@ module.exports = {
                         .then(lastInsertedObject => {
                             const createObj = {
                                 ownerId: ownerId,
-                                path: [payload.collection, payload.subCollection], // payload.path from react..
+                                path: payload.path, // payload.path from react..
                                 margins: payload.margins,
                                 items: expandStringToObj(payload.items),
                                 id: lastInsertedObject && lastInsertedObject.id + 1

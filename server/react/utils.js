@@ -97,7 +97,12 @@ export function setNestedValue(obj, pathKeys, value) {
     if (pathKeys.length > 1) {
         setNestedValue(obj[pathKeys.shift()], pathKeys, value);
     } else {
-        obj[pathKeys[0]] = value;
+        const arrayKeys = pathKeys[0].match(/(\w+)\[(\d)\]/);
+        if (arrayKeys) {
+            obj[arrayKeys[1]][arrayKeys[2]] = value;
+        } else {
+            obj[pathKeys[0]] = value;
+        }
     }
 }
 
