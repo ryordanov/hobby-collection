@@ -17,7 +17,7 @@ import { buildUrl, postRequestToAPI } from '../utils';
 const ViewCollections = (props) => {
 
     const ItemsDisplayRedirect = withRouter(({ history, element }) => (
-        <div className="c items" onClick={(e) => history.push({ pathname: buildUrl('/edit', [element.id], { [props.opt]: true }), itemEditOid: element.oid, search: props.opt + '=true' }) }>
+        <div className="c items" onClick={(e) => history.push({ pathname: buildUrl('/edit', [element.id], { [props.opt]: true }), itemEditOid: element.oid, search: props.opt + '=true' })}>
             <div className='display-in-cell'>
                 {element.items}
             </div>
@@ -28,7 +28,7 @@ const ViewCollections = (props) => {
         let { path, oid } = element;
         e.preventDefault();
         // console.log(e.target.attributes[0].value);
-        let dialog = confirm('Are you sure you want to delete this item [ ' + path.filter(el=> el).join('/') + ' ]');
+        let dialog = confirm('Are you sure you want to delete this item [ ' + path.filter(el => el).join('/') + ' ]');
 
         if (dialog == true) {
             return postRequestToAPI(buildUrl('/api/delete', [oid]), { path, oid })

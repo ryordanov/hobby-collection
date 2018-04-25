@@ -37,8 +37,7 @@ const generalCollectionsModel = mongoose.model('collections', collectionsSchema)
 const deletedCollectionsSchema = new mongoose.Schema({
     id: { type: Number, default: 0 },
     ownerId: { type: String, required: requredValidationMessage },
-    make: { type: String, required: requredValidationMessage },
-    serie: { type: String },
+    path: { type: Array, required: requredValidationMessage },
     margins: { type: String },
     items: { type: Object },
     deletedBy: { type: String },
@@ -251,8 +250,7 @@ module.exports = {
                     return newItem.save()
                         .then(doc => {
                             return {
-                                make: doc.make,
-                                path: doc.path,
+                                // path: doc.path,
                                 // margins: doc.margins,
                                 // items: typeOfResult(queryOptions || {}, doc.items || {}),
                                 // id: doc.id,

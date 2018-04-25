@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 // let env = process.env.NODE_ENV || 'development';
 const path = require('path');
 const fs = require('fs');
@@ -30,9 +31,9 @@ function doesExist(fileName) {
 
 // function doesXst(fileName) {
 //     fs.stat(fileName, function(err, stats) {
-//         if (err) 
+//         if (err)
 //             console.log('it does not exist');
-//         else 
+//         else
 //             console.log('it exists');
 //     });
 // }
