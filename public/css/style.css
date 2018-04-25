@@ -245,3 +245,7 @@ a.pull-right {
 .info-box-col.nums {
   flex: 1;
 }
+
+.actionBtn {
+  margin: 5px !important;
+}

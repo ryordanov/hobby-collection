@@ -28,7 +28,7 @@ const ViewCollections = (props) => {
         let { path, oid } = element;
         e.preventDefault();
         // console.log(e.target.attributes[0].value);
-        let dialog = confirm('Are you sure you want to delete this item');
+        let dialog = confirm('Are you sure you want to delete this item [ ' + path.filter(el=> el).join('/') + ' ]');
 
         if (dialog == true) {
             return postRequestToAPI(buildUrl('/api/delete', [oid]), { path, oid })
@@ -74,8 +74,8 @@ const ViewCollections = (props) => {
                     props.collectionRecords &&
                     props.collectionRecords.map((element, index) => (
                         <div className="r" key={index}>
-                            <div className="c"><Link className='collection-link' to={buildUrl('/collections', [element.path[0]])}>{element.path[0]}</Link></div>
-                            <div className="c"><Link className='subcollection-link' to={buildUrl('/collections', [element.path[0], element.path[1] || ''])}>{element.path[1] || ''}</Link></div>
+                            <div className="c"><Link to={buildUrl('/collections', [element.path[0]])}>{element.path[0]}</Link></div>
+                            <div className="c"><Link to={buildUrl('/collections', [element.path[0], element.path[1] || ''])}>{element.path[1] || ''}</Link></div>
                             <div className="c">{element.margins}</div>
                             <ItemsDisplayRedirect element={element} />
                             <div className="c icon"><Link to={buildUrl('/delete', [element.id])} onClick={(e) => handleDelete(e, element)}><span className="glyphicon glyphicon-trash"></span></Link></div>
