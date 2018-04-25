@@ -4,17 +4,20 @@ import { Button, FormGroup, FormControl, ControlLabel, Alert } from 'react-boots
 import { Link /*, withRouter */ } from 'react-router-dom';
 import { getRequestToAPI, postRequestToAPI, buildUrl, concatQueryParams, setNestedValue } from '../utils';
 
+import { Redirect } from 'react-router-dom';
+import classnames from 'classnames';
 // import { Typeahead } from 'react-bootstrap-typeahead';
 
 export default class Add extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             record: {
-                oid: '',
+                // oid: (props.match && props.match.params && props.match.params.itemOid) || '',
+                oid: (props && props.location && props.location.itemEditOid) || '',
                 id: '',
-                collection: (props.match && props.match.params && props.match.params.collectionName) || '',
-                subCollection: '',
+                path: /*(props.match && props.match.params && props.match.params.path) ||*/[''],
                 margins: '',
                 items: ''
             },
@@ -24,22 +27,23 @@ export default class Add extends React.Component {
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
     }
 
     componentDidMount() {
-        if (this.props.match.params.collectionName) {
+        if (this.state.record.oid) {
             let queryParams = concatQueryParams(this.props.location.search);
-            return getRequestToAPI(buildUrl('/api/collections', this.props.match.params, queryParams), this.props.history)
+            return getRequestToAPI(buildUrl('/api/getItem', [this.state.record.oid], queryParams), this.props.history)
                 .then((resData) => {
-                    if (resData && resData.collection) {
+                    if (resData && resData.oid) {
                         this.setState({
                             record: {
-                                oid: resData.collection[0].oid,
-                                id: resData.collection[0].id,
-                                collection: resData.collection[0].make,
-                                subCollection: resData.collection[0].serie,
-                                margins: resData.collection[0].margins,
-                                items: resData.collection[0].items
+                                oid: resData.oid,
+                                id: resData.id,
+                                path: resData.path,
+                                margins: resData.margins,
+                                items: resData.items
                             }
                         });
                     }
@@ -91,7 +95,7 @@ export default class Add extends React.Component {
         //         data[element.name] = element.value;
         //     }
         // }
-        let { oid, id, collection, subCollection, margins, items } = this.state.record;
+        let { oid, id, path, margins, items } = this.state.record;
         let queryParams = concatQueryParams(this.props.location.search);
         let url = '';
         if (this.state.record && this.state.record.oid) {
@@ -99,7 +103,7 @@ export default class Add extends React.Component {
         } else {
             url = buildUrl('/api/create', [], queryParams);
         }
-        return postRequestToAPI(url, { oid, id, collection, subCollection, margins, items }, this.props.history)
+        return postRequestToAPI(url, { oid, id, path, margins, items }, this.props.history)
             .then(data => {
                 if (data) {
                     if (data.error) {
@@ -109,8 +113,7 @@ export default class Add extends React.Component {
                             record: {
                                 oid: data.oid,
                                 id: data.data,
-                                collection: data.make,
-                                subCollection: data.serie,
+                                path: data.path,
                                 margins: data.margins,
                                 items: data.items
                             },
@@ -124,47 +127,46 @@ export default class Add extends React.Component {
             });
     }
 
+    handleAdd() {
+        this.setState((prevState) => {
+            return prevState.record.path.push('');
+        });
+    }
+
+    handleRemove() {
+        this.setState((prevState) => {
+            if (prevState.record.path.length > 1) {
+                prevState.record.path.pop();
+            }
+            return prevState;
+        });
+    }
+
     render() {
+        if (this.props.location.pathname.startsWith('/edit') && !this.state.record.oid) {
+            return <Redirect to='/collections' />;
+        }
         return (
             <div>
                 <form id='updateForm' onSubmit={this.handleSubmit} noValidate>
-                    <FormGroup controlId="record.collection" bsSize="large">
-                        <ControlLabel>Category:</ControlLabel>
-                        <FormControl
-                            autoFocus
-                            type="text"
-                            value={this.state.record.collection}
-                            onChange={this.handleChange}
-                            placeholder="Example: Turbo"
-                        />
-                        {/* <Typeahead
-                            emptyLabel={'ásdasdads'}
-                            labelKey="name"
-                            options={this.state.categoryOptions}
-                            placeholder="Select category..."
-                            onChange={(categoryOptions) => {
-                                this.setState({categoryOptions});
-                            }}
-                        /> */}
-                        {/* <FormControl componentClass="select" placeholder="select" defaultValue={this.state.record.collection} disabled>
-                            <option value="_">Please choose</option>
-                            <option value={this.state.record.collection}>{this.state.record.collection}</option>
-                        </FormControl> */}
-                    </FormGroup>
-                    <FormGroup controlId="record.subCollection" bsSize="large">
-                        <ControlLabel>Subcategory:</ControlLabel>
-                        <FormControl
-                            autoFocus
-                            type="text"
-                            value={this.state.record.subCollection}
-                            onChange={this.handleChange}
-                            placeholder="Example: blue serie"
-                        />
-                        {/* <FormControl componentClass="select" placeholder="select" defaultValue={this.state.record.subCollection} disabled>
-                            <option value="_">Please choose</option>
-                            <option value={this.state.record.subCollection}>{this.state.record.subCollection}</option>
-                        </FormControl> */}
-                    </FormGroup>
+                    {this.state.record.path.map((el, i) => {
+                        return <FormGroup key={i} controlId={'record.path[' + i + ']'} bsSize="large">
+                            <ControlLabel>{i === 0 ? 'Category' : 'Subcategory'}:</ControlLabel>
+                            {i === 0 &&
+                                <span>
+                                    <Button bsStyle={classnames('info', 'actionBtn')} onClick={this.handleAdd}>+</Button>
+                                    <Button bsStyle={classnames('info', 'actionBtn')} onClick={this.handleRemove}>-</Button>
+                                </span>
+                            }
+                            <FormControl
+                                autoFocus
+                                type="text"
+                                value={decodeURIComponent(el || '')}
+                                onChange={this.handleChange}
+                                placeholder={'Example: Category ' + ++i}
+                            />
+                        </FormGroup>;
+                    })}
                     <FormGroup controlId="record.margins" bsSize="large">
                         <ControlLabel>Margins:</ControlLabel>
                         <FormControl
@@ -185,7 +187,7 @@ export default class Add extends React.Component {
                             maxLength={4000}
                             value={this.state.record.items}
                             onChange={this.handleChange}
-                            placeholder="Example: 1,2,5-10,11(2;broken)"
+                            placeholder="Example: 1,2,5-10,11(2;broken),21"
                         />
                     </FormGroup>
                     <Button
@@ -200,7 +202,7 @@ export default class Add extends React.Component {
                         block
                         bsSize="large"
                         type="button"
-                        onClick={() => this.props.history.goBack()}
+                        onClick={this.props.history.goBack}
                     >
                         Cancel
                     </Button>
@@ -208,11 +210,10 @@ export default class Add extends React.Component {
                 {this.state.responseStatus &&
                     <Alert bsStyle="info">
                         <strong>Create status: </strong>
-                        {/* {this.state.responseStatus} */}
                         {this.state.responseStatus && this.state.errorCode === 2 &&
                             <span>
                                 {this.state.responseStatus}
-                                <span> Please use </span><Link to={buildUrl('/edit', [this.state.record.collection, this.state.record.subCollection])} className="alert-link">Edit</Link><span> link. </span>
+                                <span> Please use </span><Link to={buildUrl('/edit', [this.state.record.oid])} className="alert-link">Edit</Link><span> link. </span>
                             </span>
                         }
                         {this.state.responseStatus && this.state.errorCode !== 2 &&
@@ -232,8 +233,7 @@ Add.propTypes = {
 Add.defaultProps = {
     match: {
         params: {
-            collectionName: '',
-            subCollectionName: '',
+            path: [],
             option: ''
         }
     }

@@ -7,7 +7,9 @@ module.exports = (config, app) => {
     app.post('/api/signup', controllers.users.signup);
     app.post('/api/logout', controllers.users.logout);
 
-    app.get('/api/collections/:collection?/:subcollection?', controllers.gums.getCollections);
+    // app.get('/api/collections/:collection?/:subcollection?', controllers.gums.getCollections);
+    app.get('/api/getItem/:oid?', controllers.gums.getItem);
+    app.get('/api/:collections*', controllers.gums.getCollections);
     app.post('/api/save/:id', controllers.gums.update);
     app.post('/api/create', controllers.gums.create);
     app.post('/api/delete/:id', controllers.gums.delete);

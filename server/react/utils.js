@@ -15,7 +15,7 @@ export const getRequestToAPI = (url, historyRouter) => {
             return response.json();
         })
         .catch((error) => {
-            // console.error(error);
+            console.error(error);
             sessionStorage.removeItem('loggedin');
             if (historyRouter) historyRouter.push('/login');
         });
@@ -41,7 +41,7 @@ export const postRequestToAPI = (url, data , historyRouter) => {
             return response.json();
         })
         .catch((error) => {
-            // console.error(error);
+            console.error(error);
             sessionStorage.removeItem('loggedin');
             if (historyRouter) historyRouter.push('/login');
         });
@@ -56,12 +56,12 @@ export const buildUrl = (rootUrl, uri, queryParams) => {
 
     if (uri && Array.isArray(uri)) {
         uri.forEach(element => {
-            if (element) {
+            if (element !== undefined && element !== null) {
                 rootUrl += `/${encodeURIComponent(element)}`;
             }
         });
     } else if (uri && typeof uri === 'object') {
-        for (var key in uri) {
+        for (let key in uri) {
             if (uri.hasOwnProperty(key)) {
                 rootUrl += `/${encodeURIComponent(uri[key])}`;
             }
@@ -97,7 +97,12 @@ export function setNestedValue(obj, pathKeys, value) {
     if (pathKeys.length > 1) {
         setNestedValue(obj[pathKeys.shift()], pathKeys, value);
     } else {
-        obj[pathKeys[0]] = value;
+        const arrayKeys = pathKeys[0].match(/(\w+)\[(\d)\]/);
+        if (arrayKeys) {
+            obj[arrayKeys[1]][arrayKeys[2]] = value;
+        } else {
+            obj[pathKeys[0]] = value;
+        }
     }
 }
 
