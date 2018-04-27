@@ -21,7 +21,7 @@ export default class Add extends React.Component {
                 margins: '',
                 items: ''
             },
-            // categoryOptions: [{ name: 'Alaska', population: 710249, capital: 'Juneau', region: 'West' }, { name: 'Arizona', population: 6392307, capital: 'Phoenix', region: 'West' }],
+            validRegex: false,
             responseStatus: '',
             errorCode: 0
         };
@@ -29,6 +29,12 @@ export default class Add extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
         this.handleRemove = this.handleRemove.bind(this);
+        this.checkValidity = this.checkValidity.bind(this);
+    }
+
+    checkValidity(items) {
+        let regex1 = RegExp(/[\wа\-я♦♥♠♣\s]+(?:\([\wа-я\s\-\/\*\:\.\?]+(?:\;[\wа-я\s\*]+){0,1}\){0,1}){0,1}(?:\-\w+){0,1}/);
+        return regex1.test(items);
     }
 
     componentDidMount() {
@@ -44,7 +50,8 @@ export default class Add extends React.Component {
                                 path: resData.path,
                                 margins: resData.margins,
                                 items: resData.items
-                            }
+                            },
+                            validRegex: this.checkValidity(resData.items)
                         });
                     }
                 });
@@ -74,11 +81,17 @@ export default class Add extends React.Component {
         let path = event.target.id; // dot separated route
         let value = event.target.value;
 
+        let validInput = false;
+        if (path === 'record.items') {
+            validInput = this.checkValidity(value);
+        }
+
         this.setState((prevState) => {
             let tmpState = Object.assign({}, prevState); // do not mutate previous State object
             setNestedValue(tmpState, path, value);
             tmpState.responseStatus = '';
             tmpState.errorCode = 0;
+            tmpState.validRegex = validInput;
             return tmpState;
         });
         // this.setState({ [event.target.id]: event.target.value });
@@ -220,6 +233,7 @@ export default class Add extends React.Component {
                             this.state.responseStatus
                         }
                     </Alert>}
+                {/* {'Valid: ' + this.state.validRegex} */}
             </div>
         );
     }

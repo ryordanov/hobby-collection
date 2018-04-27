@@ -15,7 +15,6 @@ import { buildUrl, postRequestToAPI } from '../utils';
 
 
 const ViewCollections = (props) => {
-
     const ItemsDisplayRedirect = withRouter(({ history, element }) => (
         <div className="c items" onClick={(e) => history.push({ pathname: buildUrl('/edit', [element.id], { [props.opt]: true }), itemEditOid: element.oid, search: props.opt + '=true' })}>
             <div className='display-in-cell'>
