@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import { Button, FormGroup, FormControl, ControlLabel, Alert } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+
 import { postRequestToAPI } from '../utils';
 
 export default class Login extends Component {

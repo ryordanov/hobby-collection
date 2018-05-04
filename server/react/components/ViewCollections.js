@@ -1,4 +1,4 @@
-/* eslint-disable no-alert */
+/* eslint-disable no-alert, no-unused-vars */
 
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
@@ -41,6 +41,16 @@ const ViewCollections = (props) => {
         }
     }
 
+    function makePathTree(paths, delimiter = ' ➟ ') {
+        if (!paths.length) return null;
+
+        return (<span>
+            {paths.map((p, i) => {
+                return <span key={i}><Link to={buildUrl('/collections', paths.slice(0, i+1))}>{p}</Link>{(i < paths.length-1 ? delimiter : '')}</span>; // ➠ https://unicode-table.com/en/sets/arrows-symbols/
+            })}
+        </span>);
+    }
+
     // function handleRedirect(e, history, element, props) {
     //     // history.push(url);
     //     history.push({pathname: buildUrl('/edit', [element.id], { [props.opt]: true }), itemEditOid: element.oid});
@@ -51,20 +61,21 @@ const ViewCollections = (props) => {
     return (
         <div>
             <div className='clearafter'>
-                <h5 className='float-left'><Link to='/collections'>Collection</Link>
+                <h5 className='float-left'><Link to='/collections'>Collection</Link>{ collectionPathArr.length ? ' / ' : ''}
                     {
-                        collectionPathArr.length ?
-                            collectionPathArr.map((el, index) =>
-                                // <span key={index}> / <Link to={'/collections/' + encodeURIComponent(el)}>{decodeURIComponent(el)}</Link></span>
-                                <span key={index}> / {decodeURIComponent(el)}</span>
-                            ) : ''
+                        makePathTree(collectionPathArr, ' / ')
+                        // collectionPathArr.length ?
+                        //     collectionPathArr.map((el, index) =>
+                        //         // <span key={index}> / <Link to={'/collections/' + encodeURIComponent(el)}>{decodeURIComponent(el)}</Link></span>
+                        //         <span key={index}> / {decodeURIComponent(el)}</span>
+                        //     ) : ''
                     }</h5>
                 < Link to={buildUrl('/add', collectionPathArr, { [props.opt]: true })} className='btn btn-primary btn pull-right'>Add</Link>
             </div>
             <div className='cont'>
                 <div className="r head">
                     <div className="c">Category</div>
-                    <div className="c">Subcategory</div>
+                    {/* <div className="c">Subcategory</div> */}
                     <div className="c">Margins</div>
                     <div className="c">Items</div>
                     <div className="c icon">Action</div>
@@ -73,8 +84,8 @@ const ViewCollections = (props) => {
                     props.collectionRecords &&
                     props.collectionRecords.map((element, index) => (
                         <div className="r" key={index}>
-                            <div className="c"><Link to={buildUrl('/collections', [element.path[0]])}>{element.path[0]}</Link></div>
-                            <div className="c"><Link to={buildUrl('/collections', [element.path[0], element.path[1] || ''])}>{element.path[1] || ''}</Link></div>
+                            <div className="c">{makePathTree(element.path)}</div>
+                            {/* <div className="c"><Link to={buildUrl('/collections', [element.path[0], element.path[1] || ''])}>{element.path[1] || ''}</Link></div> */}
                             <div className="c">{element.margins}</div>
                             <ItemsDisplayRedirect element={element} />
                             <div className="c icon"><Link to={buildUrl('/delete', [element.id])} onClick={(e) => handleDelete(e, element)}><span className="glyphicon glyphicon-trash"></span></Link></div>

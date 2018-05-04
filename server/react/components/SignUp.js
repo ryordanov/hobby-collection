@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { Button, FormGroup, FormControl, ControlLabel, Alert } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, ControlLabel, /* HelpBlock, */ Alert } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
 import { postRequestToAPI } from '../utils';
 
@@ -88,6 +89,7 @@ export default class SignUp extends Component {
                             onChange={this.handleChange}
                             type="email"
                         />
+                        {/* <HelpBlock>Please check your email for the code.</HelpBlock> */}
                     </FormGroup>
                     <Button
                         block
@@ -107,3 +109,7 @@ export default class SignUp extends Component {
         );
     }
 }
+
+SignUp.propTypes = {
+    history: PropTypes.object
+};

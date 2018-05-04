@@ -167,8 +167,8 @@ export default class Add extends React.Component {
                             <ControlLabel>{i === 0 ? 'Category' : 'Subcategory'}:</ControlLabel>
                             {i === 0 &&
                                 <span>
-                                    <Button bsStyle={classnames('info', 'actionBtn')} onClick={this.handleAdd}>+</Button>
-                                    <Button bsStyle={classnames('info', 'actionBtn')} onClick={this.handleRemove}>-</Button>
+                                    <Button className = 'actionBtn' bsStyle='info' onClick={this.handleAdd}>+</Button>
+                                    <Button className = 'actionBtn' bsStyle='info' onClick={this.handleRemove}>-</Button>
                                 </span>
                             }
                             <FormControl

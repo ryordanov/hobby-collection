@@ -1,3 +1,4 @@
+/* INFO BOXES begin */
 /* We’ll also tweak the styles of the form fields so that the mobile browser does not zoom in on them on focus. We just need them to have a minimum font size of 16px to prevent the zoom. */
 select.form-control, textarea.form-control, input.form-control {
   font-size: 16px;
@@ -35,114 +36,57 @@ input[type=file] {
   margin-left: unset !important;
   margin-right: unset !important;
 }
-/* login form */
+/* INFO BOXES end */
+
+
+/* LOGIN and SIGNUP FORM begin */
 @media all and (min-width: 480px) {
   .Login, .SignUp {
-      padding: 60px 0;
+    padding: 60px 0;
  }
   .Login form, .SignUp form {
-      margin: 0 auto;
-      max-width: 320px;
+    margin: 0 auto;
+    max-width: 320px;
  }
+  .SignUp form span.help-block {
+    font-size: 14px;
+    padding-bottom: 10px;
+    color: red;
+  }
 }
+/* LOGIN FORM end */
+
+
+/* NOTIFICATION BOX */
 .alert {
- /* max-width: 320px;
-  */
-  margin: 15px auto;
-}
-/* sign up form */
-@media all and (min-width: 480px) {
-  .Signup {
-      padding: 60px 0;
+  /* max-width: 320px; */
+   margin: 15px auto;
  }
-  .Signup form {
-      margin: 0 auto;
-      max-width: 320px;
- }
-}
-.Signup form span.help-block {
-  font-size: 14px;
-  padding-bottom: 10px;
-  color: #999;
-}
-/* grid */
-/* div.col-xs-7, div.col-xs-1{
-  border-right:1px solid black;
-}
-div.row{
-  border-bottom: 1px solid black;
-}
-*/
-.table {
-  display:table;
-  border-collapse: collapse;
-  padding-left:0px;
-  padding-right:0px;
-}
-.row {
-  display:table-row;
-}
 
-.row.head {
-  background-color: #b2ebf2;
-}
-.cell {
-  display:table-cell;
-  border: 1px solid #337ab7;
-  float:none !important;
- /* border: 1px solid red;
-  border-radius: 5px;
-  */
-  white-space: pre-wrap;
- /* CSS3 */
-  white-space: -moz-pre-wrap;
- /* Firefox */
-  white-space: -pre-wrap;
- /* Opera <7 */
-  white-space: -o-pre-wrap;
- /* Opera 7 */
-  word-wrap: break-word;
- /* IE */
-}
-.cell, .col-xs-8 {
-  max-width: 200px;
-}
 
-/* menu */
+/* MENU begin */
 .navbar-right {
   margin-right: 0px !important;
 }
+/* MENU end */
 
+/* ADD BUTTON begin */
 a.pull-right {
   margin-bottom: 10px;
 }
+/* ADD BUTTON end */
 
-.table a {
-  color: black !important;
-}
-
-/* border radius main table */
-/* .table .row:last-child .cell:first-child {
-  border-bottom-left-radius: 10px;
-}
-
-.table .row:last-child .cell:last-child {
-  border-bottom-right-radius: 10px;
-} */
-
+/* HOME PAGE CENTERED TEXT begin */
 .centered-text  {
   position: absolute;
   top: 50%;
   left:50%;
   transform: translate(-50%,-50%);
 }
-
-.col-xs-1.icon {
-  max-width: 10px;
-}
+/* HOME PAGE CENTERED TEXT end */
 
 
-/* flex */
+/* GRID TABLE CONTENT begin */
 
 .clearafter:after {
   content: '';
@@ -190,16 +134,16 @@ a.pull-right {
 }
 
 .c:first-of-type {
-  max-width: 10%;
+  max-width: 15%;
 }
 
 .c:nth-child(2) {
-  max-width: 10%;
-}
-
-.c:nth-child(3) {
   max-width: 7%;
 }
+/* 
+.c:nth-child(3) {
+  max-width: 7%;
+} */
 
 .c:not(:last-of-type) {
   border-right: 1px solid black;
@@ -220,8 +164,9 @@ a.pull-right {
 .container-fluid {
   padding-bottom: 15px;
 }
+/* GRID TABLE CONTENT end */
 
-/* InfoBox */
+/* INFOBOX OPTIONVIEW begin */
 
 .flex-row {
   display: flex;
@@ -249,3 +194,95 @@ a.pull-right {
 .actionBtn {
   margin: 5px !important;
 }
+/* INFOBOX OPTIONVIEW end */
+
+/* smartphones */
+/* 
+/* Portrait * /
+@media screen 
+  and (device-width: 360px) 
+  /* and (device-height: 640px)  * /
+  /* and (-webkit-device-pixel-ratio: 2)  * /
+  and (orientation: portrait) {
+    #app {
+      width: 50%;
+    }
+}
+
+/* Landscape * /
+@media screen 
+  and (device-width: 360px) 
+  /* and (device-height: 640px) 
+  and (-webkit-device-pixel-ratio: 2)  * /
+  and (orientation: landscape) {
+    #app {
+      width: 50%;
+    }
+} */
+
+
+/* DEPRECATED */
+
+/*
+/* grid * /
+/* div.col-xs-7, div.col-xs-1{
+  border-right:1px solid black;
+}
+div.row{
+  border-bottom: 1px solid black;
+}
+* /
+.table {
+  display:table;
+  border-collapse: collapse;
+  padding-left:0px;
+  padding-right:0px;
+}
+.row {
+  display:table-row;
+}
+
+.row.head {
+  background-color: #b2ebf2;
+}
+.cell {
+  display:table-cell;
+  border: 1px solid #337ab7;
+  float:none !important;
+ /* border: 1px solid red;
+  border-radius: 5px;
+  * /
+  white-space: pre-wrap;
+ /* CSS3 * /
+  white-space: -moz-pre-wrap;
+ /* Firefox * /
+  white-space: -pre-wrap;
+ /* Opera <7 * /
+  white-space: -o-pre-wrap;
+ /* Opera 7 * /
+  word-wrap: break-word;
+ /* IE * /
+}
+.cell, .col-xs-8 {
+  max-width: 200px;
+}
+
+.col-xs-1.icon {
+  max-width: 10px;
+}
+
+.table a {
+  color: black !important;
+}
+
+/* border radius main table * /
+/* .table .row:last-child .cell:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.table .row:last-child .cell:last-child {
+  border-bottom-right-radius: 10px;
+} * /
+
+
+*/
