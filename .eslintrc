@@ -11,14 +11,18 @@
   "plugins": [
     "react"
   ],
+  "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
     "ecmaFeatures": {
       "modules": true,
       "jsx": true
-    }
+    },
+    "allowImportExportEverywhere": false,
+    "codeFrame": false
   },
   "rules": {
+    "strict": 0,
     "no-console": "off",
     "no-trailing-spaces": "error",
     "react/jsx-uses-vars": "error",

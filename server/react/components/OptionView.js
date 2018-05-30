@@ -4,7 +4,7 @@ import { formatLabel } from '../utils';
 
 const OptionView = (props) => {
     function handleChange(e) {
-        props.selectedOption(e.target.type, e.target.id)
+        props.selectedOption(e.target.type, e.target.id);
     }
 
     return (
@@ -28,7 +28,7 @@ const OptionView = (props) => {
             </div>
         </div>
     );
-}
+};
 
 OptionView.propTypes = {
     selectedOption: PropTypes.func,
@@ -39,6 +39,6 @@ OptionView.propTypes = {
 OptionView.defaultProps = {
     radioItems: [], //[{ id: 'r1', value: 'one', checked: true }, { id: 'r2', value: 'two', checked: false }, { id: 'r3', value: 'three', checked: false }],
     checkItems: [] // [{ id: 'c1', name: 'uno', value: 'one', checked: true }, { id: 'c2', name: 'dos', value: 'two', checked: false }]
-}
+};
 
 export default OptionView;

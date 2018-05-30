@@ -20,7 +20,8 @@ module.exports = {
                     {
                         loader: 'babel-loader', // ?cacheDirectory=true
                         options: {
-                            presets: [/*'es2015'*/ 'env', 'react'/* ,'babel-preset-stage-1' */],
+                            presets: [/*'es2015'*/ 'env', 'react'/* ,'babel-preset-stage-1' */,'stage-2'],
+                            // plugins: [require('babel-plugin-transform-object-rest-spread')],
                             cacheDirectory: true
                         }
                     }
