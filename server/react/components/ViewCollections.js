@@ -46,7 +46,7 @@ const ViewCollections = (props) => {
 
         return (<span>
             {paths.map((p, i) => {
-                return <span key={i}><Link to={buildUrl('/collections', paths.slice(0, i+1))}>{p}</Link>{(i < paths.length-1 ? delimiter : '')}</span>; // ➠ https://unicode-table.com/en/sets/arrows-symbols/
+                return <span key={i}><Link to={buildUrl('/collections', paths.slice(0, i+1))}>{decodeURIComponent(p)}</Link>{(i < paths.length-1 ? delimiter : '')}</span>; // ➠ https://unicode-table.com/en/sets/arrows-symbols/
             })}
         </span>);
     }

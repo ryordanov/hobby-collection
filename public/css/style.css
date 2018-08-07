@@ -68,6 +68,10 @@ input[type=file] {
 .navbar-right {
   margin-right: 0px !important;
 }
+
+.navbar{
+  border-radius: 0px !important;
+}
 /* MENU end */
 
 /* ADD BUTTON begin */
